@@ -13,7 +13,7 @@ public class ApiResponseDto {
     private Integer httpStatusCode;
     private String message;
 
-    public ApiResponseDto(Integer httpStatusCode,String message) {
+    public ApiResponseDto(Integer httpStatusCode, String message) {
         this.httpStatusCode = httpStatusCode;
         this.message = message;
     }
