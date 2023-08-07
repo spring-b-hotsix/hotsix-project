@@ -1,8 +1,7 @@
-package com.sparta.hotsixproject.board.entity;
+package com.sparta.hotsixproject.side.entity;
 
+import com.sparta.hotsixproject.board.entity.Board;
 import com.sparta.hotsixproject.card.entity.Card;
-import com.sparta.hotsixproject.side.entity.Side;
-import com.sparta.hotsixproject.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -14,21 +13,18 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Board {
+public class Side {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
+    @Column(nullable = false)
     private String name;
 
-    @OneToMany(mappedBy = "board", orphanRemoval = true)
-    private List<Side> sideList = new ArrayList<>();
-
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(nullable = false)
-    private User owner;
-    
-    // user와 board 다대다 관계 필요
+    @JoinColumn(name = "board_id", nullable = false)
+    private Board board;
 
+    @OneToMany(mappedBy = "side", orphanRemoval = true)
+    private List<Card> cardList = new ArrayList<>();
 }
