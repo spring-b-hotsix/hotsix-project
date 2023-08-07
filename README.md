@@ -9,5 +9,3 @@ https://lucid.app/lucidchart/e1c3dd6b-19cb-4a13-8d87-b0cbc1e59c64/edit?invitatio
 
 ## 와이어프레임
 https://www.figma.com/file/jXoDCYNfmOAzwcsDciFJJP/hotsix?type=design&node-id=0-1&mode=design&t=u68VeAxYqHSwuAMR-0
-
-push test
