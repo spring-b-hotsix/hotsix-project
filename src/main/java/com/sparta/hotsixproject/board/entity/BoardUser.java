@@ -21,4 +21,9 @@ public class BoardUser {
     @ManyToOne
     @JoinColumn(name = "boared_id",nullable = false)
     private Board board;
+
+    public BoardUser(User user, Board board) {
+        this.user = user;
+        this.board = board;
+    }
 }
