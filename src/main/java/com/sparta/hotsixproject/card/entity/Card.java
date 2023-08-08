@@ -40,6 +40,13 @@ public class Card extends TimeStamped {
     @OneToMany(mappedBy = "card", orphanRemoval = true)
     private List<CardLabel> cardLabelList = new ArrayList<>();
 
+
+    @OneToMany(mappedBy = "card", orphanRemoval = true)
+    private List<Attachment> attachmentList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "comment", orphanRemoval = true)
+    private List<Comment> commentList = new ArrayList<>();
+
     @ManyToOne
     @JoinColumn(nullable = false)
     private User user;
