@@ -28,6 +28,7 @@ public class Side {
     @OneToMany(mappedBy = "side", orphanRemoval = true)
     private List<Card> cardList = new ArrayList<>();
 
+
     public Side(String name, int position, Board board) {
         this.name = name;
         this.position = position;

@@ -6,7 +6,7 @@ import lombok.Getter;
 @Getter
 public class SideMoveDto {
     @NotBlank
-    private Long boardId;
+    private Long selectBoardId;
     @NotBlank
-    private int position;
+    private int selectIndex;
 }

@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -29,7 +28,9 @@ public class SideCustomServiceImpl implements SideCustomService {
         Board board = boardRepository.findById(boardId).orElseThrow(
                 () -> new NullPointerException("Board가 존재하지 않습니다. boardId: " + boardId)
         );
-        Side side = new Side(requestDto.getName(), board.getSideList().size(), board);
+        // position => 1024씩 증가
+        int position = (board.getSideList().size() - 1) != 0 ? (board.getSideList().size() - 1) * 1024 : 1024;
+        Side side = new Side(requestDto.getName(), position, board);
         sideRepository.save(side);
         return new SideResponseDto(side);
     }
@@ -55,16 +56,36 @@ public class SideCustomServiceImpl implements SideCustomService {
     @Override
     @Transactional
     public List<SideResponseDto> moveSide(Long boardId, Long sideId, SideMoveDto requestDto) {
-        Board requestBoard = boardRepository.findById(requestDto.getBoardId()).orElseThrow(
-                () -> new NullPointerException("Board가 존재하지 않습니다. boardId: " + requestDto.getBoardId())
+        // 이동시킬 보드
+        Board selectBoard = boardRepository.findById(requestDto.getSelectBoardId()).orElseThrow(
+                () -> new NullPointerException("Board가 존재하지 않습니다. boardId: " + requestDto.getSelectBoardId())
         );
-        // 이동할 사이드
+        // 이동시킬 컬럼(사이드)
         Side currentSide = sideRepository.findByBoardIdAndSideId(boardId, sideId).orElseThrow(
                 () -> new NullPointerException("Side가 존재하지 않습니다. boardId: " + boardId + " sideId: " + sideId)
         );
+        // selectPosition = 사이드를 이동시킬 위치
+        Side selectSide = selectBoard.getSideList().get(requestDto.getSelectIndex());
+        int selectPosition = selectSide.getPosition();
 
-        // swap
-        swap(requestBoard, currentSide, requestDto.getPosition());
+        // 위치 순으로 정렬된 Side List
+        List<Side> sortedSideList = sideRepository.findAllByBoardIdOrderBySidePositionAsc(selectBoard.getId());
+
+        // selectSide의 앞 혹은 뒤 position
+        int aroundPosition;
+        if (requestDto.getSelectIndex() >= sortedSideList.size() - 1) {
+            aroundPosition = sortedSideList.get(sortedSideList.size() - 1).getPosition() + 1024;
+        } else if (requestDto.getSelectIndex() == 0) {
+            int nextPosition = sortedSideList.get(1).getPosition();
+            aroundPosition = Math.min(nextPosition - 1024, 0);
+        } else {  // prev
+            int prevPosition = sortedSideList.get(requestDto.getSelectIndex() - 1).getPosition();
+            int nextPosition = sortedSideList.get(requestDto.getSelectIndex() + 1).getPosition();
+            aroundPosition = (prevPosition + nextPosition) / 2;
+        }
+
+        // 이동
+        move(selectBoard, currentSide, selectPosition, aroundPosition);
 
         return sideRepository.findAllByBoardIdOrderBySidePositionAsc(boardId).stream()
                 .map(SideResponseDto::new)
@@ -80,29 +101,14 @@ public class SideCustomServiceImpl implements SideCustomService {
         sideRepository.delete(side);
     }
 
-    private void swap(Board board, Side side, int selectPoistion) {
+    private void move(Board selectBoard, Side currentSide, int selectPosition, int aroundPosition) {
         /**
-         * 1. 같은 보드로 옮기는 경우 = swap (두 컬럼의 자리를 바꿈)
-         * 2. 다른 보드로 옮기는 경우 = move (기존 컬럼은 position값 + 1)
+         * (3072 + 4096) / 2 = 3584;
+         * 예를 들어서, 2번 - 3번 사이에 들어가고 싶으면
+         * (2번 포지션 + 3번 포지션) / 2
          */
-        Optional<Side> preSide = sideRepository.findByBoardIdAndSidePosition(board.getId(), selectPoistion);
-        Side currentSide = sideRepository.findByBoardIdAndSideId(board.getId(), side.getId()).get();
 
-        if (preSide.isPresent()) {
-            if (!Objects.equals(board, currentSide.getBoard())) {
-                // 1. 같은 보드로 옮기는 경우 = swap
-                Side tempSide = new Side();
-                tempSide.moveSide(board, currentSide.getPosition());
-                currentSide.moveSide(board, preSide.get().getPosition());
-                preSide.get().moveSide(board, tempSide.getPosition());
-            } else {
-                // 2. 다른 보드로 옮기는 경우 = move (기존 컬럼은 position값 + 1)
-                currentSide.moveSide(board, preSide.get().getPosition());
-                preSide.get().moveSide(board, preSide.get().getPosition() + 1);
-            }
-        } else {
-            currentSide.moveSide(board, selectPoistion);
-        }
-
+        int movePosition = (selectPosition + aroundPosition) / 2;
+        currentSide.moveSide(selectBoard, movePosition);
     }
 }

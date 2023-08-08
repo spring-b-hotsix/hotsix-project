@@ -37,11 +37,26 @@ public class SideRepositoryImpl implements SideRepositoryCustom {
     }
 
     @Override
-    public Optional<Side> findByBoardIdAndSidePosition(Long boardId, int sidePosition) {
+    public Optional<Side> findByBoardIdAndSidePosition(Long boardId, int selectPosition) {
         QBoard board = QBoard.board;
         QSide side = QSide.side;
+        OrderSpecifier<?> orderSpecifier = new OrderSpecifier<>(Order.ASC, side.position);
+
         return jpaQueryFactory.selectFrom(side)
-                .where(board.id.eq(boardId).and(side.position.eq(sidePosition)))
+                .where(board.id.eq(boardId).and(side.position.eq(selectPosition)))
+                .where(side.position.lt(selectPosition)) // 바로 앞
+                .orderBy(orderSpecifier)
+                .stream().findFirst();
+    }
+
+    @Override
+    public Optional<Side> findByPrevSidePosition(int prevPosition) {
+        QSide side = QSide.side;
+        OrderSpecifier<?> orderSpecifier = new OrderSpecifier<>(Order.ASC, side.position);
+
+        return jpaQueryFactory.selectFrom(side)
+                .where(side.position.gt(prevPosition))
+                .orderBy(orderSpecifier)
                 .stream().findFirst();
     }
 
