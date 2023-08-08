@@ -5,7 +5,6 @@ import com.sparta.hotsixproject.common.advice.ApiResponseDto;
 import com.sparta.hotsixproject.common.jwt.JwtUtil;
 import com.sparta.hotsixproject.user.UserRoleEnum;
 import com.sparta.hotsixproject.user.dto.LoginRequestDto;
-import com.sparta.hotsixproject.user.entity.User;
 import com.sparta.hotsixproject.user.repository.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -66,10 +65,17 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         response.getWriter().write(json);
 
     }
-
     @Override
-    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) {
-        response.setStatus(401);
+    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException {
+        log.info("로그인실패");
+        ApiResponseDto apiResponseDto = new ApiResponseDto("로그인 실패", HttpStatus.BAD_REQUEST.value());
+
+        response.setStatus(HttpStatus.BAD_REQUEST.value());
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        String json = new ObjectMapper().writeValueAsString(apiResponseDto);
+        response.getWriter().write(json);
+
     }
 
 }

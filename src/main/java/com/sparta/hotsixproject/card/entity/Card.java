@@ -1,8 +1,11 @@
 package com.sparta.hotsixproject.card.entity;
 
+
+import com.sparta.hotsixproject.attachment.entity.Attachment;
 import com.sparta.hotsixproject.board.entity.Board;
 import com.sparta.hotsixproject.card.dto.CardRequestDto;
 import com.sparta.hotsixproject.cardlabel.entity.CardLabel;
+import com.sparta.hotsixproject.comment.entity.Comment;
 import com.sparta.hotsixproject.common.entity.TimeStamped;
 import com.sparta.hotsixproject.side.entity.Side;
 import com.sparta.hotsixproject.user.entity.User;
@@ -11,6 +14,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,8 +38,18 @@ public class Card extends TimeStamped {
     @Column
     private int position;
 
+    @Column
+    private LocalDateTime due;
+
     @OneToMany(mappedBy = "card", orphanRemoval = true)
     private List<CardLabel> cardLabelList = new ArrayList<>();
+
+
+    @OneToMany(mappedBy = "card", orphanRemoval = true)
+    private List<Attachment> attachmentList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "card", orphanRemoval = true)
+    private List<Comment> commentList = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(nullable = false)
@@ -62,6 +76,14 @@ public class Card extends TimeStamped {
 
     public void updateColor(String color) {
         this.color = color;
+    }
+
+    public void updateDue(LocalDateTime due) {
+        this.due = due;
+    }
+
+    public void deleteDue() {
+        this.due = null;
     }
 
     public void moveCard(Side side, int position) {

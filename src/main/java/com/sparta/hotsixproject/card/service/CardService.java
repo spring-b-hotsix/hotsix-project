@@ -4,6 +4,7 @@ import com.sparta.hotsixproject.board.entity.Board;
 import com.sparta.hotsixproject.board.repository.BoardRepository;
 import com.sparta.hotsixproject.card.dto.CardRequestDto;
 import com.sparta.hotsixproject.card.dto.CardResponseDto;
+import com.sparta.hotsixproject.card.dto.DueRequestDto;
 import com.sparta.hotsixproject.card.dto.MoveRequestDto;
 import com.sparta.hotsixproject.card.entity.Card;
 import com.sparta.hotsixproject.card.repository.CardRepository;
@@ -77,6 +78,24 @@ public class CardService {
     public ResponseEntity<CardResponseDto> updateColor(Long boardId, Long sideId, Long cardId, String color) {
         Card card = cardRepository.findBySide_Board_IdAndSide_IdAndId(boardId, sideId, cardId);
         card.updateColor(color);
+        CardResponseDto cardResponseDto = new CardResponseDto(card);
+        return new ResponseEntity<>(cardResponseDto, HttpStatus.OK);
+    }
+
+    // 카드 마감 기한 설정 및 수정
+    @Transactional
+    public ResponseEntity<CardResponseDto> updateDue(Long boardId, Long sideId, Long cardId, DueRequestDto requestDto) {
+        Card card = cardRepository.findBySide_Board_IdAndSide_IdAndId(boardId, sideId, cardId);
+        card.updateDue(requestDto.getDue());
+        CardResponseDto cardResponseDto = new CardResponseDto(card);
+        return new ResponseEntity<>(cardResponseDto, HttpStatus.OK);
+    }
+
+    // 카드 마감 기한 삭제
+    @Transactional
+    public ResponseEntity<CardResponseDto> updateDueRemoval(Long boardId, Long sideId, Long cardId) {
+        Card card = cardRepository.findBySide_Board_IdAndSide_IdAndId(boardId, sideId, cardId);
+        card.deleteDue();
         CardResponseDto cardResponseDto = new CardResponseDto(card);
         return new ResponseEntity<>(cardResponseDto, HttpStatus.OK);
     }

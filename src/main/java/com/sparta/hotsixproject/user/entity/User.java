@@ -5,10 +5,7 @@ import com.sparta.hotsixproject.board.entity.Board;
 import com.sparta.hotsixproject.card.entity.Card;
 import com.sparta.hotsixproject.user.UserRoleEnum;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +32,7 @@ public class User {
     @Enumerated(value = EnumType.STRING)
     private UserRoleEnum role;
 
-    @OneToMany(mappedBy = "owner", orphanRemoval = true)
+    @OneToMany(mappedBy = "user", orphanRemoval = true)
     private List<Board> boardList = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", orphanRemoval = true)
@@ -47,4 +44,13 @@ public class User {
         this.email=email;
         this.role=role;
     }
+
+    public void updateNicknmae(String nickname) {
+        this.nickname=nickname;
+    }
+
+    public void updatePassword(String encodePassword) {
+        this.password=encodePassword;
+    }
+
 }

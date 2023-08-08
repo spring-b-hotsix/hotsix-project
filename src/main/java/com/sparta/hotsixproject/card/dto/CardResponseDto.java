@@ -13,6 +13,8 @@ public class CardResponseDto {
     private String description;
     private String color;
     private int position;
+    private LocalDateTime due;
+    private boolean overdue;
 //    private LocalDateTime createdAt;
 //    private LocalDateTime modifiedAt;
 
@@ -22,6 +24,7 @@ public class CardResponseDto {
         this.description = card.getDescription();
         this.color = card.getColor();
         this.position = card.getPosition();
-
+        this.due = card.getDue();
+        this.overdue = due != null && due.isBefore(LocalDateTime.now());
     }
 }

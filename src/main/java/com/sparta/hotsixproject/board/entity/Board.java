@@ -1,34 +1,53 @@
 package com.sparta.hotsixproject.board.entity;
 
-import com.sparta.hotsixproject.card.entity.Card;
-import com.sparta.hotsixproject.side.entity.Side;
+import com.sparta.hotsixproject.board.dto.BoardRequestDto;
 import com.sparta.hotsixproject.user.entity.User;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
+import java.awt.*;
 import java.util.List;
 
 @Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
+@Table(name = "boards")
 public class Board {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long Id;
 
-    @Column
+    @Column(nullable=false)
     private String name;
 
-    @OneToMany(mappedBy = "board", orphanRemoval = true)
-    private List<Side> sideList = new ArrayList<>();
+    @Column
+    private String description;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(nullable = false)
-    private User owner;
-    
-    // user와 board 다대다 관계 필요
+    @Column
+    private Color color;
+
+    @ManyToOne
+    @JoinColumn(name="user_id", nullable = false)
+    private User user;
+
+    @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE)
+    private List<BoardUser> boardUsers;
+
+    public Board(String name, String description, User user,Integer red, Integer green, Integer blue){
+        this.name = name;
+        this.description = description;
+        this.color = new Color(red,green,blue);
+        this.user = user;
+    }
+
+    public void update(BoardRequestDto request){
+        this.name = request.getName();
+        this.description = request.getDescription();
+        this.color = new Color(request.getRed(),request.getGreen(),request.getBlue());
+    }
+
+
+
 
 }
