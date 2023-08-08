@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <meta charset="UTF-8">
+    <title>회원가입 페이지</title>
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"
+            integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+    <script>
+    const host = 'http://' + window.location.host;
+    function signUp() {
+    let nickname = $('#nickname').val();
+    let password = $('#password').val();
+    let email = $('#email').val();
+    $.ajax({
+    type: "POST",
+    url: `/users/signup`,
+    contentType: "application/json",
+    data: JSON.stringify({
+    nickname: nickname,
+    password: password,
+    email: email
+    }),
+    })
+    .done(function (res, status, xhr) {
+    window.location.href = host+'/users/login-page';
+    })
+    .fail(function (res, jqXHR, textStatus) {
+    alert(res.responseJSON.msg);
+    })
+    }
+    </script>
+</head>
+<body>
+<div id="login-form">
+    <div id="login-title">Sign up Select Shop</div>
+
+    <div class="login-id-label">Nickname</div>
+    <input type="text" id="nickname" name="nickname" placeholder="Nickname" class="login-input-box">
+
+    <div class="login-id-label">Password</div>
+    <input type="password" id="password" name="password" class="login-input-box">
+
+    <div class="login-id-label">E-mail</div>
+    <input type="text" id="email" name="email" placeholder="E-mail" class="login-input-box">
+
+    <button id="login-id-submit" onclick="signUp()">회원 가입</button>
+</div>
+</body>
+</html>
