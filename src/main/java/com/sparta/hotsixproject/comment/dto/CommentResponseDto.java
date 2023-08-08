@@ -1,13 +1,13 @@
 package com.sparta.hotsixproject.comment.dto;
 
 import com.sparta.hotsixproject.comment.entity.Comment;
-import com.sparta.hotsixproject.common.dto.ApiResponseDto;
+import com.sparta.hotsixproject.common.advice.ApiResponseDto;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
 
 @Getter
-public class CommentResponseDto extends ApiResponseDto  {
+public class CommentResponseDto extends ApiResponseDto {
     private String content;
     private String nickname;
     private LocalDateTime createdAt;

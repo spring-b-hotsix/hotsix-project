@@ -1,6 +1,6 @@
 package com.sparta.hotsixproject.comment.dto;
 
-import com.sparta.hotsixproject.common.dto.ApiResponseDto;
+import com.sparta.hotsixproject.common.advice.ApiResponseDto;
 import lombok.Getter;
 
 import java.util.List;

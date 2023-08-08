@@ -4,7 +4,7 @@ import com.sparta.hotsixproject.comment.dto.CommentListResponseDto;
 import com.sparta.hotsixproject.comment.dto.CommentRequestDto;
 import com.sparta.hotsixproject.comment.dto.CommentResponseDto;
 import com.sparta.hotsixproject.comment.service.CommentService;
-import com.sparta.hotsixproject.common.dto.ApiResponseDto;
+import com.sparta.hotsixproject.common.advice.ApiResponseDto;
 import com.sparta.hotsixproject.common.security.UserDetailsImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -28,7 +28,7 @@ public class CommentController {
             @PathVariable Long boardId, @PathVariable Long sideId, @PathVariable Long cardId,
             @RequestBody CommentRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         CommentResponseDto responseDto = commentService.createComment(boardId, sideId, cardId, requestDto, userDetails.getUser());
-        return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.CREATED.value(), "댓글이 생성되었습니다."));
+        return ResponseEntity.ok().body(new ApiResponseDto("댓글이 생성되었습니다.", HttpStatus.CREATED.value()));
     }
 
     // 선택한 카드에 대한 댓글 조회
@@ -56,6 +56,6 @@ public class CommentController {
     public ResponseEntity<ApiResponseDto> deleteComment(@PathVariable Long boardId, @PathVariable Long sideId, @PathVariable Long cardId, @PathVariable Long commentId,
                                                         @AuthenticationPrincipal UserDetailsImpl userDetails) {
         commentService.deleteComment(boardId, sideId, cardId, commentId, userDetails.getUser());
-        return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "댓글이 삭제되었습니다."));
+        return ResponseEntity.ok().body(new ApiResponseDto("댓글이 삭제되었습니다.", HttpStatus.OK.value()));
     }
 }
