@@ -18,7 +18,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class CommentCheckPageAndUserAspect {
 	private final CommentServiceImpl commentService;
-//	private final BoardServiceImpl boardService;
 
 	@Autowired
 	public CommentCheckPageAndUserAspect(CommentServiceImpl commentService) {
@@ -29,27 +28,25 @@ public class CommentCheckPageAndUserAspect {
 	public void commentCheckPage(Long boardId, Long sideId, Long cardId,
 								 CommentRequestDto requestDto, User user) {
 		cardCheck(boardId, sideId, cardId);
-//		userCheck(cardId, user);
 	}
 
 	@Before("@annotation(com.sparta.hotsixproject.exception.annotation.CommentCheckPageAndUser) && args(boardId, sideId, cardId, user)")
 	public void commentCheckPage(Long boardId, Long sideId, Long cardId, User user) {
 		cardCheck(boardId, sideId, cardId);
-//		userCheck(cardId, user);
 	}
 
 	@Before("@annotation(com.sparta.hotsixproject.exception.annotation.CommentCheckPageAndUser) && args(boardId, sideId, cardId, commentId, requestDto, user)")
 	public void commentCheckPage(Long boardId, Long sideId, Long cardId,
 								 Long commentId, CommentRequestDto requestDto, User user) {
 		commentCheck(boardId, sideId, cardId, commentId);
-//		userCheck(cardId, user);
+		userCheck(cardId, commentId, user);
 	}
 
 	@Before("@annotation(com.sparta.hotsixproject.exception.annotation.CommentCheckPageAndUser) && args(boardId, sideId, cardId, commentId, user)")
 	public void commentCheckPage(Long boardId, Long sideId, Long cardId,
 								 Long commentId, User user) {
 		commentCheck(boardId, sideId, cardId, commentId);
-//		userCheck(cardId, user);
+		userCheck(cardId, commentId, user);
 	}
 
 
@@ -72,12 +69,12 @@ public class CommentCheckPageAndUserAspect {
 		}
 	}
 
-	// 보드에 초대된 사용자가 아닐 경우 예외 처리
-//	private void userCheck(Long boardId, User user) {
-//		Board board = boardService.findBoard(boardId);
-//		BoardUser boardUser = boardService.findBoardUser(board, user);
-//		if (boardUser == null) {
-//			throw new UnauthorizedException("해당 보드에 접근할 수 없습니다.");
-//		}
-//	}
+	// 카드의 작성자가 아니거나 댓글의 작성자가 아닐 경우 예외 처리
+	private void userCheck(Long cardId, Long commentId, User user) {
+		User cardUser = commentService.findCard(cardId).getUser();
+		User commentUser = commentService.findComment(commentId).getUser();
+		if (cardUser.getId() != user.getId() || commentUser.getId() != user.getId()) {
+			throw new UnauthorizedException("해당 댓글에 접근할 수 없습니다.");
+		}
+	}
 }
