@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -35,8 +37,9 @@ public class SideCustomServiceImpl implements SideCustomService {
     @Override
     @Transactional(readOnly = true)
     public List<SideResponseDto> getSides() {
-        List<Side> sideList = sideRepository.findAll();
-        return sideList.stream().map(SideResponseDto::new).collect(Collectors.toList());
+        return sideRepository.findAllOrderByPositionAsc().stream()
+                .map(SideResponseDto::new)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -52,19 +55,20 @@ public class SideCustomServiceImpl implements SideCustomService {
     @Override
     @Transactional
     public List<SideResponseDto> moveSide(Long boardId, Long sideId, SideMoveDto requestDto) {
-        Board board = boardRepository.findById(requestDto.getBoardId()).orElseThrow(
-                () -> new NullPointerException("Board가 존재하지 않습니다. boardId: " + boardId)
+        Board requestBoard = boardRepository.findById(requestDto.getBoardId()).orElseThrow(
+                () -> new NullPointerException("Board가 존재하지 않습니다. boardId: " + requestDto.getBoardId())
         );
-        Side selectSide = sideRepository.findByBoardIdAndSideId(boardId, sideId).orElseThrow(
+        // 이동할 사이드
+        Side currentSide = sideRepository.findByBoardIdAndSideId(boardId, sideId).orElseThrow(
                 () -> new NullPointerException("Side가 존재하지 않습니다. boardId: " + boardId + " sideId: " + sideId)
         );
-        List<Side> sideList = sideRepository.findAll();
-        int prePos = selectSide.getPosition();
-        int newPos = requestDto.getPosition();
 
-        swap(sideList, prePos, newPos);
+        // swap
+        swap(requestBoard, currentSide, requestDto.getPosition());
 
-        return sideList.stream().map(SideResponseDto::new).collect(Collectors.toList());
+        return sideRepository.findAllByBoardIdOrderBySidePositionAsc(boardId).stream()
+                .map(SideResponseDto::new)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -73,13 +77,29 @@ public class SideCustomServiceImpl implements SideCustomService {
 
     }
 
-    private void swap(List<Side> sideList, int prePos, int newPos) {
-        Side tempSide = new Side();
-        Side preSide = sideList.get(prePos);
-        Side newSide = sideList.get(newPos);
+    private void swap(Board board, Side side, int selectPoistion) {
+        /**
+         * 1. 같은 보드로 옮기는 경우 = swap (두 컬럼의 자리를 바꿈)
+         * 2. 다른 보드로 옮기는 경우 = move (기존 컬럼은 position값 + 1)
+         */
+        Optional<Side> preSide = sideRepository.findByBoardIdAndSidePosition(board.getId(), selectPoistion);
+        Side currentSide = sideRepository.findByBoardIdAndSideId(board.getId(), side.getId()).get();
 
-        tempSide.moveSide(newSide.getBoard(), newSide.getPosition());
-        newSide.moveSide(preSide.getBoard(), preSide.getPosition());
-        preSide.moveSide(tempSide.getBoard(), tempSide.getPosition());
+        if (preSide.isPresent()) {
+            if (!Objects.equals(board, currentSide.getBoard())) {
+                // 1. 같은 보드로 옮기는 경우 = swap
+                Side tempSide = new Side();
+                tempSide.moveSide(board, currentSide.getPosition());
+                currentSide.moveSide(board, preSide.get().getPosition());
+                preSide.get().moveSide(board, tempSide.getPosition());
+            } else {
+                // 2. 다른 보드로 옮기는 경우 = move (기존 컬럼은 position값 + 1)
+                currentSide.moveSide(board, preSide.get().getPosition());
+                preSide.get().moveSide(board, preSide.get().getPosition() + 1);
+            }
+        } else {
+            currentSide.moveSide(board, selectPoistion);
+        }
+
     }
 }

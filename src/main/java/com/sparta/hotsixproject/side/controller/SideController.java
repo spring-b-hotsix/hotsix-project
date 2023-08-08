@@ -1,6 +1,5 @@
 package com.sparta.hotsixproject.side.controller;
 
-
 import com.sparta.hotsixproject.side.dto.SideMoveDto;
 import com.sparta.hotsixproject.side.dto.SideRequestDto;
 import com.sparta.hotsixproject.side.dto.SideResponseDto;
@@ -31,7 +30,7 @@ public class SideController {
         return ResponseEntity.ok().body(results);
     }
 
-    @PutMapping("/boards/{boardId}/sides/{sideId}")
+    @PutMapping("/boards/{boardId}/sides/{sideId}/name")
     public ResponseEntity<SideResponseDto> updateSideName(
             @PathVariable("boardId") Long boardId,
             @PathVariable("sideId") Long sideId,
@@ -41,7 +40,7 @@ public class SideController {
         return ResponseEntity.ok().body(result);
     }
 
-    @PutMapping("/boards/{boardId}/sides/{sideId}")
+    @PutMapping("/boards/{boardId}/sides/{sideId}/order")
     public ResponseEntity<List<SideResponseDto>> moveSide(
             @PathVariable("boardId") Long boardId,
             @PathVariable("sideId") Long sideId,
