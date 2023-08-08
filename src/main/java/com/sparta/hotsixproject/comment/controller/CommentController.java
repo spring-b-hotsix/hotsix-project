@@ -5,6 +5,7 @@ import com.sparta.hotsixproject.comment.dto.CommentRequestDto;
 import com.sparta.hotsixproject.comment.dto.CommentResponseDto;
 import com.sparta.hotsixproject.comment.service.CommentService;
 import com.sparta.hotsixproject.common.dto.ApiResponseDto;
+import com.sparta.hotsixproject.common.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,14 +41,15 @@ public class CommentController {
     public ResponseEntity<ApiResponseDto> updateComment(
             @PathVariable Long boardId, @PathVariable Long sideId, @PathVariable Long cardId, @PathVariable Long commentId,
             @RequestBody CommentRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        CommentResponseDto responseDto = commentService.updateComment(commentId, requestDto, userDetails.getUser());
+        CommentResponseDto responseDto = commentService.updateComment(boardId, sideId, cardId, commentId, requestDto, userDetails.getUser());
         return ResponseEntity.ok().body(responseDto);
     }
 
     // 선택한 카드에 대한 해당 댓글 삭제
     @DeleteMapping("/{boardId}/sides/{sideId}/cards/{cardId}/comments/{commentId}")
-    public ResponseEntity<ApiResponseDto> deleteComment(@PathVariable Long commentId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        commentService.deleteComment(commentId, userDetails.getUser());
+    public ResponseEntity<ApiResponseDto> deleteComment(@PathVariable Long boardId, @PathVariable Long sideId, @PathVariable Long cardId, @PathVariable Long commentId,
+                                                        @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        commentService.deleteComment(boardId, sideId, cardId, commentId, userDetails.getUser());
         return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "댓글이 삭제되었습니다."));
     }
 }
