@@ -2,7 +2,7 @@ package com.sparta.hotsixproject.comment.entity;
 
 import com.sparta.hotsixproject.card.entity.Card;
 import com.sparta.hotsixproject.comment.dto.CommentRequestDto;
-import com.sparta.hotsixproject.common.entity.Timestamped;
+import com.sparta.hotsixproject.common.entity.TimeStamped;
 import com.sparta.hotsixproject.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -14,7 +14,7 @@ import lombok.Setter;
 @Setter
 @Table(name = "comments")
 @NoArgsConstructor
-public class Comment extends Timestamped {
+public class Comment extends TimeStamped {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

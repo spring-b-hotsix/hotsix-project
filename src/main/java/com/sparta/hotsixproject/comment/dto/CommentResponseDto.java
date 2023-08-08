@@ -12,7 +12,7 @@ public class CommentResponseDto extends ApiResponseDto  {
 
     public CommentResponseDto(Comment comment) {
         this.content = comment.getContent();
-        this.nickname = comment.getCard().getNickname();
+        this.nickname = comment.getUser().getNickname();
         this.createdAt = comment.getCreatedAt();
     }
 }
