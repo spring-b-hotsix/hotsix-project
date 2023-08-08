@@ -20,7 +20,7 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
-    @PostMapping("/signup")
+    @PostMapping("/users/signup")
     public ResponseEntity<ApiResponseDto> signup(@Valid @RequestBody LoginRequestDto requestDto, BindingResult bindingResult) {
         // Validation 예외처리
         List<FieldError> fieldErrors = bindingResult.getFieldErrors();
