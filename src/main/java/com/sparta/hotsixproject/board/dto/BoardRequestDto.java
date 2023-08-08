@@ -9,5 +9,7 @@ import java.awt.*;
 public class BoardRequestDto {
     String name;
     String description;
-    Color color;
+    Integer red;
+    Integer green;
+    Integer blue;
 }

@@ -32,12 +32,16 @@ public class BoardServiceImpl implements BoardService{
         return boardRepository.findAllByUser(loginedUser).stream().map(BoardResponseDto::new).toList();
     }
 
-    //메인화면 - 로그인한 사용자가 참여한 보드 불러오는 메서드
+    //메인화면 - 로그인한 사용자가 참여한 보드를 불러오는 메서드
     @Override
     public List<BoardResponseDto> getGuestBoards(User user) {
         User loginedUser = findUser(user.getId());
         //본인이 참여한 보드 불러오기
-        return findGuestBoards(loginedUser).stream().map(BoardResponseDto::new).toList();
+        return findGuestBoards(loginedUser)
+                .stream()
+                .filter(board->!board.getUser().equals(loginedUser)) //본인이 생성한 보드는 제외
+                .map(BoardResponseDto::new)
+                .toList();
     }
 
 
@@ -58,7 +62,7 @@ public class BoardServiceImpl implements BoardService{
     @Override
     public ApiResponseDto createBoard(BoardRequestDto requestDto, User user) {
         User loginedUser = findUser(user.getId());
-        Board board = new Board(requestDto.getName(),requestDto.getDescription(),requestDto.getColor(),loginedUser);
+        Board board = new Board(requestDto.getName(),requestDto.getDescription(),loginedUser,requestDto.getRed(),requestDto.getGreen(),requestDto.getBlue());
 
         //새 보드 추가
         boardRepository.save(board);
@@ -67,7 +71,7 @@ public class BoardServiceImpl implements BoardService{
         BoardUser boardUser = new BoardUser(loginedUser,board);
         boardUserRepository.save(boardUser);
 
-        return new ApiResponseDto("새로운 보드를 생성했습니다.");
+        return new ApiResponseDto("새로운 보드를 생성했습니다.", 201);
     }
 
     //보드 설정 변경(제목, 내용, 색상) 메서드
@@ -80,7 +84,7 @@ public class BoardServiceImpl implements BoardService{
 
         //보드 멤버일 경우 보드 수정 가능하도록 허용
         targetBoard.update(requestDto);
-        return new ApiResponseDto("보드 수정이 완료되었습니다.");
+        return new ApiResponseDto("보드 수정이 완료되었습니다.",200);
     }
 
     //보드 삭제 메서드
@@ -94,7 +98,7 @@ public class BoardServiceImpl implements BoardService{
             throw new IllegalArgumentException("보드 작성자만 삭제할 수 있습니다.");
         }
         boardRepository.delete(targetBoard);
-        return new ApiResponseDto("보드가 삭제되었습니다.");
+        return new ApiResponseDto("보드가 삭제되었습니다.",200);
     }
 
     //보드 초대 메서드
@@ -104,15 +108,21 @@ public class BoardServiceImpl implements BoardService{
         Board targetBoard = findBoard(id);
         //로그인유저가 보드에 속한 유저인지 확인
         checkBoardMember(loginedUser,targetBoard);
+
         //초대할 유저 객체 불러오기
         User inviteUser = userRepository.findByEmail(email).orElse(null);
         if(inviteUser==null){
             throw new IllegalArgumentException("입력한 이메일로 가입한 사용자가 존재하지 않습니다.");
         }
+        //초대할 유저가 이미 멤버에 속했는지 확인
+        if(boardUserRepository.findByUserAndBoard(inviteUser,targetBoard).orElse(null)!=null){
+            throw new IllegalArgumentException("해당 유저는 이미 보드의 멤버입니다.");
+        }
+
         //보드-유저 관계 테이블에 추가
         BoardUser boardUser = new BoardUser(inviteUser,targetBoard);
         boardUserRepository.save(boardUser);
-        return new ApiResponseDto(inviteUser.getNickname()+"님을 보드 멤버에 추가했습니다.");
+        return new ApiResponseDto(inviteUser.getNickname()+"님을 보드 멤버에 추가했습니다.",201);
     }
 
 

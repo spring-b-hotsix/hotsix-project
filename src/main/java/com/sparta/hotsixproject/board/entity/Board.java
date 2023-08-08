@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.awt.*;
+import java.util.List;
 
 @Entity
 @Getter
@@ -30,18 +31,20 @@ public class Board {
     @JoinColumn(name="user_id", nullable = false)
     private User user;
 
+    @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE)
+    private List<BoardUser> boardUsers;
 
-    public Board(String name, String description, Color color,User user){
+    public Board(String name, String description, User user,Integer red, Integer green, Integer blue){
         this.name = name;
         this.description = description;
-        this.color = color;
+        this.color = new Color(red,green,blue);
         this.user = user;
     }
 
     public void update(BoardRequestDto request){
         this.name = request.getName();
         this.description = request.getDescription();
-        this.color = request.getColor();
+        this.color = new Color(request.getRed(),request.getGreen(),request.getBlue());
     }
 
 

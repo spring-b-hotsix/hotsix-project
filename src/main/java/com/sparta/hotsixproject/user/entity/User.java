@@ -1,5 +1,6 @@
 package com.sparta.hotsixproject.user.entity;
 
+import com.sparta.hotsixproject.board.entity.BoardUser;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -7,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import java.awt.*;
+import java.util.List;
 
 @Getter
 @Entity
@@ -33,6 +35,8 @@ public class User {
     @Enumerated(value = EnumType.STRING) // enum의 이름 그대로를 저장 USER -> USER
     private UserRoleEnum role;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    private List<BoardUser> boardUsers;
     @Builder
     public User(String nickname, String password, String email, UserRoleEnum role) {
         this.nickname = nickname;

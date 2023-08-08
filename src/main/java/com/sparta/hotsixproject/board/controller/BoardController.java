@@ -6,14 +6,11 @@ import com.sparta.hotsixproject.board.dto.BoardResponseDto;
 import com.sparta.hotsixproject.board.dto.InviteBoardRequestDto;
 import com.sparta.hotsixproject.board.entity.Board;
 import com.sparta.hotsixproject.board.service.BoardService;
-import com.sparta.hotsixproject.security.UserDetailsImpl;
-import com.sparta.hotsixproject.user.entity.User;
-import org.json.HTTP;
+import com.sparta.hotsixproject.common.security.UserDetailsImpl;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -23,6 +20,10 @@ import java.util.List;
 public class BoardController {
 
     private BoardService boardService;
+
+    public BoardController(BoardService boardService){
+        this.boardService = boardService;
+    }
 
 //    @GetMapping("/")
 //    public String goHome(@AuthenticationPrincipal UserDetailsImpl userDetails, Model model ){
@@ -43,6 +44,14 @@ public class BoardController {
         boards.addAll(boardService.getMyBoards(userDetails.getUser()));
         boards.addAll(boardService.getGuestBoards(userDetails.getUser()));
         return ResponseEntity.status(HttpStatus.OK).body(boards);
+    }
+    @GetMapping("/myboard")
+    public ResponseEntity<List<BoardResponseDto>> getMyBoards(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return ResponseEntity.status(HttpStatus.OK).body(boardService.getMyBoards(userDetails.getUser()));
+    }
+    @GetMapping("/guestboard")
+    public ResponseEntity<List<BoardResponseDto>> getGuestBoards(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return ResponseEntity.status(HttpStatus.OK).body(boardService.getGuestBoards(userDetails.getUser()));
     }
 
     @GetMapping("/boards/{boardId}")
@@ -65,8 +74,8 @@ public class BoardController {
         return ResponseEntity.status(HttpStatus.OK).body(boardService.deleteBoard(boardId, userDetails.getUser()));
     }
 
-    @PostMapping("/boards/{boardId}/invite")
-    public ResponseEntity<ApiResponseDto> inviteBoard(@PathVariable Long boardId, @RequestBody InviteBoardRequestDto requestDto, UserDetailsImpl userDetails) {
+    @PostMapping("/boards/{boardId}/member")
+    public ResponseEntity<ApiResponseDto> inviteBoard(@PathVariable Long boardId, @RequestBody InviteBoardRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return ResponseEntity.status(HttpStatus.CREATED).body(boardService.inviteBoard(boardId,requestDto.getEmail(),userDetails.getUser()));
     }
 }
