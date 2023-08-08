@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface SideRepositoryCustom {
+    Optional<Side> findByName(String name);
     Optional<Side> findByBoardIdAndSideId(Long boardId, Long sideId);
     Optional<Side> findByBoardIdAndSidePosition(Long boardId, int sidePosition);
     List<Side> findAllOrderByPositionAsc();

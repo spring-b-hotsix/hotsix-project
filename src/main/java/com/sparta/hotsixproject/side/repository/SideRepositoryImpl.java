@@ -18,6 +18,14 @@ public class SideRepositoryImpl implements SideRepositoryCustom {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
+    public Optional<Side> findByName(String name) {
+        QSide side = QSide.side;
+        return jpaQueryFactory.selectFrom(side)
+                .where(side.name.eq(name))
+                .stream().findFirst();
+    }
+
+    @Override
     public Optional<Side> findByBoardIdAndSideId(Long boardId, Long sideId) {
         QBoard board = QBoard.board;
         QSide side = QSide.side;
