@@ -1,6 +1,7 @@
 package com.sparta.hotsixproject.card.entity;
 
 import com.sparta.hotsixproject.cardlabel.entity.CardLabel;
+import com.sparta.hotsixproject.common.entity.TimeStamped;
 import com.sparta.hotsixproject.side.entity.Side;
 import com.sparta.hotsixproject.user.entity.User;
 import jakarta.persistence.*;
