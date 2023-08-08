@@ -43,7 +43,11 @@ public class SideCustomServiceImpl implements SideCustomService {
     @Override
     @Transactional
     public SideResponseDto updateSideName(Long boardId, Long sideId, SideNameDto requestDto) {
-        return null;
+        Side side = sideRepository.findByBoardIdAndSideId(boardId, sideId).orElseThrow(
+                () -> new NullPointerException("Side가 존재하지 않습니다. boardId: " + sideId)
+        );
+        side.updateSideName(requestDto.getName());
+        return new SideResponseDto(side);
     }
 
     @Override

@@ -33,4 +33,8 @@ public class Side {
         this.position = position;
         this.board = board;
     }
+
+    public void updateSideName(String name) {
+        this.name = name;
+    }
 }
