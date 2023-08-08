@@ -2,7 +2,6 @@ package com.sparta.hotsixproject.side.controller;
 
 
 import com.sparta.hotsixproject.side.dto.SideMoveDto;
-import com.sparta.hotsixproject.side.dto.SideNameDto;
 import com.sparta.hotsixproject.side.dto.SideRequestDto;
 import com.sparta.hotsixproject.side.dto.SideResponseDto;
 import com.sparta.hotsixproject.side.service.Impl.SideCustomServiceImpl;
@@ -32,24 +31,24 @@ public class SideController {
         return ResponseEntity.ok().body(results);
     }
 
-    @PutMapping("/boards/{boardId}/sides/{sideId}/name")
+    @PutMapping("/boards/{boardId}/sides/{sideId}")
     public ResponseEntity<SideResponseDto> updateSideName(
             @PathVariable("boardId") Long boardId,
             @PathVariable("sideId") Long sideId,
-            @RequestBody SideNameDto requestDto
+            @RequestBody SideRequestDto requestDto
     ) {
         SideResponseDto result = sideCustomServiceImpl.updateSideName(boardId, sideId, requestDto);
         return ResponseEntity.ok().body(result);
     }
 
-    @PutMapping("/boards/{boardId}/sides/{sideId}/move")
-    public ResponseEntity<SideResponseDto> moveSide(
+    @PutMapping("/boards/{boardId}/sides/{sideId}")
+    public ResponseEntity<List<SideResponseDto>> moveSide(
             @PathVariable("boardId") Long boardId,
             @PathVariable("sideId") Long sideId,
             @RequestBody SideMoveDto requestDto
     ) {
-        SideResponseDto result = sideCustomServiceImpl.moveSide(boardId, sideId, requestDto);
-        return ResponseEntity.ok().body(result);
+        List<SideResponseDto> results = sideCustomServiceImpl.moveSide(boardId, sideId, requestDto);
+        return ResponseEntity.ok().body(results);
     }
 
     @DeleteMapping("/boards/{boardId}/sides/{sideId}")

@@ -3,7 +3,6 @@ package com.sparta.hotsixproject.side.service.Impl;
 import com.sparta.hotsixproject.board.entity.Board;
 import com.sparta.hotsixproject.board.repository.BoardRepository;
 import com.sparta.hotsixproject.side.dto.SideMoveDto;
-import com.sparta.hotsixproject.side.dto.SideNameDto;
 import com.sparta.hotsixproject.side.dto.SideRequestDto;
 import com.sparta.hotsixproject.side.dto.SideResponseDto;
 import com.sparta.hotsixproject.side.entity.Side;
@@ -36,15 +35,15 @@ public class SideCustomServiceImpl implements SideCustomService {
     @Override
     @Transactional(readOnly = true)
     public List<SideResponseDto> getSides() {
-        List<Side> sides = sideRepository.findAll();
-        return sides.stream().map(SideResponseDto::new).collect(Collectors.toList());
+        List<Side> sideList = sideRepository.findAll();
+        return sideList.stream().map(SideResponseDto::new).collect(Collectors.toList());
     }
 
     @Override
     @Transactional
-    public SideResponseDto updateSideName(Long boardId, Long sideId, SideNameDto requestDto) {
+    public SideResponseDto updateSideName(Long boardId, Long sideId, SideRequestDto requestDto) {
         Side side = sideRepository.findByBoardIdAndSideId(boardId, sideId).orElseThrow(
-                () -> new NullPointerException("Side가 존재하지 않습니다. boardId: " + sideId)
+                () -> new NullPointerException("Side가 존재하지 않습니다. boardId: " + boardId + " sideId: " + sideId)
         );
         side.updateSideName(requestDto.getName());
         return new SideResponseDto(side);
@@ -52,13 +51,35 @@ public class SideCustomServiceImpl implements SideCustomService {
 
     @Override
     @Transactional
-    public SideResponseDto moveSide(Long boardId, Long sideId, SideMoveDto requestDto) {
-        return null;
+    public List<SideResponseDto> moveSide(Long boardId, Long sideId, SideMoveDto requestDto) {
+        Board board = boardRepository.findById(requestDto.getBoardId()).orElseThrow(
+                () -> new NullPointerException("Board가 존재하지 않습니다. boardId: " + boardId)
+        );
+        Side selectSide = sideRepository.findByBoardIdAndSideId(boardId, sideId).orElseThrow(
+                () -> new NullPointerException("Side가 존재하지 않습니다. boardId: " + boardId + " sideId: " + sideId)
+        );
+        List<Side> sideList = sideRepository.findAll();
+        int prePos = selectSide.getPosition();
+        int newPos = requestDto.getPosition();
+
+        swap(sideList, prePos, newPos);
+
+        return sideList.stream().map(SideResponseDto::new).collect(Collectors.toList());
     }
 
     @Override
     @Transactional
     public void deleteSide(Long boardId, Long sideId) {
 
+    }
+
+    private void swap(List<Side> sideList, int prePos, int newPos) {
+        Side tempSide = new Side();
+        Side preSide = sideList.get(prePos);
+        Side newSide = sideList.get(newPos);
+
+        tempSide.moveSide(newSide.getBoard(), newSide.getPosition());
+        newSide.moveSide(preSide.getBoard(), preSide.getPosition());
+        preSide.moveSide(tempSide.getBoard(), tempSide.getPosition());
     }
 }

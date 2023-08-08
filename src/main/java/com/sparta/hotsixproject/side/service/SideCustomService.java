@@ -1,7 +1,6 @@
 package com.sparta.hotsixproject.side.service;
 
 import com.sparta.hotsixproject.side.dto.SideMoveDto;
-import com.sparta.hotsixproject.side.dto.SideNameDto;
 import com.sparta.hotsixproject.side.dto.SideRequestDto;
 import com.sparta.hotsixproject.side.dto.SideResponseDto;
 
@@ -26,7 +25,7 @@ public interface SideCustomService{
      * @param requestDto
      * @return
      */
-    SideResponseDto updateSideName(Long boardId, Long sideId, SideNameDto requestDto);
+    SideResponseDto updateSideName(Long boardId, Long sideId, SideRequestDto requestDto);
 
     /**
      * @param boardId
@@ -34,7 +33,7 @@ public interface SideCustomService{
      * @param requestDto
      * @return
      */
-    SideResponseDto moveSide(Long boardId, Long sideId, SideMoveDto requestDto);
+    List<SideResponseDto> moveSide(Long boardId, Long sideId, SideMoveDto requestDto);
 
     /**
      * @param boardId

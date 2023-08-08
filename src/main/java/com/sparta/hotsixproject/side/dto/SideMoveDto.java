@@ -8,5 +8,5 @@ public class SideMoveDto {
     @NotBlank
     private Long boardId;
     @NotBlank
-    private Long order;
+    private int position;
 }
