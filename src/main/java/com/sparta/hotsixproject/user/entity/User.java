@@ -6,6 +6,7 @@ import com.sparta.hotsixproject.card.entity.Card;
 import com.sparta.hotsixproject.user.UserRoleEnum;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -15,6 +16,7 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@EqualsAndHashCode(exclude = {"boardList", "cardList"})
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
