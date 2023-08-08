@@ -35,7 +35,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional(readOnly = true)
     @CommentCheckPageAndUser
-    public CommentListResponseDto getComments (Long boardId, Long sideId, Long cardId) {
+    public CommentListResponseDto getComments (Long boardId, Long sideId, Long cardId, User user) {
         Card card = findCard(cardId);
         return new CommentListResponseDto(commentRepository.findAllByCardOrderByCreatedAtDesc(card)
                 .stream().map(CommentResponseDto::new).toList());

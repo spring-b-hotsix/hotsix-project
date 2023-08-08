@@ -140,12 +140,12 @@ public class BoardServiceImpl implements BoardService{
                 .collect(Collectors.toList());
     }
 
-    private Board findBoard(Long id) {
+    public Board findBoard(Long id) {
         return boardRepository.findById(id).orElseThrow(() ->
                 new IllegalArgumentException("존재하지 않는 보드 입니다.")
         );
     }
-    private void checkBoardMember(User user, Board board) {
+    public void checkBoardMember(User user, Board board) {
         boardUserRepository.findByUserAndBoard(user, board).orElseThrow(() ->
                 new IllegalArgumentException("해당 보드 권한을 가진 유저가 아닙니다.")
         );
