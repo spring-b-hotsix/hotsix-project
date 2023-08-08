@@ -45,7 +45,7 @@ public class CommentCheckPageAndUserAspect {
 //		userCheck(cardId, user);
 	}
 
-	@Before("@annotation(com.sparta.hotsixproject.exception.annotation.CommentCheckPageAndUser) && args(boardId, sideId, cardId, commentId, requestDto, user)")
+	@Before("@annotation(com.sparta.hotsixproject.exception.annotation.CommentCheckPageAndUser) && args(boardId, sideId, cardId, commentId, user)")
 	public void commentCheckPage(Long boardId, Long sideId, Long cardId,
 								 Long commentId, User user) {
 		commentCheck(boardId, sideId, cardId, commentId);
