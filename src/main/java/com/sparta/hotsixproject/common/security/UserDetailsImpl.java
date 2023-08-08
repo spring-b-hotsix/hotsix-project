@@ -20,6 +20,9 @@ public class UserDetailsImpl implements UserDetails {
     public User getUser() {
         return user;
     }
+    public String getRole(){
+        return user.getRole().toString();
+    }
 
     @Override
     public String getPassword() {

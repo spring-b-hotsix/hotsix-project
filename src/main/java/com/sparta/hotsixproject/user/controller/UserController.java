@@ -1,12 +1,14 @@
 package com.sparta.hotsixproject.user.controller;
 
+import com.sparta.hotsixproject.common.dto.ApiResponseDto;
 import com.sparta.hotsixproject.common.security.UserDetailsImpl;
-import com.sparta.hotsixproject.user.dto.AuthRequestDto;
-import com.sparta.hotsixproject.user.dto.UserInfoDto;
+import com.sparta.hotsixproject.user.dto.*;
 import com.sparta.hotsixproject.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -62,5 +64,25 @@ public class UserController {
         return "redirect:/users/login-page";
     }
 
+    @ResponseBody
+    @PutMapping("/{userId}/nickname")
+    public ResponseEntity<ApiResponseDto> updateNickname(@PathVariable Long userId, @RequestBody UpdateNicknameRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        userService.updateNicknmae(userId, requestDto, userDetails.getUser());
+        return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "닉네임 변경이 완료되었습니다."));
+    }
 
+    @ResponseBody
+    @PutMapping("/{userId}/password")
+    public ResponseEntity<ApiResponseDto> updatePassword(@PathVariable Long userId, @RequestBody UpdatePasswordRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        userService.updatePassword(userId, requestDto, userDetails.getUser());
+        return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "비밀번호 변경이 완료되었습니다."));
+    }
+
+    @DeleteMapping("/{userId}/sign-out")
+    public ResponseEntity<ApiResponseDto> deleteUser(@PathVariable Long userId, @RequestBody DeleteUserRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+
+        userService.deleteUser(userId,requestDto,userDetails.getUser());
+        return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "유저가 탈퇴 되었습니다."));
+
+    }
 }
