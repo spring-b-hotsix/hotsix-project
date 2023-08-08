@@ -74,7 +74,10 @@ public class SideCustomServiceImpl implements SideCustomService {
     @Override
     @Transactional
     public void deleteSide(Long boardId, Long sideId) {
-
+        Side side = sideRepository.findByBoardIdAndSideId(boardId, sideId).orElseThrow(
+                () -> new NullPointerException("Side가 존재하지 않습니다. boardId: " + boardId + " sideId: " + sideId)
+        );
+        sideRepository.delete(side);
     }
 
     private void swap(Board board, Side side, int selectPoistion) {
