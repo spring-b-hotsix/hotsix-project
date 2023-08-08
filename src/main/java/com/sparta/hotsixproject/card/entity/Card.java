@@ -1,5 +1,6 @@
 package com.sparta.hotsixproject.card.entity;
 
+import com.sparta.hotsixproject.attachment.entity.Attachment;
 import com.sparta.hotsixproject.board.entity.Board;
 import com.sparta.hotsixproject.card.dto.CardRequestDto;
 import com.sparta.hotsixproject.cardlabel.entity.CardLabel;
@@ -36,6 +37,9 @@ public class Card extends TimeStamped {
 
     @OneToMany(mappedBy = "card", orphanRemoval = true)
     private List<CardLabel> cardLabelList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "card", orphanRemoval = true)
+    private List<Attachment> attachmentList = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(nullable = false)
