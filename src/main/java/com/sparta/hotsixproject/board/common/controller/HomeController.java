@@ -2,7 +2,7 @@ package com.sparta.hotsixproject.board.common.controller;
 
 import com.sparta.hotsixproject.board.dto.BoardResponseDto;
 import com.sparta.hotsixproject.board.service.BoardService;
-import com.sparta.hotsixproject.security.UserDetailsImpl;
+import com.sparta.hotsixproject.common.security.UserDetailsImpl;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
