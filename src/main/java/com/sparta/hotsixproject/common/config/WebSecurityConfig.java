@@ -1,6 +1,5 @@
 package com.sparta.hotsixproject.common.config;
 
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.hotsixproject.common.jwt.JwtUtil;
 import com.sparta.hotsixproject.common.security.JwtAuthenticationFilter;

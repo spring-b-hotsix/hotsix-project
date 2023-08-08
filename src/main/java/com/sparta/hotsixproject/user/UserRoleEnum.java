@@ -1,4 +1,4 @@
-package com.sparta.hotsixproject.user.entity;
+package com.sparta.hotsixproject.user;
 
 public enum UserRoleEnum {
     USER(Authority.USER),

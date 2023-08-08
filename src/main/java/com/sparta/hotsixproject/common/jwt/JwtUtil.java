@@ -1,7 +1,6 @@
 package com.sparta.hotsixproject.common.jwt;
 
-
-import com.sparta.hotsixproject.user.entity.UserRoleEnum;
+import com.sparta.hotsixproject.user.UserRoleEnum;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
@@ -15,6 +14,7 @@ import org.springframework.util.StringUtils;
 import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
+
 @Slf4j(topic = "JwtUtil")
 @Component
 @Getter

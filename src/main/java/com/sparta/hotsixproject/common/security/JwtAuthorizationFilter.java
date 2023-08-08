@@ -1,7 +1,7 @@
 package com.sparta.hotsixproject.common.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sparta.hotsixproject.board.dto.ApiResponseDto;
+import com.sparta.hotsixproject.common.advice.ApiResponseDto;
 import com.sparta.hotsixproject.common.jwt.JwtUtil;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;

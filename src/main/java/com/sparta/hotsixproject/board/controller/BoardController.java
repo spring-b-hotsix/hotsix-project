@@ -1,13 +1,11 @@
 package com.sparta.hotsixproject.board.controller;
 
-import com.sparta.hotsixproject.board.dto.ApiResponseDto;
 import com.sparta.hotsixproject.board.dto.BoardRequestDto;
 import com.sparta.hotsixproject.board.dto.BoardResponseDto;
 import com.sparta.hotsixproject.board.dto.InviteBoardRequestDto;
-import com.sparta.hotsixproject.board.entity.Board;
 import com.sparta.hotsixproject.board.service.BoardService;
+import com.sparta.hotsixproject.common.advice.ApiResponseDto;
 import com.sparta.hotsixproject.common.security.UserDetailsImpl;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

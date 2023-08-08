@@ -1,6 +1,6 @@
 package com.sparta.hotsixproject.user.controller;
 
-import com.sparta.hotsixproject.board.dto.ApiResponseDto;
+import com.sparta.hotsixproject.common.advice.ApiResponseDto;
 import com.sparta.hotsixproject.user.dto.LoginRequestDto;
 import com.sparta.hotsixproject.user.service.UserService;
 import jakarta.validation.Valid;
@@ -14,11 +14,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Locale;
 
 @RestController
 @RequiredArgsConstructor
 public class UserController {
-
     private final UserService userService;
     @PostMapping("/signup")
     public ResponseEntity<ApiResponseDto> signup(@Valid @RequestBody LoginRequestDto requestDto, BindingResult bindingResult) {

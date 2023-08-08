@@ -1,12 +1,12 @@
 package com.sparta.hotsixproject.board.service;
 
-import com.sparta.hotsixproject.board.dto.ApiResponseDto;
 import com.sparta.hotsixproject.board.dto.BoardRequestDto;
 import com.sparta.hotsixproject.board.dto.BoardResponseDto;
 import com.sparta.hotsixproject.board.entity.Board;
 import com.sparta.hotsixproject.board.entity.BoardUser;
 import com.sparta.hotsixproject.board.repository.BoardRepository;
 import com.sparta.hotsixproject.board.repository.BoardUserRepository;
+import com.sparta.hotsixproject.common.advice.ApiResponseDto;
 import com.sparta.hotsixproject.user.entity.User;
 import com.sparta.hotsixproject.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
