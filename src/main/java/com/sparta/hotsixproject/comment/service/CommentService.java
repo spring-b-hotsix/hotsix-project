@@ -25,10 +25,9 @@ public interface CommentService {
      * @param boardId 보드 번호
      * @param sideId 사이드 번호
      * @param cardId 카드 번호
-     * @param user 댓글 조회 요청자
      * @return 선택한 게시글에 대한 전체 댓글 목록
      */
-    CommentListResponseDto getComments (Long boardId, Long sideId, Long cardId, User user);
+    CommentListResponseDto getComments (Long boardId, Long sideId, Long cardId);
 
     /**
      * 댓글 수정

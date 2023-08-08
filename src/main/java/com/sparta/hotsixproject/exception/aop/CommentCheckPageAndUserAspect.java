@@ -30,8 +30,8 @@ public class CommentCheckPageAndUserAspect {
 		cardCheck(boardId, sideId, cardId);
 	}
 
-	@Before("@annotation(com.sparta.hotsixproject.exception.annotation.CommentCheckPageAndUser) && args(boardId, sideId, cardId, user)")
-	public void commentCheckPage(Long boardId, Long sideId, Long cardId, User user) {
+	@Before("@annotation(com.sparta.hotsixproject.exception.annotation.CommentCheckPageAndUser) && args(boardId, sideId, cardId)")
+	public void commentCheckPage(Long boardId, Long sideId, Long cardId) {
 		cardCheck(boardId, sideId, cardId);
 	}
 
@@ -39,14 +39,14 @@ public class CommentCheckPageAndUserAspect {
 	public void commentCheckPage(Long boardId, Long sideId, Long cardId,
 								 Long commentId, CommentRequestDto requestDto, User user) {
 		commentCheck(boardId, sideId, cardId, commentId);
-		userCheck(cardId, commentId, user);
+		userCheckEdit(commentId, user);
 	}
 
 	@Before("@annotation(com.sparta.hotsixproject.exception.annotation.CommentCheckPageAndUser) && args(boardId, sideId, cardId, commentId, user)")
 	public void commentCheckPage(Long boardId, Long sideId, Long cardId,
 								 Long commentId, User user) {
 		commentCheck(boardId, sideId, cardId, commentId);
-		userCheck(cardId, commentId, user);
+		userCheckDelete(cardId, commentId, user);
 	}
 
 
@@ -69,11 +69,19 @@ public class CommentCheckPageAndUserAspect {
 		}
 	}
 
-	// 카드의 작성자가 아니거나 댓글의 작성자가 아닐 경우 예외 처리
-	private void userCheck(Long cardId, Long commentId, User user) {
-		User cardUser = commentService.findCard(cardId).getUser();
+	// 댓글의 작성자가 아닐 경우 예외 처리 (수정은 댓글 작성자만 가능)
+	private void userCheckEdit(Long commentId, User user) {
 		User commentUser = commentService.findComment(commentId).getUser();
-		if (cardUser.getId() != user.getId() || commentUser.getId() != user.getId()) {
+		if (commentUser.getId() != user.getId()) {
+			throw new UnauthorizedException("해당 댓글에 접근할 수 없습니다.");
+		}
+	}
+
+	// 카드 또는 댓글의 작성자가 아닐 경우 예외 처리(삭제는 댓글의 작성자와 수정자 모두 가능)
+	private void userCheckDelete(Long cardId, Long commentId, User user) {
+		User commentUser = commentService.findComment(commentId).getUser();
+		User cardUser = commentService.findCard(cardId).getUser();
+		if (commentUser.getId() != user.getId() && cardUser.getId() != user.getId()) {
 			throw new UnauthorizedException("해당 댓글에 접근할 수 없습니다.");
 		}
 	}

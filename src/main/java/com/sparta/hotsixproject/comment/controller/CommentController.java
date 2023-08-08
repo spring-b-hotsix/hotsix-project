@@ -12,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -36,8 +35,8 @@ public class CommentController {
     @GetMapping("/{boardId}/sides/{sideId}/cards/{cardId}/comments")
     @Operation(summary = "카드 댓글 조회", description = "해당 카드에 대한 모든 댓글을 조회합니다.")
     public ResponseEntity<ApiResponseDto> getComments(
-            @PathVariable Long boardId, @PathVariable Long sideId, @PathVariable Long cardId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        CommentListResponseDto responseDto = commentService.getComments(boardId, sideId, cardId, userDetails.getUser());
+            @PathVariable Long boardId, @PathVariable Long sideId, @PathVariable Long cardId) {
+        CommentListResponseDto responseDto = commentService.getComments(boardId, sideId, cardId);
         return ResponseEntity.ok().body(responseDto);
     }
 
