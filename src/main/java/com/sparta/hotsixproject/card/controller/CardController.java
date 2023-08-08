@@ -58,6 +58,19 @@ public class CardController {
         return cardService.updateColor(boardId, sideId, cardId, requestDto.getColor());
     }
 
+    // 카드 마감 기한 설정 및 수정
+    @PutMapping("/{boardId}/sides/{sideId}/cards/{cardId}/due")
+    public ResponseEntity<CardResponseDto> updateDue(@PathVariable Long boardId, @PathVariable Long sideId, @PathVariable Long cardId,
+                                                      @RequestBody DueRequestDto requestDto) {
+        return cardService.updateDue(boardId, sideId, cardId, requestDto);
+    }
+
+    // 카드 마감 기한 삭제
+    @PutMapping("/{boardId}/sides/{sideId}/cards/{cardId}/due-removal")
+    public ResponseEntity<CardResponseDto> updateDue(@PathVariable Long boardId, @PathVariable Long sideId, @PathVariable Long cardId) {
+        return cardService.updateDueRemoval(boardId, sideId, cardId);
+    }
+
     // 카드 작업자 추가
 //    @PutMapping("/{boardId}/sides/{sideId}/cards/{cardId}/worker")
 //    public ResponseEntity<CardResponseDto> addWorker(@PathVariable Long boardId, @PathVariable Long sideId, @PathVariable Long cardId) {

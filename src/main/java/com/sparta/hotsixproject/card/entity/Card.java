@@ -14,6 +14,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,6 +38,9 @@ public class Card extends TimeStamped {
     @Column
     private int position;
 
+    @Column
+    private LocalDateTime due;
+
     @OneToMany(mappedBy = "card", orphanRemoval = true)
     private List<CardLabel> cardLabelList = new ArrayList<>();
 
@@ -44,7 +48,7 @@ public class Card extends TimeStamped {
     @OneToMany(mappedBy = "card", orphanRemoval = true)
     private List<Attachment> attachmentList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "comment", orphanRemoval = true)
+    @OneToMany(mappedBy = "card", orphanRemoval = true)
     private List<Comment> commentList = new ArrayList<>();
 
     @ManyToOne
@@ -72,6 +76,14 @@ public class Card extends TimeStamped {
 
     public void updateColor(String color) {
         this.color = color;
+    }
+
+    public void updateDue(LocalDateTime due) {
+        this.due = due;
+    }
+
+    public void deleteDue() {
+        this.due = null;
     }
 
     public void moveCard(Side side, int position) {
