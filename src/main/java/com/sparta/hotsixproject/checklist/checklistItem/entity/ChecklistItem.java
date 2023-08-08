@@ -22,7 +22,7 @@ public class ChecklistItem {
     private Checklist checklist;
 
     @Column(name = "checked")
-    private boolean checked;
+    private Boolean checked;
 
     @Column(name = "content", nullable = false)
     private String content;
@@ -30,6 +30,7 @@ public class ChecklistItem {
     public ChecklistItem(Checklist checklist, ChecklistItemRequestDto requestDto) {
         this.checklist = checklist;
         this.content = requestDto.getContent();
+        this.checked = false;
     }
 
     public void updateChecked() {
