@@ -1,15 +1,16 @@
 package com.sparta.hotsixproject.common.security;
 
+
 import com.sparta.hotsixproject.user.UserRoleEnum;
+import com.sparta.hotsixproject.user.entity.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import com.sparta.hotsixproject.user.entity.User;
+
 import java.util.ArrayList;
 import java.util.Collection;
 
 public class UserDetailsImpl implements UserDetails {
-
     private final User user;
 
     public UserDetailsImpl(User user) {
@@ -28,10 +29,6 @@ public class UserDetailsImpl implements UserDetails {
     @Override
     public String getUsername() {
         return user.getNickname();
-    }
-
-    public String getRole(){
-        return user.getRole().toString();
     }
 
     @Override
