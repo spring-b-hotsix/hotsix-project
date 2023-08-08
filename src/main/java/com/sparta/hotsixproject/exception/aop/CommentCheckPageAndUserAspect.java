@@ -5,6 +5,7 @@ import com.sparta.hotsixproject.card.entity.Card;
 import com.sparta.hotsixproject.comment.dto.CommentRequestDto;
 import com.sparta.hotsixproject.comment.entity.Comment;
 import com.sparta.hotsixproject.comment.service.CommentServiceImpl;
+import com.sparta.hotsixproject.exception.NotFoundException;
 import com.sparta.hotsixproject.exception.UnauthorizedException;
 import com.sparta.hotsixproject.side.entity.Side;
 import com.sparta.hotsixproject.user.entity.User;
@@ -28,27 +29,27 @@ public class CommentCheckPageAndUserAspect {
 	public void commentCheckPage(Long boardId, Long sideId, Long cardId,
 								 CommentRequestDto requestDto, User user) {
 		cardCheck(boardId, sideId, cardId);
-		userCheck(cardId, user);
+//		userCheck(cardId, user);
 	}
 
 	@Before("@annotation(com.sparta.hotsixproject.exception.annotation.CommentCheckPageAndUser) && args(boardId, sideId, cardId, user)")
 	public void commentCheckPage(Long boardId, Long sideId, Long cardId, User user) {
 		cardCheck(boardId, sideId, cardId);
-		userCheck(cardId, user);
+//		userCheck(cardId, user);
 	}
 
 	@Before("@annotation(com.sparta.hotsixproject.exception.annotation.CommentCheckPageAndUser) && args(boardId, sideId, cardId, commentId, requestDto, user)")
 	public void commentCheckPage(Long boardId, Long sideId, Long cardId,
 								 Long commentId, CommentRequestDto requestDto, User user) {
 		commentCheck(boardId, sideId, cardId, commentId);
-		userCheck(cardId, user);
+//		userCheck(cardId, user);
 	}
 
 	@Before("@annotation(com.sparta.hotsixproject.exception.annotation.CommentCheckPageAndUser) && args(boardId, sideId, cardId, commentId, requestDto, user)")
 	public void commentCheckPage(Long boardId, Long sideId, Long cardId,
 								 Long commentId, User user) {
 		commentCheck(boardId, sideId, cardId, commentId);
-		userCheck(cardId, user);
+//		userCheck(cardId, user);
 	}
 
 

@@ -1,6 +1,7 @@
 package com.sparta.hotsixproject.comment.service;
 
 import com.sparta.hotsixproject.card.entity.Card;
+import com.sparta.hotsixproject.card.repository.CardRepository;
 import com.sparta.hotsixproject.comment.dto.CommentListResponseDto;
 import com.sparta.hotsixproject.comment.dto.CommentRequestDto;
 import com.sparta.hotsixproject.comment.dto.CommentResponseDto;
