@@ -74,7 +74,7 @@ public class BoardController {
         return ResponseEntity.status(HttpStatus.OK).body(boardService.deleteBoard(boardId, userDetails.getUser()));
     }
 
-    @PostMapping("/boards/{boardId}/member")
+    @PostMapping("/boards/{boardId}/members")
     public ResponseEntity<ApiResponseDto> inviteBoard(@PathVariable Long boardId, @RequestBody InviteBoardRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return ResponseEntity.status(HttpStatus.CREATED).body(boardService.inviteBoard(boardId,requestDto.getEmail(),userDetails.getUser()));
     }
