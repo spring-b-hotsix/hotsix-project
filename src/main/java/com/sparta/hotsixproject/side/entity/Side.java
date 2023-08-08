@@ -1,13 +1,17 @@
 package com.sparta.hotsixproject.side.entity;
 
 import com.sparta.hotsixproject.board.entity.Board;
+import com.sparta.hotsixproject.card.entity.Card;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Getter
-@Table
+@Table(name = "side")
 @NoArgsConstructor
 public class Side {
     @Id
@@ -15,15 +19,18 @@ public class Side {
     private Long id;
     @Column(nullable = false)
     private String name;
-    private Long order;
+    private int position;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "boardId")
+    @JoinColumn(name = "board_id", nullable = false)
     private Board board;
 
+    @OneToMany(mappedBy = "side", orphanRemoval = true)
+    private List<Card> cardList = new ArrayList<>();
 
-    public Side(String name, Long order) {
+    public Side(String name, int position, Board board) {
         this.name = name;
-        this.order = order;
+        this.position = position;
+        this.board = board;
     }
 }

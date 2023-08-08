@@ -9,13 +9,13 @@ import lombok.NoArgsConstructor;
 public class SideResponseDto {
     private Long id;
     private String name;
-    private Long order;
+    private int position;
     private Long boardId;
 
     public SideResponseDto(Side side) {
         this.id = side.getId();
         this.name = side.getName();
-        this.order = side.getOrder();
+        this.position = side.getPosition();
         this.boardId = side.getBoard().getId();
     }
 }

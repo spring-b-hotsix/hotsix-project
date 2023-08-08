@@ -34,7 +34,7 @@ public interface SideCustomService{
      * @param requestDto
      * @return
      */
-    SideResponseDto updateSideOrder(Long boardId, Long sideId, SideMoveDto requestDto);
+    SideResponseDto moveSide(Long boardId, Long sideId, SideMoveDto requestDto);
 
     /**
      * @param boardId
