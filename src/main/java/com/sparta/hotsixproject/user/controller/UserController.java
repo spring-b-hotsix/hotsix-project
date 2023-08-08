@@ -1,6 +1,6 @@
 package com.sparta.hotsixproject.user.controller;
 
-import com.sparta.hotsixproject.common.dto.ApiResponseDto;
+import com.sparta.hotsixproject.common.advice.ApiResponseDto;
 import com.sparta.hotsixproject.common.security.UserDetailsImpl;
 import com.sparta.hotsixproject.user.dto.*;
 import com.sparta.hotsixproject.user.service.UserService;
@@ -48,7 +48,7 @@ public class UserController {
     }
 
     @PostMapping("/signup")
-    public String signup(@Valid @RequestBody AuthRequestDto requestDto, BindingResult bindingResult) {
+    public String signup(@Valid @RequestBody LoginRequestDto requestDto, BindingResult bindingResult) {
         // Validation 예외처리
         List<FieldError> fieldErrors = bindingResult.getFieldErrors();
         if (fieldErrors.size() > 0) {
@@ -68,21 +68,21 @@ public class UserController {
     @PutMapping("/{userId}/nickname")
     public ResponseEntity<ApiResponseDto> updateNickname(@PathVariable Long userId, @RequestBody UpdateNicknameRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         userService.updateNicknmae(userId, requestDto, userDetails.getUser());
-        return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "닉네임 변경이 완료되었습니다."));
+        return ResponseEntity.ok().body(new ApiResponseDto( "닉네임 변경이 완료되었습니다.",HttpStatus.OK.value()));
     }
 
     @ResponseBody
     @PutMapping("/{userId}/password")
     public ResponseEntity<ApiResponseDto> updatePassword(@PathVariable Long userId, @RequestBody UpdatePasswordRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         userService.updatePassword(userId, requestDto, userDetails.getUser());
-        return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "비밀번호 변경이 완료되었습니다."));
+        return ResponseEntity.ok().body(new ApiResponseDto( "비밀번호 변경이 완료되었습니다.",HttpStatus.OK.value()));
     }
 
     @DeleteMapping("/{userId}/sign-out")
     public ResponseEntity<ApiResponseDto> deleteUser(@PathVariable Long userId, @RequestBody DeleteUserRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         userService.deleteUser(userId,requestDto,userDetails.getUser());
-        return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "유저가 탈퇴 되었습니다."));
+        return ResponseEntity.ok().body(new ApiResponseDto( "유저가 탈퇴 되었습니다.",HttpStatus.OK.value()));
 
     }
 }

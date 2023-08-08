@@ -21,7 +21,7 @@ public class UserService {
     private final MessageSource messageSource;
 
     @Transactional
-    public void signup(AuthRequestDto requestDto) {
+    public void signup(LoginRequestDto requestDto) {
         String nickname = requestDto.getNickname();
         String encodePassword = passwordEncoder.encode(requestDto.getPassword()); // 패스워드 평문 암호화
         String email = requestDto.getEmail();

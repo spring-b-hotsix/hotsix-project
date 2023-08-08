@@ -33,37 +33,35 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        String token = jwtUtil.resolveToken(request);
 
-        String tokenValue = jwtUtil.getJwtFromHeader(req);
-
-        if(tokenValue  != null) {
-            if(!jwtUtil.validateToken(tokenValue)){
+        if(token != null) {
+            if(!jwtUtil.validateToken(token)){
                 ApiResponseDto responseDto = new ApiResponseDto("토큰이 유효하지 않습니다.", HttpStatus.BAD_REQUEST.value());
-                res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                res.setContentType("application/json; charset=UTF-8");
-                res.getWriter().write(objectMapper.writeValueAsString(responseDto));
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                response.setContentType("application/json; charset=UTF-8");
+                response.getWriter().write(objectMapper.writeValueAsString(responseDto));
                 return;
             }
-            Claims info = jwtUtil.getUserInfoFromToken(tokenValue);
+            Claims info = jwtUtil.getUserInfoFromToken(token);
             setAuthentication(info.getSubject());
         }
 
-        filterChain.doFilter(req, res);
+        filterChain.doFilter(request, response);
     }
 
     // 인증 처리
-    public void setAuthentication(String nickname) {
+    public void setAuthentication(String username) {
         SecurityContext context = SecurityContextHolder.createEmptyContext();
-        Authentication authentication = createAuthentication(nickname);
+        Authentication authentication = createAuthentication(username);
         context.setAuthentication(authentication);
-
         SecurityContextHolder.setContext(context);
     }
 
     // 인증 객체 생성
-    private Authentication createAuthentication(String nickname) {
-        UserDetails userDetails = userDetailsService.loadUserByUsername(nickname);
+    private Authentication createAuthentication(String username) {
+        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
         return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
     }
 }

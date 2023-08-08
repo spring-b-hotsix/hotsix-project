@@ -4,9 +4,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.hotsixproject.common.advice.ApiResponseDto;
 import com.sparta.hotsixproject.common.jwt.JwtUtil;
 import com.sparta.hotsixproject.user.UserRoleEnum;
-import com.sparta.hotsixproject.user.dto.AuthRequestDto;
+import com.sparta.hotsixproject.user.dto.LoginRequestDto;
 import com.sparta.hotsixproject.user.repository.UserRepository;
 import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -32,7 +33,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         log.info("로그인 시도");
         try {
-            AuthRequestDto requestDto = new ObjectMapper().readValue(request.getInputStream(), AuthRequestDto.class);
+            LoginRequestDto requestDto = new ObjectMapper().readValue(request.getInputStream(), LoginRequestDto.class);
             return getAuthenticationManager().authenticate(
                     new UsernamePasswordAuthenticationToken(
                             requestDto.getNickname(),
@@ -47,23 +48,23 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     }
 
     @Override
-    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException {
+    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
+        log.info("로그인성공");
         String username = ((UserDetailsImpl) authResult.getPrincipal()).getUsername();
-        String email = ((UserDetailsImpl) authResult.getPrincipal()).getUser().getEmail();
         UserRoleEnum role = ((UserDetailsImpl) authResult.getPrincipal()).getUser().getRole();
-        ApiResponseDto apiResponseDto = new ApiResponseDto("로그인 되었습니다", HttpStatus.OK.value());
 
-        String token = jwtUtil.createToken(username,role, email);
+        String token = jwtUtil.createToken(username, role);
         response.addHeader(JwtUtil.AUTHORIZATION_HEADER, token);
+        ApiResponseDto apiResponseDto = new ApiResponseDto();
+        apiResponseDto.setMsg("로그인 성공");
+        apiResponseDto.setStatusCode(HttpStatus.OK.value());
         response.setStatus(HttpStatus.OK.value());
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         String json = new ObjectMapper().writeValueAsString(apiResponseDto);
         response.getWriter().write(json);
 
-        log.info("로그인 성공");
     }
-
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException {
         log.info("로그인실패");
