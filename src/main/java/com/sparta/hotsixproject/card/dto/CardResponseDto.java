@@ -1,6 +1,8 @@
 package com.sparta.hotsixproject.card.dto;
 
 import com.sparta.hotsixproject.card.entity.Card;
+import com.sparta.hotsixproject.user.dto.UserInfoDto;
+import com.sparta.hotsixproject.user.dto.UserInfoResponseDto;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
@@ -15,8 +17,7 @@ public class CardResponseDto {
     private int position;
     private LocalDateTime due;
     private boolean overdue;
-//    private LocalDateTime createdAt;
-//    private LocalDateTime modifiedAt;
+    private List<UserInfoResponseDto> userList;
 
     public CardResponseDto(Card card) {
         this.id = card.getId();
@@ -26,5 +27,6 @@ public class CardResponseDto {
         this.position = card.getPosition();
         this.due = card.getDue();
         this.overdue = due != null && due.isBefore(LocalDateTime.now());
+        this.userList = card.getCardUserList().stream().map((cardUser) -> new UserInfoResponseDto(cardUser.getUser())).toList();
     }
 }

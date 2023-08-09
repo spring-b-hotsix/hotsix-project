@@ -37,6 +37,12 @@ public class CardController {
         return cardService.getCards(boardId, sideId);
     }
 
+    // 카드 작업자 추가
+    @PostMapping("/{boardId}/sides/{sideId}/cards/{cardId}/worker")
+    public ResponseEntity<CardResponseDto> addWorker(@PathVariable Long boardId, @PathVariable Long sideId, @PathVariable Long cardId, @RequestBody InviteCardRequestDto requestDto) {
+        return cardService.addWorker(boardId, sideId, cardId, requestDto.getEmail());
+    }
+
     // 카드 이름 수정
     @PutMapping("/{boardId}/sides/{sideId}/cards/{cardId}/name")
     public ResponseEntity<CardResponseDto> updateName(@PathVariable Long boardId, @PathVariable Long sideId, @PathVariable Long cardId,
@@ -71,14 +77,8 @@ public class CardController {
         return cardService.updateDueRemoval(boardId, sideId, cardId);
     }
 
-    // 카드 작업자 추가
-//    @PutMapping("/{boardId}/sides/{sideId}/cards/{cardId}/worker")
-//    public ResponseEntity<CardResponseDto> addWorker(@PathVariable Long boardId, @PathVariable Long sideId, @PathVariable Long cardId) {
-//        return cardService.addWorker(boardId, sideId, cardId);
-//    }
-
     // 카드 이동
-    @PutMapping("/{boardId}/sides/{sideId}/cards/{cardId}/move")
+    @PutMapping("/{boardId}/sides/{sideId}/cards/{cardId}/position")
     public ResponseEntity<CardResponseDto> moveCard(@PathVariable Long boardId, @PathVariable Long sideId, @PathVariable Long cardId,
                                                     @RequestBody MoveRequestDto requestDto ) {
         return cardService.moveCard(boardId, sideId, cardId, requestDto);

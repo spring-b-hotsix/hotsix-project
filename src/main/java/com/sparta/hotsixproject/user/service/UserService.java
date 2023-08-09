@@ -86,7 +86,7 @@ public class UserService {
 
             );}
 
-        newuser.updateNicknmae(requestDto.getNickname());
+        newuser.updateNickname(requestDto.getNickname());
 
     }
     @Transactional

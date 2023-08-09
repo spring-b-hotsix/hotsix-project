@@ -2,6 +2,7 @@ package com.sparta.hotsixproject.board.service;
 
 import com.sparta.hotsixproject.board.dto.BoardRequestDto;
 import com.sparta.hotsixproject.board.dto.BoardResponseDto;
+import com.sparta.hotsixproject.board.dto.MemberResponseDto;
 import com.sparta.hotsixproject.common.advice.ApiResponseDto;
 import com.sparta.hotsixproject.user.entity.User;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,4 +25,7 @@ public interface BoardService {
     @Transactional
     ApiResponseDto deleteBoard(Long id, User user);
     ApiResponseDto inviteBoard(Long id, String email,User user);
+
+    @Transactional(readOnly = true)
+    List<MemberResponseDto> getMembers(Long boardId);
 }
