@@ -156,6 +156,7 @@
 <script>
 
     $(document).ready(function() {
+        const auth = getToken();
         // "New board" 버튼 클릭 시 팝업 창 열기
         $('#add-board-btn').on('click', function() {
             $('#popup-container').addClass('active');
@@ -166,6 +167,17 @@
             $('#popup-container').removeClass('active');
         });
     });
+
+    // 쿠키에서 인증 토큰 가져오기
+    function getToken() {
+        let auth = Cookies.get('Authorization');
+
+        if (auth === undefined) {
+            return '';
+        }
+        return auth;
+    }
+
     // POST 요청 처리
     $('#ok-btn').on('click', function (event) {
         event.preventDefault(); // 기본 동작 중단

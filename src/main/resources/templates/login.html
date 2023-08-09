@@ -60,18 +60,10 @@
       data: JSON.stringify({nickname: nickname, password: password}),
     })
             .done(function (res, status, xhr) {
-              const token = xhr.getResponseHeader('Authorization');
-
-              Cookies.set('Authorization', token, {path: '/'})
-
-              $.ajaxPrefilter(function (options, originalOptions, jqXHR) {
-                jqXHR.setRequestHeader('Authorization', token);
-              });
-
               window.location.href = host;
             })
-            .fail(function (jqXHR, textStatus) {
-              alert("Login Fail");
+            .fail(function (xhr, textStatus, errorThrown) {
+              console.log('statusCode: ' + xhr.status);
               window.location.href = host + '/users/login-page?error'
             });
   }
