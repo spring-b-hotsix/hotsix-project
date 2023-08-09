@@ -13,6 +13,7 @@ import com.sparta.hotsixproject.card.repository.CardRepository;
 import com.sparta.hotsixproject.carduser.entity.CardUser;
 import com.sparta.hotsixproject.carduser.repository.CardUserRepository;
 import com.sparta.hotsixproject.common.advice.ApiResponseDto;
+import com.sparta.hotsixproject.exception.UnauthorizedException;
 import com.sparta.hotsixproject.side.entity.Side;
 import com.sparta.hotsixproject.side.repository.SideRepository;
 import com.sparta.hotsixproject.user.entity.User;
@@ -150,8 +151,7 @@ public class CardService {
     public ResponseEntity<ApiResponseDto> deleteCard(Long boardId, Long sideId, Long cardId, User user) {
         Card card = cardRepository.findBySide_Board_IdAndSide_IdAndId(boardId, sideId, cardId);
         if (!card.getUser().equals(user)) {
-            ApiResponseDto apiResponseDto = new ApiResponseDto("삭제 권한 없음", HttpStatus.UNAUTHORIZED.value());
-            return new ResponseEntity<>(apiResponseDto, HttpStatus.UNAUTHORIZED);
+            throw new UnauthorizedException("삭제 권한 없음");
         }
         cardRepository.delete(card);
         ApiResponseDto apiResponseDto = new ApiResponseDto("삭제 완료", HttpStatus.OK.value());
