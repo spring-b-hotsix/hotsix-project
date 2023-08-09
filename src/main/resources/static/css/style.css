@@ -370,7 +370,6 @@ button {
 }
 
 #login-title {
-    width: 303px;
     height: 32px;
     /*margin: 56px auto auto auto;*/
     flex-grow: 0;
@@ -387,8 +386,8 @@ button {
 
 #login-kakao-btn {
     border-width: 0;
-    margin: 96px 0 8px;
-    width: 393px;
+    margin: 0 0 8px;
+    width: 180px;
     height: 62px;
     flex-grow: 0;
     display: flex;
@@ -407,6 +406,36 @@ button {
     font-stretch: normal;
     font-style: normal;
     color: #414141;
+}
+#login-google-btn {
+    border-width: 0;
+    margin: 0 0 8px;
+    width: 180px;
+    height: 62px;
+    flex-grow: 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    /*margin: 0 0 8px;*/
+    padding: 11px 12px;
+    border-radius: 5px;
+    background-color: dodgerblue;
+
+    font-family: SpoqaHanSansNeo;
+    font-size: 20px;
+    font-weight: bold;
+    font-stretch: normal;
+    font-style: normal;
+    color: #414141;
+}
+
+.button-container {
+    display: flex;
+    justify-content: center; /* 가로 정렬 */
+    gap: 10px; /* 버튼 사이 간격 조절 */
+    margin:15px;
 }
 
 #login-id-btn {

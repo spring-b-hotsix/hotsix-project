@@ -41,6 +41,9 @@ public class User {
     @Column
     private Long kakaoId;
 
+    @Column
+    private Long googleId;
+
     public User(String nickname, String password, String email, UserRoleEnum role) {
         this.nickname=nickname;
         this.password=password;
@@ -48,12 +51,13 @@ public class User {
         this.role=role;
     }
 
-    public User(String nickname, String encodedPassword, String email, UserRoleEnum userRoleEnum, Long kakaoId) {
+    public User(String nickname, String encodedPassword, String email, UserRoleEnum userRoleEnum, Long kakaoId,Long googleId) {
     this.nickname=nickname;
     this.password=encodedPassword;
     this.email=email;
     this.role=userRoleEnum;
     this.kakaoId=kakaoId;
+    this.googleId=googleId;
     }
 
     public void updateNicknmae(String nickname) {

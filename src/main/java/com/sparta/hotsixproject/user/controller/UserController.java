@@ -5,6 +5,7 @@ import com.sparta.hotsixproject.common.advice.ApiResponseDto;
 import com.sparta.hotsixproject.common.jwt.JwtUtil;
 import com.sparta.hotsixproject.common.security.UserDetailsImpl;
 import com.sparta.hotsixproject.user.dto.*;
+import com.sparta.hotsixproject.user.service.GoolgeService;
 import com.sparta.hotsixproject.user.service.KakaoService;
 import com.sparta.hotsixproject.user.service.UserService;
 import jakarta.servlet.http.Cookie;
@@ -30,6 +31,7 @@ public class UserController {
     private final UserService userService;
     private final MessageSource messageSource;
     private final KakaoService kakaoService;
+    private final GoolgeService googleLogin;
 
     @GetMapping("/login-page")
     public String loginPage() {
@@ -74,29 +76,39 @@ public class UserController {
     @PutMapping("/{userId}/nickname")
     public ResponseEntity<ApiResponseDto> updateNickname(@PathVariable Long userId, @RequestBody UpdateNicknameRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         userService.updateNicknmae(userId, requestDto, userDetails.getUser());
-        return ResponseEntity.ok().body(new ApiResponseDto( "닉네임 변경이 완료되었습니다.",HttpStatus.OK.value()));
+        return ResponseEntity.ok().body(new ApiResponseDto("닉네임 변경이 완료되었습니다.", HttpStatus.OK.value()));
     }
 
     @ResponseBody
     @PutMapping("/{userId}/password")
     public ResponseEntity<ApiResponseDto> updatePassword(@PathVariable Long userId, @RequestBody UpdatePasswordRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         userService.updatePassword(userId, requestDto, userDetails.getUser());
-        return ResponseEntity.ok().body(new ApiResponseDto( "비밀번호 변경이 완료되었습니다.",HttpStatus.OK.value()));
+        return ResponseEntity.ok().body(new ApiResponseDto("비밀번호 변경이 완료되었습니다.", HttpStatus.OK.value()));
     }
 
     @DeleteMapping("/{userId}/sign-out")
     public ResponseEntity<ApiResponseDto> deleteUser(@PathVariable Long userId, @RequestBody DeleteUserRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-        userService.deleteUser(userId,requestDto,userDetails.getUser());
-        return ResponseEntity.ok().body(new ApiResponseDto( "유저가 탈퇴 되었습니다.",HttpStatus.OK.value()));
+        userService.deleteUser(userId, requestDto, userDetails.getUser());
+        return ResponseEntity.ok().body(new ApiResponseDto("유저가 탈퇴 되었습니다.", HttpStatus.OK.value()));
 
     }
 
     //인가 코드 받아오기 위한 controller
-    @ResponseBody
     @GetMapping("/login/kakao/callback")
     public String kakaoLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
         String token = kakaoService.kakaoLogin(code);
+
+        Cookie cookie = new Cookie(JwtUtil.AUTHORIZATION_HEADER, token.substring(7));
+        cookie.setPath("/");
+        response.addCookie(cookie);
+
+        return "redirect:/";
+    }
+
+    @GetMapping("/login/google/callback")
+    public String googleLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
+        String token = googleLogin.googleLogin(code);
 
         Cookie cookie = new Cookie(JwtUtil.AUTHORIZATION_HEADER, token.substring(7));
         cookie.setPath("/");
