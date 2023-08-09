@@ -1,10 +1,117 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
-    <script src="/js/basic.js"></script>
+    <meta charset="UTF-8">
+    <title>Hotsix::메인페이지</title>
+    <!--  jquery  -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- 팔레트 -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/spectrum-colorpicker2/dist/spectrum.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/spectrum-colorpicker2/dist/spectrum.min.js"></script>
 </head>
+<body>
+<div>
+    <span th:text="${nickname}"></span>님, 환영합니다.
+</div>
+<div id="my-board-form" class="board-form">
+    <div class="board-list">
+        <div th:each="myboard : ${myboards}" class="board-item">
+            <div class="section">
+                <div class="board-content">
+                    <span th:text="${myboard.name}"></span>
+                    <span th:text="${myboard.description}"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <button id="add-board-btn">New board</button>
+    <div>
+        <div>Board title</div>
+        <input class="title-input" type="text" name="content" placeholder="제목을 입력하세요" required>
+        <div>Board Description</div>
+        <input class="description-input" type="text" name="content" placeholder="설명을 입력하세요">
+        <div>RGB Color Picker</div>
+        <input type="text" id="color"/>
 
-메인페이지 입니다.
+    </div>
+</div>
+<div id="guest-board-form" class="board-form">
+    <div class="board-list">
+        <div th:each="guestboard : ${guestboards}" class="board-item">
+            <div class="section">
+                <div class="board-content">
+                    <span th:text="${guestboard.name}"></span>
+                    <span th:text="${guestboard.description}"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+    // POST 요청 처리
+    $('#complete-add-board-btn').on('click', function (event) {
+        event.preventDefault(); // 기본 동작 중단
+
+        const name = $('#board-name').val(); // 입력 데이터 가져오기
+        const description = $('#board-description').val(); // 입력 데이터 가져오기
+        // const image = document.getElementById('imagefile').files[0]; // 입력 사진 가져오기
+
+        let formData = new FormData();
+        formData.append("name", name);
+        formData.append("description", description);
+
+        $.ajax({
+            type: 'POST',
+            url: '/boards',
+            // data: JSON.stringify({ data: inputData }),
+            // contentType: 'application/json',
+            data: formData,
+            processData: false,
+            contentType: false,
+            // enctype: 'multipart/form-data', // 이미지 업로드를 위해 추가
+            success: function (response) {
+                console.log('POST 요청 성공:', response);
+                // 여기에서 POST 요청에 대한 응답 처리
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.error('POST 요청 실패:', errorThrown);
+                // 여기에서 POST 요청 실패 처리
+            }
+        });
+
+        alert(data['추가 완료!']);
+        // $('#input-post').val(''); // 작성 완료 시 내용 비우기
+    });
+
+    $("#color").spectrum({
+        //allowEmpty:true, //색없음 가능 여부 default - false
+        showButtons: true, //하단 close, choose 버튼
+        preferredFormat: "hex",//색 포맷 형식 지정
+        color: "#f00", //초기 색상
+        showPalette: true,//왼쪽 색 파레트 사용여부
+        palette: [
+            ['#000000', '#ffffff'], // 한 줄에 두 가지 색상씩 두줄로 표시됨
+            ['#00ff00', '#ff0000']
+        ], // 왼쪽 색 파레트 초기색
+        showInitial: true, //현재 색 보여줄지 여부
+        showInput: true, // 문자로 입력 가능하도록 input추가
+        showAlpha: true, // 투명도 사용 여부
+        maxSelectionSize: 3, //이전 선택한 색 최대 몇 개까지 보여줄 지 갯수
+        show: function (color) {//파레트 보여줄 때 이벤트
+        },
+        change: function (color) {//색 선택 시 이벤트
+            color.toHexString()
+        },
+        hide: function(color){ // 파레트 닫을 때 이벤트
+        },
+
+    });
+    $("#color").spectrum("show");//파레트 열기
+    $("#color").spectrum("hide");//파레트 닫기
+    $("#color").spectrum("toggle");//파레트 열려있으면 닫고, 닫혀있으면 열기
+</script>
+
+
+</body>
 </html>
