@@ -14,6 +14,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.sparta.hotsixproject.comment.CommentStatus.MODIFIED;
+
 @Service
 @RequiredArgsConstructor
 public class CommentServiceImpl implements CommentService {
@@ -48,6 +50,7 @@ public class CommentServiceImpl implements CommentService {
     public CommentResponseDto updateComment (Long boardId, Long sideId, Long cardId,
                                              Long commentId, CommentRequestDto requestDto, User user) {
         findComment(commentId).update(requestDto);
+        findComment(commentId).updateStatus(MODIFIED);
         return new CommentResponseDto(findComment(commentId));
     }
 
