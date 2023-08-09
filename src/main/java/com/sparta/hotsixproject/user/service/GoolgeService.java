@@ -45,7 +45,7 @@ public class GoolgeService {
         //String accessToken = getToken(code);
         String infoToken = getToken(code);
 
-        // 2. 토큰으로 카카오 API 호출 : "info_token"으로 "구글 사용자 정보" 가져오기
+        // 2. 토큰으로 google API 호출 : "info_token"으로 "구글 사용자 정보" 가져오기
         GoogleUserInfoDto googleUserInfo = getGoogleoUserInfo(infoToken);
 
         // 3. 필요시에 회원가입
@@ -86,18 +86,17 @@ public class GoolgeService {
 
         Base64.Decoder decoder = Base64.getUrlDecoder();
 
-        String header = new String(decoder.decode(chunks[0]));
         String payload = new String(decoder.decode(chunks[1]));
 
         log.info("decoded string: " + payload);
 
         JsonNode jsonNode = new ObjectMapper().readTree(payload);
 
-        String id= jsonNode.get("sub").asText();
-        String email= jsonNode.get("email").asText();
-        String name= jsonNode.get("name").asText();
+        String id = jsonNode.get("sub").asText();
+        String email = jsonNode.get("email").asText();
+        String name = jsonNode.get("name").asText();
 
-        return new GoogleUserInfoDto(id,name,email);
+        return new GoogleUserInfoDto(id, name, email);
     }
 
     private User registerGoogleUserIfNeeded(GoogleUserInfoDto googleUserInfo) {
@@ -106,12 +105,12 @@ public class GoolgeService {
         User googleUser = userRepository.findByGoogleId(googleId).orElse(null);
 
         if (googleUser == null) {
-            // 카카오 사용자 email 동일한 email 가진 회원이 있는지 확인
+            // google 사용자 email 동일한 email 가진 회원이 있는지 확인
             String googleEmail = googleUserInfo.getEmail();
             User sameEmailUser = userRepository.findByEmail(googleEmail).orElse(null);
             if (sameEmailUser != null) {
                 googleUser = sameEmailUser;
-                // 기존 회원정보에 카카오 Id 추가
+                // 기존 회원정보에 google Id 추가
                 googleUser = googleUser.googleIdUpdate(googleId);
             } else {
                 // 신규 회원가입
@@ -119,7 +118,7 @@ public class GoolgeService {
                 String password = UUID.randomUUID().toString();
                 String encodedPassword = passwordEncoder.encode(password);
 
-                // email: kakao email
+                // email: google email
                 String email = googleUserInfo.getEmail();
 
                 googleUser = new User(googleUserInfo.getNickname(), encodedPassword, email, UserRoleEnum.USER, null, googleId);

@@ -41,7 +41,7 @@ public class KakaoService {
         KakaoUserInfoDto kakaoUserInfo = getKakaoUserInfo(accessToken);
 
         // 3. 필요시에 회원가입
-        User kakaoUser=registerKakaoUserIfNeeded(kakaoUserInfo);
+        User kakaoUser = registerKakaoUserIfNeeded(kakaoUserInfo);
 
         // 4. JWT 토큰 반환
         String createToken = jwtUtil.createToken(kakaoUser.getNickname(), kakaoUser.getRole());
@@ -50,7 +50,7 @@ public class KakaoService {
     }
 
     private String getToken(String code) throws JsonProcessingException {
-        log.info("인가코드: "+code);
+        log.info("인가코드: " + code);
         // 요청 URL 만들기
         URI uri = UriComponentsBuilder
                 .fromUriString("https://kauth.kakao.com")
@@ -70,7 +70,7 @@ public class KakaoService {
         body.add("redirect_uri", "http://localhost:8080/users/login/kakao/callback");
         body.add("code", code);
 
-        log.info("마디"+body);
+        log.info("마디" + body);
         RequestEntity<MultiValueMap<String, String>> requestEntity = RequestEntity
                 .post(uri)
                 .headers(headers)
@@ -88,7 +88,7 @@ public class KakaoService {
     }
 
     private KakaoUserInfoDto getKakaoUserInfo(String accessToken) throws JsonProcessingException {
-        log.info("accessToken: "+accessToken);
+        log.info("accessToken: " + accessToken);
         // 요청 URL 만들기
         URI uri = UriComponentsBuilder
                 .fromUriString("https://kapi.kakao.com")
@@ -146,7 +146,7 @@ public class KakaoService {
                 // email: kakao email
                 String email = kakaoUserInfo.getEmail();
 
-                kakaoUser = new User(kakaoUserInfo.getNickname(), encodedPassword, email, UserRoleEnum.USER, kakaoId,null);
+                kakaoUser = new User(kakaoUserInfo.getNickname(), encodedPassword, email, UserRoleEnum.USER, kakaoId, null);
             }
 
             userRepository.save(kakaoUser);

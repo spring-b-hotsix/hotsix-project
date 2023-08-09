@@ -51,35 +51,36 @@ public class User {
     private String googleId;
 
     public User(String nickname, String password, String email, UserRoleEnum role) {
-        this.nickname=nickname;
-        this.password=password;
-        this.email=email;
-        this.role=role;
+        this.nickname = nickname;
+        this.password = password;
+        this.email = email;
+        this.role = role;
     }
 
-    public User(String nickname, String encodedPassword, String email, UserRoleEnum userRoleEnum, Long kakaoId,String googleId) {
-    this.nickname=nickname;
-    this.password=encodedPassword;
-    this.email=email;
-    this.role=userRoleEnum;
-    this.kakaoId=kakaoId;
-    this.googleId=googleId;
+    public User(String nickname, String encodedPassword, String email, UserRoleEnum userRoleEnum, Long kakaoId, String googleId) {
+        this.nickname = nickname;
+        this.password = encodedPassword;
+        this.email = email;
+        this.role = userRoleEnum;
+        this.kakaoId = kakaoId;
+        this.googleId = googleId;
     }
 
     public void updateNicknmae(String nickname) {
-        this.nickname=nickname;
+        this.nickname = nickname;
     }
 
     public User kakaoIdUpdate(Long kakaoId) {
         this.kakaoId = kakaoId;
         return this;
     }
+
     public User googleIdUpdate(String googleId) {
         this.googleId = googleId;
         return this;
     }
 
     public void updatePassword(String encodePassword) {
-        this.password=encodePassword;
+        this.password = encodePassword;
     }
 }
