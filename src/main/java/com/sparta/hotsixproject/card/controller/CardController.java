@@ -118,7 +118,7 @@ public class CardController {
     }
 
     @PutMapping("/{boardId}/sides/{sideId}/cards/{cardId}/position")
-    @Operation(summary = "카드 이동", description = "@PathVariable을 통해 boardId, sideId, cardId를 받아와, 해당 정보와 일치하는 카드의 position(순서)를 Dto로부터 받아온 position 정보를 사용하여 수정합니다.")
+    @Operation(summary = "카드 이동", description = "@PathVariable을 통해 boardId, sideId, cardId를 받아와, 해당 정보와 일치하는 카드의 position(위치)를 Dto로부터 받아온 position 정보를 사용하여 수정합니다.")
     public ResponseEntity<CardResponseDto> moveCard(
             @Parameter(name = "boardId", description = "선택한 카드가 위치한 board의 id", in = ParameterIn.PATH) @PathVariable Long boardId,
             @Parameter(name = "sideId", description = "선택한 카드가 위치한 side의 id", in = ParameterIn.PATH) @PathVariable Long sideId,
