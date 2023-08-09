@@ -17,15 +17,15 @@ public class ChecklistItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "checklistId", nullable = false)
-    private Checklist checklist;
-
     @Column(name = "checked")
     private Boolean checked;
 
     @Column(name = "content", nullable = false)
     private String content;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "checklistId", nullable = false)
+    private Checklist checklist;
 
     public ChecklistItem(Checklist checklist, ChecklistItemRequestDto requestDto) {
         this.checklist = checklist;
