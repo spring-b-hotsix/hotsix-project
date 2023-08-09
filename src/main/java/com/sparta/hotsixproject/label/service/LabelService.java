@@ -1,5 +1,7 @@
 package com.sparta.hotsixproject.label.service;
 
+import com.sparta.hotsixproject.board.entity.Board;
+import com.sparta.hotsixproject.board.repository.BoardRepository;
 import com.sparta.hotsixproject.card.entity.Card;
 import com.sparta.hotsixproject.card.repository.CardRepository;
 import com.sparta.hotsixproject.cardlabel.entity.CardLabel;
@@ -21,24 +23,90 @@ import java.util.List;
 @RequiredArgsConstructor
 public class LabelService {
 
+    private final LabelRepository labelRepository;
+    private final BoardRepository boardRepository;
     private final CardRepository cardRepository;
     private final CardLabelRepository cardLabelRepository;
-    private final LabelRepository labelRepository;
-    
+
     // 라벨 생성
     @Transactional
-    public ResponseEntity<ApiResponseDto> createLabel(Long boardId, Long sideId, Long cardId, LabelRequestDto requestDto) {
-        Card card = cardRepository.findBySide_Board_IdAndSide_IdAndId(boardId, sideId, cardId);
-        Label label = new Label(requestDto.getTitle(), requestDto.getColor());
-        CardLabel cardLabel = new CardLabel(card, label);
-        cardLabelRepository.save(cardLabel);
+    public ResponseEntity<ApiResponseDto> createLabel(Long boardId, LabelRequestDto requestDto) {
+        Board board = findBoard(boardId);
+        Label label = new Label(board, requestDto.getTitle(), requestDto.getColor());
+        labelRepository.save(label);
 
         ApiResponseDto apiResponseDto = new ApiResponseDto("라벨 생성 완료", HttpStatus.CREATED.value());
         return new ResponseEntity<>(apiResponseDto, HttpStatus.CREATED);
     }
-    
-    // 라벨 전체 조회
-    public List<LabelResponseDto> getLabels(Long boardId, Long sideId, Long cardId) {
-        return labelRepository.findByCardLabelList_Card_Id(cardId).stream().map(LabelResponseDto::new).toList();
+
+    // 해당 보드에 대한 라벨 전체 조회
+    @Transactional(readOnly = true)
+    public List<LabelResponseDto> getLabels(Long boardId) {
+        return labelRepository.findAllByBoard_Id(boardId).stream().map(LabelResponseDto::new).toList();
+    }
+
+    // 라벨 수정
+    @Transactional
+    public ResponseEntity<LabelResponseDto> updateLabel(Long boardId, Long labelId, LabelRequestDto requestDto) {
+        Label label = findLabel(labelId);
+        label.update(requestDto.getTitle(), requestDto.getColor());
+        LabelResponseDto responseDto = new LabelResponseDto(label);
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+    }
+
+    // 라벨 삭제
+    @Transactional
+    public ResponseEntity<ApiResponseDto> deleteLabel(Long boardId, Long labelId) {
+        Label label = findLabel(labelId);
+        labelRepository.delete(label);
+        ApiResponseDto apiResponseDto = new ApiResponseDto("라벨 삭제 완료", HttpStatus.OK.value());
+        return new ResponseEntity<>(apiResponseDto, HttpStatus.OK);
+    }
+
+    // 카드에 라벨 추가
+    @Transactional
+    public ResponseEntity<ApiResponseDto> CreateCardLabel(Long boardId, Long sideId, Long cardId, Long labelId) {
+        Card card = findCard(cardId);
+        Label label = findLabel(labelId);
+        CardLabel cardLabel = new CardLabel(card, label);
+        cardLabelRepository.save(cardLabel);
+        ApiResponseDto apiResponseDto = new ApiResponseDto("카드 내 라벨 추가 완료", HttpStatus.CREATED.value());
+        return new ResponseEntity<>(apiResponseDto, HttpStatus.CREATED);
+    }
+
+    // 카드에 추가된 라벨 전체 조회
+    @Transactional(readOnly = true)
+    public List<LabelResponseDto> getCardLabels(Long cardId) {
+        return cardLabelRepository.findAllByCard_Id(cardId).stream().map(LabelResponseDto::new).toList();
+    }
+
+    // 카드에 라벨 삭제
+    @Transactional
+    public ResponseEntity<ApiResponseDto> deleteCardLabel(Long boardId, Long sideId, Long cardId, Long labelId) {
+        CardLabel cardLabel = cardLabelRepository.findByCard_idAndLabel_id(cardId, labelId);
+        cardLabelRepository.delete(cardLabel);
+        ApiResponseDto apiResponseDto = new ApiResponseDto("카드 내 라벨 삭제 완료", HttpStatus.OK.value());
+        return new ResponseEntity<>(apiResponseDto, HttpStatus.OK);
+    }
+
+    // id를 통해 보드 찾기
+    public Board findBoard(Long id) {
+        return boardRepository.findById(id).orElseThrow(() ->
+                new IllegalArgumentException("존재하지 않는 보드 입니다.")
+        );
+    }
+
+    // id를 통해 카드 찾기
+    public Card findCard(Long id) {
+        return cardRepository.findById(id).orElseThrow(() ->
+                new IllegalArgumentException("존재하지 않는 카드 입니다.")
+        );
+    }
+
+    // id를 통해 라벨 찾기
+    public Label findLabel(Long id) {
+        return labelRepository.findById(id).orElseThrow(() ->
+                new IllegalArgumentException("존재하지 않는 라벨 입니다.")
+        );
     }
 }
