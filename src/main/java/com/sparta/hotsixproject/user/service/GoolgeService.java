@@ -15,10 +15,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import org.springframework.web.client.RestTemplate;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
@@ -32,25 +30,26 @@ public class GoolgeService {
     private final UserRepository userRepository;
     private final RestTemplate restTemplate;
     private final JwtUtil jwtUtil;
-    private final String GOOGLE_TOKEN_URL="https://oauth2.googleapis.com/token";
-    private final String GET_GOOGLE_USER="https://www.googleapis.com/drive/v2/files";
+    private final String GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token";
+    private final String GET_GOOGLE_USER = "https://www.googleapis.com/drive/v2/files";
 
     @Value("${oauth2.google.client-id}")
     private String GOOGLE_CLIENT_ID;
 
     @Value("${oauth2.google.client-secret}")
     private String GOOGLE_CLIENT_SECRET;
-    private String grantType="authorization_code";
+    private String grantType = "authorization_code";
+
     public String googleLogin(String code) throws JsonProcessingException {
         // 1. "인가 코드"로 "액세스 토큰" 요청
         //String accessToken = getToken(code);
-        String infoToken=getToken(code);
+        String infoToken = getToken(code);
 
         // 2. 토큰으로 카카오 API 호출 : "info_token"으로 "구글 사용자 정보" 가져오기
-        GoogleUserInfoDto googleUserInfo =getGoogleoUserInfo(infoToken);
+        GoogleUserInfoDto googleUserInfo = getGoogleoUserInfo(infoToken);
 
         // 3. 필요시에 회원가입
-        User googleUser=registerGoogleUserIfNeeded(googleUserInfo);
+        User googleUser = registerGoogleUserIfNeeded(googleUserInfo);
 
         // 4. JWT 토큰 반환
         String createToken = jwtUtil.createToken(googleUser.getNickname(), googleUser.getRole());
@@ -59,36 +58,45 @@ public class GoolgeService {
     }
 
     private String getToken(String code) throws JsonProcessingException {
-        log.info("인가코드: "+code);
+        log.info("인가코드: " + code);
 
-        Map<String,String> params= new HashMap<>();
+        Map<String, String> params = new HashMap<>();
 
-        params.put("code",code);
-        params.put("client_id",GOOGLE_CLIENT_ID);
-        params.put("client_secret",GOOGLE_CLIENT_SECRET);
-        params.put("redirect_uri","http://localhost:8080/users/login/google/callback");
-        params.put("grant_type",grantType);
+        params.put("code", code);
+        params.put("client_id", GOOGLE_CLIENT_ID);
+        params.put("client_secret", GOOGLE_CLIENT_SECRET);
+        params.put("redirect_uri", "http://localhost:8080/users/login/google/callback");
+        params.put("grant_type", grantType);
 
 
-        ResponseEntity<String> responseEntity=restTemplate.postForEntity(GOOGLE_TOKEN_URL,params,String.class);
+        ResponseEntity<String> responseEntity = restTemplate.postForEntity(GOOGLE_TOKEN_URL, params, String.class);
 
-        if(responseEntity.getStatusCode()== HttpStatus.OK){
+        if (responseEntity.getStatusCode() == HttpStatus.OK) {
             // HTTP 응답 (JSON) -> 액세스 토큰 파싱
             JsonNode jsonNode = new ObjectMapper().readTree(responseEntity.getBody());
-
-           // return jsonNode.get("access_token").asText();
+            log.info("jwt" + jsonNode.get("id_token").asText());
             return jsonNode.get("id_token").asText();
         }
-    return null;
+        return null;
     }
 
-    private GoogleUserInfoDto getGoogleoUserInfo(String infoToken)  {
-        byte[] decodedBytes = Base64.getDecoder().decode(infoToken.replace("+",""));
-        //byte[] decodedBytes= Base64Utils.decodeFromUrlSafeString(infoToken);
-        String decodedStr = new String(decodedBytes, StandardCharsets.UTF_8);
+    private GoogleUserInfoDto getGoogleoUserInfo(String infoToken) throws JsonProcessingException {
 
-        System.out.println("decoded string: " + decodedStr);
-        return new GoogleUserInfoDto();
+        String[] chunks = infoToken.split("\\.");
+
+        Base64.Decoder decoder = Base64.getUrlDecoder();
+
+        String header = new String(decoder.decode(chunks[0]));
+        String payload = new String(decoder.decode(chunks[1]));
+
+        log.info("decoded string: " + payload);
+
+        JsonNode jsonNode = new ObjectMapper().readTree(payload);
+        String email= jsonNode.get("email").asText();
+        String name= jsonNode.get("name").asText();
+        Long id= jsonNode.get("sub").asLong();
+
+        return new GoogleUserInfoDto(id,name,email);
     }
 
     private User registerGoogleUserIfNeeded(GoogleUserInfoDto googleUserInfo) {
@@ -113,7 +121,7 @@ public class GoolgeService {
                 // email: kakao email
                 String email = googleUserInfo.getEmail();
 
-                googleUser = new User(googleUserInfo.getNickname(), encodedPassword, email, UserRoleEnum.USER,null, googleId);
+                googleUser = new User(googleUserInfo.getNickname(), encodedPassword, email, UserRoleEnum.USER, null, googleId);
             }
 
             userRepository.save(googleUser);
