@@ -1,6 +1,5 @@
 package com.sparta.hotsixproject.user.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sparta.hotsixproject.board.entity.Board;
 import com.sparta.hotsixproject.card.entity.Card;
 import com.sparta.hotsixproject.carduser.entity.CardUser;
@@ -42,14 +41,14 @@ public class User {
     @OneToMany(mappedBy = "user", orphanRemoval = true)
     private List<Card> cardList = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user", orphanRemoval = true)
+    private List<CardUser> cardUserList = new ArrayList<>();
+
     @Column
     private Long kakaoId;
 
     @Column
     private Long googleId;
-
-    @OneToMany(mappedBy = "user", orphanRemoval = true)
-    private List<CardUser> cardUserList = new ArrayList<>();
 
     public User(String nickname, String password, String email, UserRoleEnum role) {
         this.nickname=nickname;
