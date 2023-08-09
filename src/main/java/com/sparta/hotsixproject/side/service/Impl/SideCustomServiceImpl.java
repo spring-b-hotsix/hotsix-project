@@ -27,13 +27,11 @@ public class SideCustomServiceImpl implements SideCustomService {
     @Override
     @Transactional
     public SideResponseDto createSide(Long boardId, SideRequestDto requestDto, User user) {
-        Board board = boardRepository.findById(boardId).orElseThrow(
-                () -> new NullPointerException("Board가 존재하지 않습니다. boardId: " + boardId)
-        );
+        Board board = findBoard(boardId);
         checkBoardMember(user, board);
 
         // position => 1024씩 증가
-        int position = (board.getSideList().size() - 1) != 0 ? (board.getSideList().size() - 1) * 1024 : 1024;
+        int position = (board.getSideList().size() != 0) ? (board.getSideList().size() + 1) * 1024 : 1024;
         Side side = new Side(requestDto.getName(), position, board);
         sideRepository.save(side);
         return new SideResponseDto(side);
@@ -42,9 +40,7 @@ public class SideCustomServiceImpl implements SideCustomService {
     @Override
     @Transactional(readOnly = true)
     public List<SideResponseDto> getSides(Long boardId, User user) {
-        Board board = boardRepository.findById(boardId).orElseThrow(
-                () -> new NullPointerException("Board가 존재하지 않습니다. boardId: " + boardId)
-        );
+        Board board = findBoard(boardId);
         checkBoardMember(user, board);
         return sideRepository.findAllByBoardIdOrderBySidePositionAsc(boardId).stream()
                 .map(SideResponseDto::new)
@@ -54,13 +50,9 @@ public class SideCustomServiceImpl implements SideCustomService {
     @Override
     @Transactional
     public SideResponseDto updateSideName(Long boardId, Long sideId, SideRequestDto requestDto, User user) {
-        Board board = boardRepository.findById(boardId).orElseThrow(
-                () -> new NullPointerException("Board가 존재하지 않습니다. boardId: " + boardId)
-        );
+        Board board = findBoard(boardId);
         checkBoardMember(user, board);
-        Side side = sideRepository.findByBoardIdAndSideId(boardId, sideId).orElseThrow(
-                () -> new NullPointerException("Side가 존재하지 않습니다. boardId: " + boardId + " sideId: " + sideId)
-        );
+        Side side = findSide(boardId, sideId);
 
         side.updateSideName(requestDto.getName());
         return new SideResponseDto(side);
@@ -69,20 +61,14 @@ public class SideCustomServiceImpl implements SideCustomService {
     @Override
     @Transactional
     public List<SideResponseDto> moveSide(Long boardId, Long sideId, SideMoveDto requestDto, User user) {
-        Board board = boardRepository.findById(boardId).orElseThrow(
-                () -> new NullPointerException("Board가 존재하지 않습니다. boardId: " + boardId)
-        );
+        Board board = findBoard(boardId);
         checkBoardMember(user, board);
         // 이동시킬 보드
-        Board selectBoard = boardRepository.findById(requestDto.getSelectBoardId()).orElseThrow(
-                () -> new NullPointerException("Board가 존재하지 않습니다. boardId: " + requestDto.getSelectBoardId())
-        );
+        Board selectBoard = findBoard(requestDto.getSelectBoardId());
         checkBoardMember(user, selectBoard);
 
         // 이동시킬 컬럼(사이드)
-        Side currentSide = sideRepository.findByBoardIdAndSideId(boardId, sideId).orElseThrow(
-                () -> new NullPointerException("Side가 존재하지 않습니다. boardId: " + boardId + " sideId: " + sideId)
-        );
+        Side currentSide = findSide(boardId, sideId);
         // selectPosition = 사이드를 이동시킬 위치
         Side selectSide = selectBoard.getSideList().get(requestDto.getSelectIndex());
         int selectPosition = selectSide.getPosition();
@@ -107,10 +93,20 @@ public class SideCustomServiceImpl implements SideCustomService {
     @Override
     @Transactional
     public void deleteSide(Long boardId, Long sideId, User user) {
-        Side side = sideRepository.findByBoardIdAndSideId(boardId, sideId).orElseThrow(
+        Side side = findSide(boardId, sideId);
+        sideRepository.delete(side);
+    }
+
+    private Side findSide(Long boardId, Long sideId) {
+        return sideRepository.findByBoardIdAndSideId(boardId, sideId).orElseThrow(
                 () -> new NullPointerException("Side가 존재하지 않습니다. boardId: " + boardId + " sideId: " + sideId)
         );
-        sideRepository.delete(side);
+    }
+
+    private Board findBoard(Long boardId) {
+        return boardRepository.findById(boardId).orElseThrow(
+                () -> new NullPointerException("Board가 존재하지 않습니다. boardId: " + boardId)
+        );
     }
 
     private void checkBoardMember(User user, Board board) {
