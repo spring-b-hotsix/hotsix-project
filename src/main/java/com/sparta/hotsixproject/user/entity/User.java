@@ -3,6 +3,7 @@ package com.sparta.hotsixproject.user.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sparta.hotsixproject.board.entity.Board;
 import com.sparta.hotsixproject.card.entity.Card;
+import com.sparta.hotsixproject.carduser.entity.CardUser;
 import com.sparta.hotsixproject.user.UserRoleEnum;
 import jakarta.persistence.*;
 import lombok.*;
@@ -13,7 +14,7 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@EqualsAndHashCode(exclude = {"boardList", "cardList"})
+@EqualsAndHashCode(exclude = {"boardList", "cardList", "cardUserList"})
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,6 +39,9 @@ public class User {
     @OneToMany(mappedBy = "user", orphanRemoval = true)
     private List<Card> cardList = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user", orphanRemoval = true)
+    private List<CardUser> cardUserList = new ArrayList<>();
+
     public User(String nickname, String password, String email, UserRoleEnum role) {
         this.nickname=nickname;
         this.password=password;
@@ -45,7 +49,7 @@ public class User {
         this.role=role;
     }
 
-    public void updateNicknmae(String nickname) {
+    public void updateNickname(String nickname) {
         this.nickname=nickname;
     }
 

@@ -3,6 +3,7 @@ package com.sparta.hotsixproject.board.controller;
 import com.sparta.hotsixproject.board.dto.BoardRequestDto;
 import com.sparta.hotsixproject.board.dto.BoardResponseDto;
 import com.sparta.hotsixproject.board.dto.InviteBoardRequestDto;
+import com.sparta.hotsixproject.board.dto.MemberResponseDto;
 import com.sparta.hotsixproject.board.service.BoardService;
 import com.sparta.hotsixproject.common.advice.ApiResponseDto;
 import com.sparta.hotsixproject.common.security.UserDetailsImpl;
@@ -62,5 +63,11 @@ public class BoardController {
     @PostMapping("/boards/{boardId}/members")
     public ResponseEntity<ApiResponseDto> inviteBoard(@PathVariable Long boardId, @RequestBody InviteBoardRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return ResponseEntity.status(HttpStatus.CREATED).body(boardService.inviteBoard(boardId,requestDto.getEmail(),userDetails.getUser()));
+    }
+
+    // 보드 멤버 전체 조회
+    @GetMapping("/boards/{boardId}/members")
+    public List<MemberResponseDto> getMembers(@PathVariable Long boardId) {
+        return boardService.getMembers(boardId);
     }
 }
