@@ -48,7 +48,7 @@ public class User {
     private Long kakaoId;
 
     @Column
-    private Long googleId;
+    private String googleId;
 
     public User(String nickname, String password, String email, UserRoleEnum role) {
         this.nickname=nickname;
@@ -57,7 +57,7 @@ public class User {
         this.role=role;
     }
 
-    public User(String nickname, String encodedPassword, String email, UserRoleEnum userRoleEnum, Long kakaoId,Long googleId) {
+    public User(String nickname, String encodedPassword, String email, UserRoleEnum userRoleEnum, Long kakaoId,String googleId) {
     this.nickname=nickname;
     this.password=encodedPassword;
     this.email=email;
@@ -74,10 +74,12 @@ public class User {
         this.kakaoId = kakaoId;
         return this;
     }
-
-    public void updateNickname(String nickname) {
-        this.nickname=nickname;
+    public User googleIdUpdate(String googleId) {
+        this.googleId = googleId;
+        return this;
     }
 
-
+    public void updatePassword(String encodePassword) {
+        this.password=encodePassword;
+    }
 }

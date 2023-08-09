@@ -92,26 +92,27 @@ public class GoolgeService {
         log.info("decoded string: " + payload);
 
         JsonNode jsonNode = new ObjectMapper().readTree(payload);
+
+        String id= jsonNode.get("sub").asText();
         String email= jsonNode.get("email").asText();
         String name= jsonNode.get("name").asText();
-        Long id= jsonNode.get("sub").asLong();
 
         return new GoogleUserInfoDto(id,name,email);
     }
 
     private User registerGoogleUserIfNeeded(GoogleUserInfoDto googleUserInfo) {
         // DB 에 중복된 Kakao Id 가 있는지 확인
-        Long googleId = googleUserInfo.getId();
+        String googleId = googleUserInfo.getId();
         User googleUser = userRepository.findByGoogleId(googleId).orElse(null);
 
         if (googleUser == null) {
             // 카카오 사용자 email 동일한 email 가진 회원이 있는지 확인
-            String kakaoEmail = googleUserInfo.getEmail();
-            User sameEmailUser = userRepository.findByEmail(kakaoEmail).orElse(null);
+            String googleEmail = googleUserInfo.getEmail();
+            User sameEmailUser = userRepository.findByEmail(googleEmail).orElse(null);
             if (sameEmailUser != null) {
                 googleUser = sameEmailUser;
                 // 기존 회원정보에 카카오 Id 추가
-                googleUser = googleUser.kakaoIdUpdate(googleId);
+                googleUser = googleUser.googleIdUpdate(googleId);
             } else {
                 // 신규 회원가입
                 // password: random UUID
