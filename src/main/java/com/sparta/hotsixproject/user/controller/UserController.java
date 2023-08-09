@@ -1,9 +1,14 @@
 package com.sparta.hotsixproject.user.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.sparta.hotsixproject.common.advice.ApiResponseDto;
+import com.sparta.hotsixproject.common.jwt.JwtUtil;
 import com.sparta.hotsixproject.common.security.UserDetailsImpl;
 import com.sparta.hotsixproject.user.dto.*;
+import com.sparta.hotsixproject.user.service.KakaoService;
 import com.sparta.hotsixproject.user.service.UserService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
@@ -24,6 +29,7 @@ import java.util.Locale;
 public class UserController {
     private final UserService userService;
     private final MessageSource messageSource;
+    private final KakaoService kakaoService;
 
     @GetMapping("/login-page")
     public String loginPage() {
@@ -84,5 +90,18 @@ public class UserController {
         userService.deleteUser(userId,requestDto,userDetails.getUser());
         return ResponseEntity.ok().body(new ApiResponseDto( "유저가 탈퇴 되었습니다.",HttpStatus.OK.value()));
 
+    }
+
+    //인가 코드 받아오기 위한 controller
+    @ResponseBody
+    @GetMapping("/login/kakao/callback")
+    public String kakaoLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
+        String token = kakaoService.kakaoLogin(code);
+
+        Cookie cookie = new Cookie(JwtUtil.AUTHORIZATION_HEADER, token.substring(7));
+        cookie.setPath("/");
+        response.addCookie(cookie);
+
+        return "redirect:/";
     }
 }

@@ -32,17 +32,28 @@ public class User {
     @Enumerated(value = EnumType.STRING)
     private UserRoleEnum role;
 
-    @OneToMany(mappedBy = "owner", orphanRemoval = true)
+    @OneToMany(mappedBy = "user", orphanRemoval = true)
     private List<Board> boardList = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", orphanRemoval = true)
     private List<Card> cardList = new ArrayList<>();
+
+    @Column
+    private Long kakaoId;
 
     public User(String nickname, String password, String email, UserRoleEnum role) {
         this.nickname=nickname;
         this.password=password;
         this.email=email;
         this.role=role;
+    }
+
+    public User(String nickname, String encodedPassword, String email, UserRoleEnum userRoleEnum, Long kakaoId) {
+    this.nickname=nickname;
+    this.password=encodedPassword;
+    this.email=email;
+    this.role=userRoleEnum;
+    this.kakaoId=kakaoId;
     }
 
     public void updateNicknmae(String nickname) {
@@ -53,4 +64,8 @@ public class User {
         this.password=encodePassword;
     }
 
+    public User kakaoIdUpdate(Long kakaoId) {
+        this.kakaoId = kakaoId;
+        return this;
+    }
 }
