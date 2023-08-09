@@ -1,6 +1,7 @@
 package com.sparta.hotsixproject.board.entity;
 
 import com.sparta.hotsixproject.board.dto.BoardRequestDto;
+import com.sparta.hotsixproject.boarduser.controller.BoardUser;
 import com.sparta.hotsixproject.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -40,11 +41,17 @@ public class Board {
         this.color = new Color(red,green,blue);
         this.user = user;
     }
+    public Board(String name, String description, User user,Color color){
+        this.name = name;
+        this.description = description;
+        this.color = color;
+        this.user = user;
+    }
 
     public void update(BoardRequestDto request){
         this.name = request.getName();
         this.description = request.getDescription();
-        this.color = new Color(request.getRed(),request.getGreen(),request.getBlue());
+        this.color = new Color(request.getColor().getRed(),request.getColor().getGreen(),request.getColor().getBlue());
     }
 
 

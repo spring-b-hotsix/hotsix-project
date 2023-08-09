@@ -1,5 +1,6 @@
-package com.sparta.hotsixproject.board.entity;
+package com.sparta.hotsixproject.boarduser.controller;
 
+import com.sparta.hotsixproject.board.entity.Board;
 import com.sparta.hotsixproject.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
