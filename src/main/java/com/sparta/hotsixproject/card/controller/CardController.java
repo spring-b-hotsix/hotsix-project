@@ -123,7 +123,8 @@ public class CardController {
             @Parameter(name = "boardId", description = "선택한 카드가 위치한 board의 id", in = ParameterIn.PATH) @PathVariable Long boardId,
             @Parameter(name = "sideId", description = "선택한 카드가 위치한 side의 id", in = ParameterIn.PATH) @PathVariable Long sideId,
             @Parameter(name = "cardId", description = "이동시킬 card의 id", in = ParameterIn.PATH) @PathVariable Long cardId,
-            @Parameter(name = "requestDto", description = "카드를 이동시킬 정보 (position)") @RequestBody MoveRequestDto requestDto) {
+            @Parameter(name = "requestDto", description = "카드를 이동시킬 정보 (position)") @RequestBody MoveRequestDto requestDto
+    ) {
         return cardService.moveCard(boardId, sideId, cardId, requestDto);
     }
 
@@ -133,7 +134,8 @@ public class CardController {
             @Parameter(name = "boardId", description = "선택한 카드가 위치한 board의 id", in = ParameterIn.PATH) @PathVariable Long boardId,
             @Parameter(name = "sideId", description = "선택한 카드가 위치한 side의 id", in = ParameterIn.PATH) @PathVariable Long sideId,
             @Parameter(name = "cardId", description = "삭제시킬 card의 id", in = ParameterIn.PATH) @PathVariable Long cardId,
-            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
         return cardService.deleteCard(boardId, sideId, cardId, userDetails.getUser());
     }
 }
