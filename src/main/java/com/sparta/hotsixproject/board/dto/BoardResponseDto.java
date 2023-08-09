@@ -8,7 +8,7 @@ import java.awt.*;
 
 @Getter
 public class BoardResponseDto {
-    private Long id;
+    private Long boardId;
     private String name;
     @Column
     private String description;
@@ -16,7 +16,7 @@ public class BoardResponseDto {
     private Color color;
 
     public BoardResponseDto(Board board){
-        this.id = board.getId();
+        this.boardId = board.getId();
         this.name = board.getName();
         this.description = board.getDescription();
         this.color = board.getColor();

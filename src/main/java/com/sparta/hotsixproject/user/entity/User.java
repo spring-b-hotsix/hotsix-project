@@ -3,9 +3,13 @@ package com.sparta.hotsixproject.user.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sparta.hotsixproject.board.entity.Board;
 import com.sparta.hotsixproject.card.entity.Card;
+import com.sparta.hotsixproject.carduser.entity.CardUser;
 import com.sparta.hotsixproject.user.UserRoleEnum;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +48,9 @@ public class User {
     @Column
     private Long googleId;
 
+    @OneToMany(mappedBy = "user", orphanRemoval = true)
+    private List<CardUser> cardUserList = new ArrayList<>();
+
     public User(String nickname, String password, String email, UserRoleEnum role) {
         this.nickname=nickname;
         this.password=password;
@@ -64,12 +71,14 @@ public class User {
         this.nickname=nickname;
     }
 
-    public void updatePassword(String encodePassword) {
-        this.password=encodePassword;
-    }
-
     public User kakaoIdUpdate(Long kakaoId) {
         this.kakaoId = kakaoId;
         return this;
     }
+
+    public void updateNickname(String nickname) {
+        this.nickname=nickname;
+    }
+
+
 }

@@ -2,6 +2,7 @@ package com.sparta.hotsixproject.board.service;
 
 import com.sparta.hotsixproject.board.dto.BoardRequestDto;
 import com.sparta.hotsixproject.board.dto.BoardResponseDto;
+import com.sparta.hotsixproject.board.dto.MemberResponseDto;
 import com.sparta.hotsixproject.board.entity.Board;
 import com.sparta.hotsixproject.board.entity.BoardUser;
 import com.sparta.hotsixproject.board.repository.BoardRepository;
@@ -103,7 +104,7 @@ public class BoardServiceImpl implements BoardService{
 
     //보드 초대 메서드
     @Override
-    public ApiResponseDto inviteBoard(Long id, String email,User user) {
+    public ApiResponseDto inviteBoard(Long id, String email, User user) {
         User loginedUser = findUser(user.getId());
         Board targetBoard = findBoard(id);
         //로그인유저가 보드에 속한 유저인지 확인
@@ -125,6 +126,11 @@ public class BoardServiceImpl implements BoardService{
         return new ApiResponseDto(inviteUser.getNickname()+"님을 보드 멤버에 추가했습니다.",201);
     }
 
+    // 보드 멤버 전체 조회
+    @Override
+    public List<MemberResponseDto> getMembers(Long boardId) {
+        return boardUserRepository.findByBoard_Id(boardId).stream().map(MemberResponseDto::new).toList();
+    }
 
 
     // --private methods--
@@ -140,12 +146,12 @@ public class BoardServiceImpl implements BoardService{
                 .collect(Collectors.toList());
     }
 
-    private Board findBoard(Long id) {
+    public Board findBoard(Long id) {
         return boardRepository.findById(id).orElseThrow(() ->
                 new IllegalArgumentException("존재하지 않는 보드 입니다.")
         );
     }
-    private void checkBoardMember(User user, Board board) {
+    public void checkBoardMember(User user, Board board) {
         boardUserRepository.findByUserAndBoard(user, board).orElseThrow(() ->
                 new IllegalArgumentException("해당 보드 권한을 가진 유저가 아닙니다.")
         );
