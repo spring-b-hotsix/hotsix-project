@@ -39,7 +39,6 @@ public class CardService {
     public ResponseEntity<ApiResponseDto> createCard(Long sideId, String name, User user) {
         Side side = sideRepository.findById(sideId).get();
         Card card = new Card(name, side.getCardList().size() + 1, user, side);
-        cardRepository.save(card);
 
         CardUser cardUser = new CardUser(card, user);
         cardUserRepository.save(cardUser);

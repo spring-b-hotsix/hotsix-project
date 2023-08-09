@@ -14,7 +14,7 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@EqualsAndHashCode(exclude = {"boardList", "cardList"})
+@EqualsAndHashCode(exclude = {"boardList", "cardList", "cardUserList"})
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
