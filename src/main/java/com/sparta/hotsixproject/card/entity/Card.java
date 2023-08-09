@@ -4,6 +4,7 @@ package com.sparta.hotsixproject.card.entity;
 import com.sparta.hotsixproject.attachment.entity.Attachment;
 import com.sparta.hotsixproject.cardlabel.entity.CardLabel;
 import com.sparta.hotsixproject.carduser.entity.CardUser;
+import com.sparta.hotsixproject.checklist.entity.Checklist;
 import com.sparta.hotsixproject.comment.entity.Comment;
 import com.sparta.hotsixproject.common.entity.TimeStamped;
 import com.sparta.hotsixproject.side.entity.Side;
@@ -51,6 +52,9 @@ public class Card extends TimeStamped {
 
     @OneToMany(mappedBy = "card", orphanRemoval = true)
     private List<CardUser> cardUserList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "card", orphanRemoval = true)
+    private List<Checklist> checklistList = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(nullable = false)

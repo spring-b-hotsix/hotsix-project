@@ -20,15 +20,15 @@ public class Checklist {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "cardId", nullable = false)
-    private Card card;
-
     @Column
     private String name;
 
     @OneToMany(mappedBy = "checklist", orphanRemoval = true)
     private List<ChecklistItem> checklistItems;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cardId", nullable = false)
+    private Card card;
 
     public Checklist(Card card, ChecklistRequestDto requestDto) {
         this.card = card;
