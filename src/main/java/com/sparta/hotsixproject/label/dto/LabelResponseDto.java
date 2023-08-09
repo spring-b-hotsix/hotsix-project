@@ -17,6 +17,7 @@ public class LabelResponseDto {
     }
 
     public LabelResponseDto(CardLabel cardLabel) {
+        this.labelId = cardLabel.getLabel().getId();
         this.title = cardLabel.getLabel().getTitle();
         this.color = cardLabel.getLabel().getColor();
     }
