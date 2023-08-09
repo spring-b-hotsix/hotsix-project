@@ -32,7 +32,7 @@ public class SideRepositoryImpl implements SideRepositoryCustom {
         return jpaQueryFactory.selectFrom(side)
                 .innerJoin(board)
                 .on(side.id.eq(sideId))
-                .where(board.id.eq(boardId))
+                .where(board.Id.eq(boardId))
                 .stream().findFirst();
     }
 
@@ -43,7 +43,7 @@ public class SideRepositoryImpl implements SideRepositoryCustom {
         OrderSpecifier<?> orderSpecifier = new OrderSpecifier<>(Order.ASC, side.position);
 
         return jpaQueryFactory.selectFrom(side)
-                .where(board.id.eq(boardId).and(side.position.eq(selectPosition)))
+                .where(board.Id.eq(boardId).and(side.position.eq(selectPosition)))
                 .where(side.position.lt(selectPosition)) // 바로 앞
                 .orderBy(orderSpecifier)
                 .stream().findFirst();
@@ -77,7 +77,7 @@ public class SideRepositoryImpl implements SideRepositoryCustom {
         OrderSpecifier<?> orderSpecifier = new OrderSpecifier<>(Order.ASC, side.position);
 
         return jpaQueryFactory.selectFrom(side)
-                .where(board.id.eq(boardId))
+                .where(board.Id.eq(boardId))
                 .orderBy(orderSpecifier)
                 .fetch();
     }
