@@ -109,7 +109,7 @@ public class CardService {
     // 카드 이동
     public ResponseEntity<CardResponseDto> moveCard(Long boardId, Long sideId, Long cardId, MoveRequestDto requestDto) {
         Card card = cardRepository.findBySide_Board_IdAndSide_IdAndId(boardId, sideId, cardId);
-        Side side = sideRepository.findByName(requestDto.getSideName());
+        Side side = sideRepository.findByName(requestDto.getSideName()).get();
         for (Card ca : side.getCardList()) {
             if (ca.getPosition() >= requestDto.getPosition() && ca.getPosition() < card.getPosition()) { // 아래에서 위로
                 ca.moveDown();
@@ -118,7 +118,6 @@ public class CardService {
                 ca.moveUp();
             }
         }
-
         card.moveCard(side, requestDto.getPosition());
         CardResponseDto cardResponseDto = new CardResponseDto(card);
         return new ResponseEntity<>(cardResponseDto, HttpStatus.OK);
