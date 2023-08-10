@@ -121,9 +121,70 @@ class SideServiceTest {
     @Test
     @DisplayName("다른 보드로 컬럼 이동")
     void moveSideToDifferBoard() {
+        // given
+        User user = createUser();
+        Board board1 = createBoard(user);
+        Side side1 = createSide(board1, 1);
+        board1.addSide(side1);
+        Side side2 = createSide(board1, 2);
+        board1.addSide(side2);
 
+        Board board2 = createBoard(user);
+        Side side3 = createSide(board1, 1);
+        board2.addSide(side3);
+        Side side4 = createSide(board2, 2);
+        board2.addSide(side4);
+
+        // when 1
+        /** 1번째 이동
+         * 이동할 컬럼: side3
+         * 이동 전 = board:2, index:0, position: 1024
+         * 이동 후 = board:1, index:1, position: (1024+1536)/2 = 1280?
+         */
+        SideMoveDto requestDto1 = new SideMoveDto(board1.getId(), 1);
+        sideService.moveSide(board2.getId(), side3.getId(), requestDto1, user);
+
+        // 정렬된 컬럼 리스트
+        List<Side> sortedSideList11 = sideRepository.findAllByBoardIdOrderBySidePositionAsc(board1.getId());
+        List<Side> sortedSideList12 = sideRepository.findAllByBoardIdOrderBySidePositionAsc(board2.getId());
+
+        // then 1
+        /* 인덱스 비교, 포지션 비교 */
+        assertEquals(0, sortedSideList11.indexOf(side1)); // board: 1, index: 0
+        assertEquals(1, sortedSideList11.indexOf(side2)); // board: 1, index: 1
+        assertEquals(2, sortedSideList11.indexOf(side3)); // board: 1, index: 2
+        assertEquals(0, sortedSideList12.indexOf(side4)); // board: 2, index: 0
+
+        assertEquals(1024, side1.getPosition()); // board: 1, position: 1024
+        assertEquals(2048, side2.getPosition()); // board: 1, position: 2048
+        assertEquals(2560, side3.getPosition()); // board: 1, position: 2560
+        assertEquals(2048, side4.getPosition()); // board: 2, position: 2048
+
+        // when 2
+        /** 2번째 이동
+         * 이동할 컬럼: side2
+         * 이동 전 = board:1, index:2, position: 2048
+         * 이동 후 = board:2, index:0, position: (0+1024)/2 = 512?
+         */
+        SideMoveDto requestDto2 = new SideMoveDto(board2.getId(), 0);
+        sideService.moveSide(board1.getId(), side2.getId(), requestDto2, user);
+
+        // 정렬된 컬럼 리스트
+        List<Side> sortedSideList21 = sideRepository.findAllByBoardIdOrderBySidePositionAsc(board1.getId());
+        List<Side> sortedSideList22 = sideRepository.findAllByBoardIdOrderBySidePositionAsc(board2.getId());
+
+        // then 2
+        /* 인덱스 비교, 포지션 비교 */
+        assertEquals(0, sortedSideList21.indexOf(side1)); // board: 1, index: 0
+        assertEquals(1, sortedSideList21.indexOf(side3)); // board: 1, index: 1
+        assertEquals(0, sortedSideList22.indexOf(side4)); // board: 2, index: 0
+        assertEquals(1, sortedSideList22.indexOf(side2)); // board: 2, index: 1
+
+        assertEquals(1024, side1.getPosition()); // board: 1, position: 1024
+        assertEquals(2560, side3.getPosition()); // board: 1, position: 2560
+        assertEquals(2048, side4.getPosition()); // board: 2, position: 2048
+        assertEquals(2560, side2.getPosition()); // board: 2, position: 2560
     }
-
 
 
     private Side createSide(Board board, int pos) {
