@@ -28,7 +28,6 @@ public class SideCustomServiceImpl implements SideCustomService {
     @Transactional
     public SideResponseDto createSide(Long boardId, SideRequestDto requestDto, User user) {
         Board board = findBoard(boardId);
-        checkBoardMember(user, board);
 
         // position => 1024씩 증가
         int position = (board.getSideList().size() != 0) ? (board.getSideList().size() + 1) * 1024 : 1024;
@@ -40,8 +39,6 @@ public class SideCustomServiceImpl implements SideCustomService {
     @Override
     @Transactional(readOnly = true)
     public List<SideResponseDto> getSides(Long boardId, User user) {
-        Board board = findBoard(boardId);
-        checkBoardMember(user, board);
         return sideRepository.findAllByBoardIdOrderBySidePositionAsc(boardId).stream()
                 .map(SideResponseDto::new)
                 .collect(Collectors.toList());
@@ -51,7 +48,6 @@ public class SideCustomServiceImpl implements SideCustomService {
     @Transactional
     public SideResponseDto updateSideName(Long boardId, Long sideId, SideRequestDto requestDto, User user) {
         Board board = findBoard(boardId);
-        checkBoardMember(user, board);
         Side side = findSide(boardId, sideId);
 
         side.updateSideName(requestDto.getName());
@@ -62,10 +58,9 @@ public class SideCustomServiceImpl implements SideCustomService {
     @Transactional
     public List<SideResponseDto> moveSide(Long boardId, Long sideId, SideMoveDto requestDto, User user) {
         Board board = findBoard(boardId);
-        checkBoardMember(user, board);
+
         // 이동시킬 보드
         Board selectBoard = findBoard(requestDto.getSelectBoardId());
-        checkBoardMember(user, selectBoard);
 
         // 이동시킬 컬럼(사이드)
         Side currentSide = findSide(boardId, sideId);
@@ -109,11 +104,6 @@ public class SideCustomServiceImpl implements SideCustomService {
         );
     }
 
-    private void checkBoardMember(User user, Board board) {
-        boardUserRepository.findByUserAndBoard(user, board).orElseThrow(() ->
-                new IllegalArgumentException("해당 보드 권한을 가진 유저가 아닙니다.")
-        );
-    }
 
     private void move(Board selectBoard, Side currentSide, int selectPosition, int aroundPosition) {
         /**
