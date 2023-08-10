@@ -36,7 +36,6 @@ public class UserService {
                             "Already have UserName",
                             Locale.getDefault()
                     )
-
             );
         }
 
@@ -75,7 +74,7 @@ public class UserService {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
         // 회원 중복 확인
-        if(userRepository.findByNickname(requestDto.getNickname()).isPresent()){
+        if (userRepository.findByNickname(requestDto.getNickname()).isPresent()) {
             throw new IllegalArgumentException(
                     messageSource.getMessage(
                             "already.in.username",
@@ -84,9 +83,10 @@ public class UserService {
                             Locale.getDefault()
                     )
 
-            );}
+            );
+        }
 
-        newuser.updateNickname(requestDto.getNickname());
+        newuser.updateNicknmae(requestDto.getNickname());
 
     }
     @Transactional

@@ -15,10 +15,15 @@
 </head>
 <body>
 <div id="login-form">
-  <div id="login-title">Log into Select Shop</div>
-  <button id="login-kakao-btn" onclick="location.href='https://kauth.kakao.com/oauth/authorize?client_id=11d9f708997fac198cf238407852049b&redirect_uri=http://localhost:8080/users/kakao/callback&response_type=code'">
-    카카오로 로그인하기
+  <div id="login-title">LOGIN</div>
+  <div class="button-container">
+  <button id="login-kakao-btn" onclick="location.href='https://kauth.kakao.com/oauth/authorize?client_id=676623f0cb1ea82bda1fa48588b0109e&redirect_uri=http://localhost:8080/users/login/kakao/callback&response_type=code'">
+    카카오 로그인
   </button>
+  <button id="login-google-btn" onclick="location.href='https://accounts.google.com/o/oauth2/v2/auth?client_id=79422420281-q236bkqul43g7nsoproq3h2ajojllbdh.apps.googleusercontent.com&redirect_uri=http://localhost:8080/users/login/google/callback&response_type=code&scope=email profile'">
+    구글 로그인
+  </button>
+  </div>
   <button id="login-id-btn" onclick="location.href='/users/signup'">
     회원 가입하기
   </button>
