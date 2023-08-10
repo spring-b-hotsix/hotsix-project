@@ -160,9 +160,9 @@
     <div>Your Workspaces</div>
     <div class="board-list">
         <div th:each="myboard : ${myboards}" class="board-item"
-             th:onclick="|window.location.href='/boards/${myboard.id}'|">
+             th:onclick="|window.location.href='/boards/${myboard.boardId}'|">
             <div class="section">
-                <div class="board-content">
+                <div class="board-content" th:id="'my-board-content-' + ${myboard.boardId}" th:value="${myboard.boardId}">
                     <div>
                         <span th:text="${myboard.name}"></span>
                     </div>
@@ -200,8 +200,10 @@
 <div id="guest-board-form" class="board-form">
     <div>Guest Workspaces</div>
     <div class="board-list">
-        <div th:each="guestboard : ${guestboards}" class="board-item">
+        <div th:each="guestboard : ${guestboards}" class="board-item"
+             th:onclick="|window.location.href='/boards/${guestboard.boardId}'|">
             <div class="section">
+                <div class="board-content" th:id="'guest-board-content-' + ${guestboard.boardId}" th:value="${guestboard.boardId}">
                 <div class="board-content">
                     <div>
                         <span th:text="${guestboard.name}"></span>
@@ -211,7 +213,7 @@
                     </div>
                     <div>
                         <div class="color-box"
-                             th:style="'background-color: rgb(' + ${gusetboard.red} + ', ' + ${guestboard.green} + ', ' + ${guestboard.blue} + ')'"></div>
+                             th:style="'background-color: rgb(' + ${guestboard.red} + ', ' + ${guestboard.green} + ', ' + ${guestboard.blue} + ')'"></div>
                     </div>
                 </div>
             </div>
