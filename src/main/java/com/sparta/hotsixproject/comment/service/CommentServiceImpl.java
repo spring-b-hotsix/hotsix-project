@@ -72,6 +72,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     // id에 따른 카드 찾기
+    @Override
     public Card findCard(Long cardId) {
         return cardRepository.findById(cardId).orElseThrow(() ->
                 new NotFoundException("선택한 카드는 존재하지 않습니다.")
