@@ -62,7 +62,7 @@ class SideServiceTest {
 
     @Test
     @DisplayName("같은 보드 내에서 컬럼 이동")
-    void moveSideInSameBoard() {
+    void moveSideToSameBoard() {
         // given
         User user = createUser();
         Board board1 = createBoard(user);
@@ -116,6 +116,12 @@ class SideServiceTest {
         assertEquals(0, sortedSideList2.indexOf(side3)); // index: 0
         assertEquals(1, sortedSideList2.indexOf(side2)); // index: 1
         assertEquals(2, sortedSideList2.indexOf(side1)); // index: 2
+    }
+
+    @Test
+    @DisplayName("다른 보드로 컬럼 이동")
+    void moveSideToDifferBoard() {
+
     }
 
 
