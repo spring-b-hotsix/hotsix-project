@@ -67,4 +67,8 @@ public class Board {
         this.sideList.add(side);
         side.setBoard(this);
     }
+    public void removeSide(Side side) {
+        this.sideList.remove(side);
+        side.setBoard(null);
+    }
 }
