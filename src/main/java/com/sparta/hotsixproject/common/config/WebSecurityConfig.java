@@ -70,6 +70,7 @@ public class WebSecurityConfig {
 
         http.authorizeHttpRequests((authorizeHttpRequests) ->
                 authorizeHttpRequests
+                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**").permitAll() // swagger
                         .anyRequest().permitAll()
         );
         // 필터 관리
