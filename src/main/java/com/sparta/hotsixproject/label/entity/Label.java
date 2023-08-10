@@ -1,12 +1,12 @@
 package com.sparta.hotsixproject.label.entity;
 
+import com.sparta.hotsixproject.board.entity.Board;
 import com.sparta.hotsixproject.cardlabel.entity.CardLabel;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -23,10 +23,20 @@ public class Label {
     @Column
     private String color;
 
-    @OneToMany(mappedBy = "label", orphanRemoval = true)
-    private List<CardLabel> cardLabelList = new ArrayList<>();
+    @ManyToOne
+    @JoinColumn(name="board_id", nullable = false)
+    private Board board;
 
-    public Label(String title, String color) {
+    @OneToMany(mappedBy = "label", orphanRemoval = true)
+    private List<CardLabel> cardLabelList;
+
+    public Label(Board board, String title, String color) {
+        this.board = board;
+        this.title = title;
+        this.color = color;
+    }
+
+    public void update(String title, String color) {
         this.title = title;
         this.color = color;
     }
