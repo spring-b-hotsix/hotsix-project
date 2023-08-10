@@ -32,8 +32,4 @@ public class HomeController {
         model.addAttribute("guestboards", getGuestBoards);
         return "index";
     }
-    @GetMapping("/main")
-    public void main(@AuthenticationPrincipal UserDetailsImpl userDetails, Model model) {
-
-    }
 }
