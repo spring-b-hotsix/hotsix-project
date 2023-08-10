@@ -1,10 +1,6 @@
 package com.sparta.hotsixproject.card.service;
 
-import com.sparta.hotsixproject.board.entity.Board;
-import com.sparta.hotsixproject.board.entity.BoardUser;
-import com.sparta.hotsixproject.board.repository.BoardRepository;
-import com.sparta.hotsixproject.board.repository.BoardUserRepository;
-import com.sparta.hotsixproject.card.dto.CardRequestDto;
+import com.sparta.hotsixproject.boarduser.repository.BoardUserRepository;
 import com.sparta.hotsixproject.card.dto.CardResponseDto;
 import com.sparta.hotsixproject.card.dto.DueRequestDto;
 import com.sparta.hotsixproject.card.dto.MoveRequestDto;
