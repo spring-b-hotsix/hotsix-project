@@ -1,6 +1,8 @@
 package com.sparta.hotsixproject.user.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.sparta.hotsixproject.common.advice.ApiResponseDto;
+import com.sparta.hotsixproject.common.jwt.JwtUtil;
 import com.sparta.hotsixproject.common.security.UserDetailsImpl;
 import com.sparta.hotsixproject.user.dto.*;
 import com.sparta.hotsixproject.user.service.GoolgeService;
@@ -60,6 +62,7 @@ public class UserController {
     }
 
     @PostMapping("/signup")
+    @Operation(summary = "회원가입")
     public String signup(@Valid @RequestBody LoginRequestDto requestDto, BindingResult bindingResult) {
         // Validation 예외처리
         List<FieldError> fieldErrors = bindingResult.getFieldErrors();
@@ -112,7 +115,6 @@ public class UserController {
 
     }
 
-    //인가 코드 받아오기 위한 controller
     @GetMapping("/login/kakao/callback")
     public String kakaoLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
         String token = kakaoService.kakaoLogin(code);

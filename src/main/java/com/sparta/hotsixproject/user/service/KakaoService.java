@@ -117,11 +117,15 @@ public class KakaoService {
         Long id = jsonNode.get("id").asLong();
         String nickname = jsonNode.get("properties")
                 .get("nickname").asText();
-        String email = jsonNode.get("kakao_account")
-                .get("email").asText();
 
-        log.info("카카오 사용자 정보: " + id + ", " + nickname + ", " + email);
-        return new KakaoUserInfoDto(id, nickname, email);
+        if (jsonNode.get("kakao_account").has("email")) {
+            String email = jsonNode.get("kakao_account")
+                    .get("email").asText();
+
+            return new KakaoUserInfoDto(id, nickname, email);
+        } else {
+            return new KakaoUserInfoDto(id, nickname, "0");
+        }
     }
 
     private User registerKakaoUserIfNeeded(KakaoUserInfoDto kakaoUserInfo) {
@@ -144,11 +148,9 @@ public class KakaoService {
                 String encodedPassword = passwordEncoder.encode(password);
 
                 // email: kakao email
-                String email = kakaoUserInfo.getEmail();
+                kakaoUser = new User(kakaoUserInfo.getNickname() + "K", encodedPassword, kakaoEmail, UserRoleEnum.USER, kakaoId, null);
 
-                kakaoUser = new User(kakaoUserInfo.getNickname(), encodedPassword, email, UserRoleEnum.USER, kakaoId, null);
             }
-
             userRepository.save(kakaoUser);
         }
         return kakaoUser;
