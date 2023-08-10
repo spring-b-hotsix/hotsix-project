@@ -1,7 +1,6 @@
 package com.sparta.hotsixproject.board.dto;
 
-import com.sparta.hotsixproject.board.entity.Board;
-import com.sparta.hotsixproject.board.entity.BoardUser;
+import com.sparta.hotsixproject.boarduser.entity.BoardUser;
 import lombok.Getter;
 
 @Getter

@@ -4,15 +4,16 @@ import com.sparta.hotsixproject.board.dto.BoardRequestDto;
 import com.sparta.hotsixproject.board.dto.BoardResponseDto;
 import com.sparta.hotsixproject.board.dto.MemberResponseDto;
 import com.sparta.hotsixproject.board.entity.Board;
-import com.sparta.hotsixproject.board.entity.BoardUser;
+import com.sparta.hotsixproject.boarduser.entity.BoardUser;
 import com.sparta.hotsixproject.board.repository.BoardRepository;
-import com.sparta.hotsixproject.board.repository.BoardUserRepository;
+import com.sparta.hotsixproject.boarduser.repository.BoardUserRepository;
 import com.sparta.hotsixproject.common.advice.ApiResponseDto;
 import com.sparta.hotsixproject.user.entity.User;
 import com.sparta.hotsixproject.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.awt.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -63,7 +64,8 @@ public class BoardServiceImpl implements BoardService{
     @Override
     public ApiResponseDto createBoard(BoardRequestDto requestDto, User user) {
         User loginedUser = findUser(user.getId());
-        Board board = new Board(requestDto.getName(),requestDto.getDescription(),loginedUser,requestDto.getRed(),requestDto.getGreen(),requestDto.getBlue());
+        Color color = new Color(requestDto.getRed(), requestDto.getGreen(), requestDto.getBlue());
+        Board board = new Board(requestDto.getName(),requestDto.getDescription(),loginedUser,color);
 
         //새 보드 추가
         boardRepository.save(board);

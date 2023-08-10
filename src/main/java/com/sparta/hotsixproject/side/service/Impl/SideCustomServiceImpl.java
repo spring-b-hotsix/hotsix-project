@@ -2,7 +2,7 @@ package com.sparta.hotsixproject.side.service.Impl;
 
 import com.sparta.hotsixproject.board.entity.Board;
 import com.sparta.hotsixproject.board.repository.BoardRepository;
-import com.sparta.hotsixproject.board.repository.BoardUserRepository;
+import com.sparta.hotsixproject.boarduser.repository.BoardUserRepository;
 import com.sparta.hotsixproject.side.dto.SideMoveDto;
 import com.sparta.hotsixproject.side.dto.SideRequestDto;
 import com.sparta.hotsixproject.side.dto.SideResponseDto;

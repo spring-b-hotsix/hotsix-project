@@ -1,6 +1,7 @@
 package com.sparta.hotsixproject.board.entity;
 
 import com.sparta.hotsixproject.board.dto.BoardRequestDto;
+import com.sparta.hotsixproject.boarduser.entity.BoardUser;
 import com.sparta.hotsixproject.label.entity.Label;
 import com.sparta.hotsixproject.side.entity.Side;
 import com.sparta.hotsixproject.user.entity.User;
@@ -46,6 +47,12 @@ public class Board {
         this.name = name;
         this.description = description;
         this.color = new Color(red,green,blue);
+        this.user = user;
+    }
+    public Board(String name, String description, User user,Color color){
+        this.name = name;
+        this.description = description;
+        this.color = color;
         this.user = user;
     }
 
