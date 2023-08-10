@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -38,10 +39,10 @@ public class Board {
     private List<BoardUser> boardUsers;
 
     @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE)
-    private List<Side> sideList;
+    private List<Side> sideList = new ArrayList<>();
 
     @OneToMany(mappedBy = "board", orphanRemoval = true)
-    private List<Label> labelList;
+    private List<Label> labelList = new ArrayList<>();
 
     public Board(String name, String description, User user,Integer red, Integer green, Integer blue){
         this.name = name;
@@ -60,5 +61,10 @@ public class Board {
         this.name = request.getName();
         this.description = request.getDescription();
         this.color = new Color(request.getRed(),request.getGreen(),request.getBlue());
+    }
+
+    public void addSide(Side side) {
+        this.sideList.add(side);
+        side.setBoard(this);
     }
 }

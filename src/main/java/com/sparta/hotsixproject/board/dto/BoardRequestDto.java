@@ -1,11 +1,10 @@
 package com.sparta.hotsixproject.board.dto;
 
-import jakarta.persistence.Column;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import java.awt.*;
-
 @Getter
+@AllArgsConstructor
 public class BoardRequestDto {
     String name;
     String description;

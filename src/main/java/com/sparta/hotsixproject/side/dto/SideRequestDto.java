@@ -1,11 +1,11 @@
 package com.sparta.hotsixproject.side.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
-@Setter
+@AllArgsConstructor
 public class SideRequestDto {
     @NotBlank
     private String name;

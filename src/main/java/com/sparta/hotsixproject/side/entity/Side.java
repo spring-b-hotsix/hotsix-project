@@ -42,4 +42,10 @@ public class Side {
         this.board = board;
         this.position = position;
     }
+    public void setBoard(Board board) {
+        this.board = board;
+    }
+    public void setPosition(int position) {
+        this.position = position;
+    }
 }

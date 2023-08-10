@@ -47,9 +47,7 @@ public class SideCustomServiceImpl implements SideCustomService {
     @Override
     @Transactional
     public SideResponseDto updateSideName(Long boardId, Long sideId, SideRequestDto requestDto, User user) {
-        Board board = findBoard(boardId);
         Side side = findSide(boardId, sideId);
-
         side.updateSideName(requestDto.getName());
         return new SideResponseDto(side);
     }
@@ -57,19 +55,18 @@ public class SideCustomServiceImpl implements SideCustomService {
     @Override
     @Transactional
     public List<SideResponseDto> moveSide(Long boardId, Long sideId, SideMoveDto requestDto, User user) {
-        Board board = findBoard(boardId);
-
         // 이동시킬 보드
         Board selectBoard = findBoard(requestDto.getSelectBoardId());
-
         // 이동시킬 컬럼(사이드)
         Side currentSide = findSide(boardId, sideId);
-        // selectPosition = 사이드를 이동시킬 위치
-        Side selectSide = selectBoard.getSideList().get(requestDto.getSelectIndex());
-        int selectPosition = selectSide.getPosition();
 
         // 위치 순으로 정렬된 Side List
         List<Side> sortedSideList = sideRepository.findAllByBoardIdOrderBySidePositionAsc(selectBoard.getId());
+
+        // selectPosition = 사이드를 이동시킬 위치
+        Side selectSide = sortedSideList.get(requestDto.getSelectIndex());
+        int selectPosition = selectSide.getPosition();
+
 
         // selectSide의 앞 혹은 뒤 position
         int aroundPosition;
@@ -77,12 +74,13 @@ public class SideCustomServiceImpl implements SideCustomService {
 
         // 이동
         move(selectBoard, currentSide, selectPosition, aroundPosition);
+        // System.out.println("selectPosition: " + selectPosition);
+        // System.out.println("aroundPosition: " + aroundPosition);
 
         return sideRepository.findAllByBoardIdOrderBySidePositionAsc(boardId).stream()
                 .map(SideResponseDto::new)
                 .collect(Collectors.toList());
     }
-
 
 
     @Override
@@ -111,18 +109,18 @@ public class SideCustomServiceImpl implements SideCustomService {
          * 예를 들어서, 2번 - 3번 사이에 들어가고 싶으면
          * (2번 포지션 + 3번 포지션) / 2
          */
-
         int movePosition = (selectPosition + aroundPosition) / 2;
         currentSide.moveSide(selectBoard, movePosition);
     }
 
     private int getAroundPosition(SideMoveDto requestDto, List<Side> sortedSideList) {
         int aroundPosition;
-        if (requestDto.getSelectIndex() >= sortedSideList.size() - 1) {
-            aroundPosition = sortedSideList.get(sortedSideList.size() - 1).getPosition() + 1024;
-        } else if (requestDto.getSelectIndex() == 0) {
-            int nextPosition = sortedSideList.get(1).getPosition();
-            aroundPosition = Math.min(nextPosition - 1024, 0);
+        if (requestDto.getSelectIndex() >= sortedSideList.size() - 1) { // last+1
+            int lastPosition = sortedSideList.get(sortedSideList.size() - 1).getPosition();
+            aroundPosition = lastPosition + 1024;
+        } else if (requestDto.getSelectIndex() == 0) { // first-1
+            int firstPosition = sortedSideList.get(0).getPosition();
+            aroundPosition = Math.min(firstPosition - 1024, 0);
         } else {  // prev
             int prevPosition = sortedSideList.get(requestDto.getSelectIndex() - 1).getPosition();
             int nextPosition = sortedSideList.get(requestDto.getSelectIndex() + 1).getPosition();
@@ -130,6 +128,4 @@ public class SideCustomServiceImpl implements SideCustomService {
         }
         return aroundPosition;
     }
-
-
 }
