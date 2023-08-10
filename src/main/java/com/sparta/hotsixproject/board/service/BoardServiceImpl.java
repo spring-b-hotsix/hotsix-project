@@ -4,7 +4,7 @@ import com.sparta.hotsixproject.board.dto.BoardRequestDto;
 import com.sparta.hotsixproject.board.dto.BoardResponseDto;
 import com.sparta.hotsixproject.board.dto.MemberResponseDto;
 import com.sparta.hotsixproject.board.entity.Board;
-import com.sparta.hotsixproject.boarduser.controller.BoardUser;
+import com.sparta.hotsixproject.boarduser.entity.BoardUser;
 import com.sparta.hotsixproject.board.repository.BoardRepository;
 import com.sparta.hotsixproject.boarduser.repository.BoardUserRepository;
 import com.sparta.hotsixproject.common.advice.ApiResponseDto;

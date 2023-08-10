@@ -1,4 +1,4 @@
-package com.sparta.hotsixproject.boarduser.controller;
+package com.sparta.hotsixproject.boarduser.entity;
 
 import com.sparta.hotsixproject.board.entity.Board;
 import com.sparta.hotsixproject.user.entity.User;

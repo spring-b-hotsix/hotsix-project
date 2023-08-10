@@ -1,7 +1,7 @@
 package com.sparta.hotsixproject.board.entity;
 
 import com.sparta.hotsixproject.board.dto.BoardRequestDto;
-import com.sparta.hotsixproject.boarduser.controller.BoardUser;
+import com.sparta.hotsixproject.boarduser.entity.BoardUser;
 import com.sparta.hotsixproject.label.entity.Label;
 import com.sparta.hotsixproject.side.entity.Side;
 import com.sparta.hotsixproject.user.entity.User;
