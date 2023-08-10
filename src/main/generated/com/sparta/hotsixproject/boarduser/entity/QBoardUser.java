@@ -1,4 +1,4 @@
-package com.sparta.hotsixproject.boarduser.controller;
+package com.sparta.hotsixproject.boarduser.entity;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
@@ -8,7 +8,6 @@ import com.querydsl.core.types.PathMetadata;
 import javax.annotation.processing.Generated;
 import com.querydsl.core.types.Path;
 import com.querydsl.core.types.dsl.PathInits;
-import com.sparta.hotsixproject.boarduser.entity.BoardUser;
 
 
 /**
@@ -17,7 +16,7 @@ import com.sparta.hotsixproject.boarduser.entity.BoardUser;
 @Generated("com.querydsl.codegen.DefaultEntitySerializer")
 public class QBoardUser extends EntityPathBase<BoardUser> {
 
-    private static final long serialVersionUID = 1575686668L;
+    private static final long serialVersionUID = -1846393837L;
 
     private static final PathInits INITS = PathInits.DIRECT2;
 

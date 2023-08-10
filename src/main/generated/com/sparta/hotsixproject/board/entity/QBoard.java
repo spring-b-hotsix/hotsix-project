@@ -8,7 +8,6 @@ import com.querydsl.core.types.PathMetadata;
 import javax.annotation.processing.Generated;
 import com.querydsl.core.types.Path;
 import com.querydsl.core.types.dsl.PathInits;
-import com.sparta.hotsixproject.boarduser.entity.BoardUser;
 
 
 /**
@@ -23,7 +22,7 @@ public class QBoard extends EntityPathBase<Board> {
 
     public static final QBoard board = new QBoard("board");
 
-    public final ListPath<BoardUser, com.sparta.hotsixproject.boarduser.controller.QBoardUser> boardUsers = this.<BoardUser, com.sparta.hotsixproject.boarduser.controller.QBoardUser>createList("boardUsers", BoardUser.class, com.sparta.hotsixproject.boarduser.controller.QBoardUser.class, PathInits.DIRECT2);
+    public final ListPath<com.sparta.hotsixproject.boarduser.entity.BoardUser, com.sparta.hotsixproject.boarduser.entity.QBoardUser> boardUsers = this.<com.sparta.hotsixproject.boarduser.entity.BoardUser, com.sparta.hotsixproject.boarduser.entity.QBoardUser>createList("boardUsers", com.sparta.hotsixproject.boarduser.entity.BoardUser.class, com.sparta.hotsixproject.boarduser.entity.QBoardUser.class, PathInits.DIRECT2);
 
     public final SimplePath<java.awt.Color> color = createSimple("color", java.awt.Color.class);
 
