@@ -5,12 +5,12 @@ import lombok.Getter;
 
 @Getter
 public class AttachmentResponseDto {
-    private Long id;
+    private Long fileId;
     private String fileName;
     private String source;
 
     public AttachmentResponseDto(Attachment attachment) {
-        this.id = attachment.getId();
+        this.fileId = attachment.getId();
         this.fileName = attachment.getFileName();
         this.source = attachment.getSource();
     }

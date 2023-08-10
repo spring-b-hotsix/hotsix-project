@@ -1,17 +1,23 @@
 package com.sparta.hotsixproject.card.service;
 
 import com.sparta.hotsixproject.board.entity.Board;
+import com.sparta.hotsixproject.board.entity.BoardUser;
 import com.sparta.hotsixproject.board.repository.BoardRepository;
+import com.sparta.hotsixproject.board.repository.BoardUserRepository;
 import com.sparta.hotsixproject.card.dto.CardRequestDto;
 import com.sparta.hotsixproject.card.dto.CardResponseDto;
 import com.sparta.hotsixproject.card.dto.DueRequestDto;
 import com.sparta.hotsixproject.card.dto.MoveRequestDto;
 import com.sparta.hotsixproject.card.entity.Card;
 import com.sparta.hotsixproject.card.repository.CardRepository;
+import com.sparta.hotsixproject.carduser.entity.CardUser;
+import com.sparta.hotsixproject.carduser.repository.CardUserRepository;
 import com.sparta.hotsixproject.common.advice.ApiResponseDto;
+import com.sparta.hotsixproject.exception.UnauthorizedException;
 import com.sparta.hotsixproject.side.entity.Side;
 import com.sparta.hotsixproject.side.repository.SideRepository;
 import com.sparta.hotsixproject.user.entity.User;
+import com.sparta.hotsixproject.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,15 +31,18 @@ import java.util.List;
 public class CardService {
     private final CardRepository cardRepository;
     private final SideRepository sideRepository;
+    private final BoardUserRepository boardUserRepository;
+    private final CardUserRepository cardUserRepository;
+    private final UserRepository userRepository;
 
     // 카드 생성
     @Transactional
     public ResponseEntity<ApiResponseDto> createCard(Long sideId, String name, User user) {
         Side side = sideRepository.findById(sideId).get();
         Card card = new Card(name, side.getCardList().size() + 1, user, side);
-        cardRepository.save(card);
 
-        // 추가 작업 필요
+        CardUser cardUser = new CardUser(card, user);
+        cardUserRepository.save(cardUser);
 
         ApiResponseDto apiResponseDto = new ApiResponseDto("카드 생성 완료", HttpStatus.CREATED.value());
         return new ResponseEntity<>(apiResponseDto, HttpStatus.CREATED);
@@ -101,15 +110,28 @@ public class CardService {
     }
 
     // 카드 작업자 추가
-//    @Transactional
-//    public ResponseEntity<CardResponseDto> addWorker(Long boardId, Long sideId, Long cardId) {
-//    }
+    @Transactional
+    public ResponseEntity<CardResponseDto> addWorker(Long boardId, Long sideId, Long cardId, String email) {
+        if (boardUserRepository.findByUser_EmailAndBoard_Id(email, boardId).isEmpty()) {
+            throw new IllegalArgumentException("보드 멤버가 아닙니다.");
+        }
+        if (cardUserRepository.findByCard_IdAndUser_Email(cardId, email).isPresent()) {
+            throw new IllegalArgumentException("이미 카드 작업자 입니다.");
+        }
+
+        Card card = cardRepository.findById(cardId).get();
+        CardUser cardUser = new CardUser(card, userRepository.findByEmail(email).get());
+        cardUserRepository.save(cardUser);
+
+        CardResponseDto cardResponseDto = new CardResponseDto(card);
+        return new ResponseEntity<>(cardResponseDto, HttpStatus.CREATED);
+    }
 
     @Transactional
     // 카드 이동
     public ResponseEntity<CardResponseDto> moveCard(Long boardId, Long sideId, Long cardId, MoveRequestDto requestDto) {
         Card card = cardRepository.findBySide_Board_IdAndSide_IdAndId(boardId, sideId, cardId);
-        Side side = sideRepository.findByName(requestDto.getSideName());
+        Side side = sideRepository.findByName(requestDto.getSideName()).get();
         for (Card ca : side.getCardList()) {
             if (ca.getPosition() >= requestDto.getPosition() && ca.getPosition() < card.getPosition()) { // 아래에서 위로
                 ca.moveDown();
@@ -118,7 +140,6 @@ public class CardService {
                 ca.moveUp();
             }
         }
-
         card.moveCard(side, requestDto.getPosition());
         CardResponseDto cardResponseDto = new CardResponseDto(card);
         return new ResponseEntity<>(cardResponseDto, HttpStatus.OK);
@@ -129,8 +150,7 @@ public class CardService {
     public ResponseEntity<ApiResponseDto> deleteCard(Long boardId, Long sideId, Long cardId, User user) {
         Card card = cardRepository.findBySide_Board_IdAndSide_IdAndId(boardId, sideId, cardId);
         if (!card.getUser().equals(user)) {
-            ApiResponseDto apiResponseDto = new ApiResponseDto("삭제 권한 없음", HttpStatus.UNAUTHORIZED.value());
-            return new ResponseEntity<>(apiResponseDto, HttpStatus.UNAUTHORIZED);
+            throw new UnauthorizedException("삭제 권한 없음");
         }
         cardRepository.delete(card);
         ApiResponseDto apiResponseDto = new ApiResponseDto("삭제 완료", HttpStatus.OK.value());

@@ -2,6 +2,8 @@ package com.sparta.hotsixproject.board.entity;
 
 import com.sparta.hotsixproject.board.dto.BoardRequestDto;
 import com.sparta.hotsixproject.boarduser.controller.BoardUser;
+import com.sparta.hotsixproject.label.entity.Label;
+import com.sparta.hotsixproject.side.entity.Side;
 import com.sparta.hotsixproject.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -17,7 +19,7 @@ import java.util.List;
 public class Board {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long Id;
+    private Long id;
 
     @Column(nullable=false)
     private String name;
@@ -34,6 +36,12 @@ public class Board {
 
     @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE)
     private List<BoardUser> boardUsers;
+
+    @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE)
+    private List<Side> sideList;
+
+    @OneToMany(mappedBy = "board", orphanRemoval = true)
+    private List<Label> labelList;
 
     public Board(String name, String description, User user,Integer red, Integer green, Integer blue){
         this.name = name;
@@ -53,8 +61,4 @@ public class Board {
         this.description = request.getDescription();
         this.color = new Color(request.getRed(),request.getGreen(),request.getBlue());
     }
-
-
-
-
 }

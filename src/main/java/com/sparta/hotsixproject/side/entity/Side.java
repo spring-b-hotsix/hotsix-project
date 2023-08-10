@@ -3,7 +3,6 @@ package com.sparta.hotsixproject.side.entity;
 import com.sparta.hotsixproject.board.entity.Board;
 import com.sparta.hotsixproject.card.entity.Card;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -12,14 +11,15 @@ import java.util.List;
 
 @Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(name = "side")
+@NoArgsConstructor
 public class Side {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     @Column(nullable = false)
     private String name;
+    private int position;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board_id", nullable = false)
@@ -27,4 +27,19 @@ public class Side {
 
     @OneToMany(mappedBy = "side", orphanRemoval = true)
     private List<Card> cardList = new ArrayList<>();
+
+
+    public Side(String name, int position, Board board) {
+        this.name = name;
+        this.position = position;
+        this.board = board;
+    }
+
+    public void updateSideName(String name) {
+        this.name = name;
+    }
+    public void moveSide(Board board, int position) {
+        this.board = board;
+        this.position = position;
+    }
 }

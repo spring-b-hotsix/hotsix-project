@@ -5,7 +5,6 @@ import com.sparta.hotsixproject.common.jwt.JwtUtil;
 import com.sparta.hotsixproject.common.security.JwtAuthenticationFilter;
 import com.sparta.hotsixproject.common.security.JwtAuthorizationFilter;
 import com.sparta.hotsixproject.common.security.UserDetailsServiceImpl;
-import com.sparta.hotsixproject.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
