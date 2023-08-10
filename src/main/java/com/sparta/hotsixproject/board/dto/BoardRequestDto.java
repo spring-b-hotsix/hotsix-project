@@ -9,13 +9,8 @@ import java.awt.*;
 public class BoardRequestDto {
     String name;
     String description;
-    private ColorDto color;
+    Integer red;
+    Integer green;
+    Integer blue;
 
-
-    @Getter
-    public static class ColorDto {
-        private int red;
-        private int green;
-        private int blue;
-    }
 }

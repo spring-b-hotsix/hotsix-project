@@ -63,8 +63,7 @@ public class BoardServiceImpl implements BoardService{
     @Override
     public ApiResponseDto createBoard(BoardRequestDto requestDto, User user) {
         User loginedUser = findUser(user.getId());
-        Color color = new Color(requestDto.getColor().getRed(), requestDto.getColor().getGreen(), requestDto.getColor().getBlue());
-
+        Color color = new Color(requestDto.getRed(), requestDto.getGreen(), requestDto.getBlue());
         Board board = new Board(requestDto.getName(),requestDto.getDescription(),loginedUser,color);
 
         //새 보드 추가

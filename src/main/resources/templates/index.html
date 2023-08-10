@@ -10,7 +10,6 @@
     <link rel="stylesheet" type="text/css"
           href="https://cdn.jsdelivr.net/npm/spectrum-colorpicker2/dist/spectrum.min.css">
     <script src="https://cdn.jsdelivr.net/npm/spectrum-colorpicker2/dist/spectrum.min.js"></script>
-    <script src="/js/basic.js"></script>
 
     <style>
         body {
@@ -105,6 +104,51 @@
         .popup.active {
             display: block;
         }
+
+        .error-message {
+            color: red;
+            font-size: 14px;
+            margin-top: 5px;
+            text-align: left;
+        }
+
+        .success-message {
+            color: green;
+            font-size: 14px;
+            margin-top: 5px;
+            text-align: left;
+        }
+
+        .color-box {
+            width: 50px;
+            height: 50px;
+            border: 1px solid black;
+            background-color: green;
+        }
+
+        .board-item {
+            flex: 0 0 calc(10% - 20px); /* 여기서10%는 원하는 각각의 아이템 크기를 의미하며, 여유 공간도 고려하여 크기를 설정 */
+            margin: 10px; /* 아이템 간격 조정 */
+            border: 1px solid black;
+        }
+
+        .board-list {
+            display: flex;
+            flex-wrap: wrap; /* 아이템이 줄바꿈되도록 설정 */
+        }
+
+        .board-content {
+            width: 100px;
+            height: 100px;
+            flex-direction: column;
+        }
+
+        .board-content > div {
+            overflow: hidden; /* 긴 문자열을 넘치지 않도록 처리 */
+            text-overflow: ellipsis; /* 넘치는 부분을 생략 부호로 표시 */
+            white-space: nowrap; /* 텍스트 줄바꿈 방지 */
+        }
+
     </style>
 </head>
 
@@ -113,40 +157,62 @@
     <span th:text="${nickname}"></span>님, 환영합니다.
 </div>
 <div id="my-board-form" class="board-form">
+    <div>Your Workspaces</div>
     <div class="board-list">
-        <div>Your Workspaces</div>
-        <div th:each="myboard : ${myboards}" class="board-item">
+        <div th:each="myboard : ${myboards}" class="board-item"
+             th:onclick="|window.location.href='/boards/${myboard.id}'|">
             <div class="section">
                 <div class="board-content">
-                    <span th:text="${myboard.name}"></span>
-                    <span th:text="${myboard.description}"></span>
+                    <div>
+                        <span th:text="${myboard.name}"></span>
+                    </div>
+                    <div>
+                        <span th:text="${myboard.description}"></span>
+                    </div>
+                    <div>
+                        <div class="color-box"
+                             th:style="'background-color: rgb(' + ${myboard.red} + ', ' + ${myboard.green} + ', ' + ${myboard.blue} + ')'"></div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-    <button id="add-board-btn">New board</button>
-    <div id="popup-container" class="popup">
-        <div class="popup-content">
-            <div>Board title</div>
-            <input id="board-name" class="title-input" type="text" name="content" placeholder="제목을 입력하세요" required>
-            <div>Board Description</div>
-            <input id="board-description" class="description-input" type="text" name="content" placeholder="설명을 입력하세요">
-            <div>RGB Color Picker</div>
-            <input type="text" id="color" readonly/>
-            <button id="ok-btn">생성하기</button>
-            <button id="close-popup-btn">취소</button>
-        </div>
+
+</div>
+<button id="open-popup-btn">New board</button>
+<div id="popup-container" class="popup">
+    <div class="popup-content">
+        <div>Board title</div>
+        <input id="board-name" class="title-input" type="text" name="content" placeholder="제목을 입력하세요"
+               onchange="nameConfirm()">
+        <div id="name-error" class="error-message" style="display: none;"></div>
+        <div id="name-success" class="success-message" style="display: none;"></div>
+        <div>Board Description</div>
+        <input id="board-description" class="description-input" type="text" name="content" placeholder="설명을 입력하세요">
+        <div>RGB Color Picker</div>
+        <input type="text" id="color" readonly/>
+        <button id="ok-btn" onclick="addBoard()">생성하기</button>
+        <button id="close-popup-btn">취소</button>
     </div>
+</div>
 </div>
 
 <div id="guest-board-form" class="board-form">
+    <div>Guest Workspaces</div>
     <div class="board-list">
-        <div>Guest Workspaces</div>
         <div th:each="guestboard : ${guestboards}" class="board-item">
             <div class="section">
                 <div class="board-content">
-                    <span th:text="${guestboard.name}"></span>
-                    <span th:text="${guestboard.description}"></span>
+                    <div>
+                        <span th:text="${guestboard.name}"></span>
+                    </div>
+                    <div>
+                        <span th:text="${guestboard.description}"></span>
+                    </div>
+                    <div>
+                        <div class="color-box"
+                             th:style="'background-color: rgb(' + ${gusetboard.red} + ', ' + ${guestboard.green} + ', ' + ${guestboard.blue} + ')'"></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -155,17 +221,18 @@
 
 <script>
 
-    $(document).ready(function() {
-        const auth = getToken();
-        // "New board" 버튼 클릭 시 팝업 창 열기
-        $('#add-board-btn').on('click', function() {
+    $(document).ready(function () {
+        $('#open-popup-btn').on('click', function () {
             $('#popup-container').addClass('active');
         });
 
         // 팝업 창 닫기 버튼 클릭 시 팝업 창 닫기
-        $('#close-popup-btn').on('click', function() {
+        $('#close-popup-btn').on('click', function () {
             $('#popup-container').removeClass('active');
         });
+        const auth = getToken();
+        // "New board" 버튼 클릭 시 팝업 창 열기
+
     });
 
     // 쿠키에서 인증 토큰 가져오기
@@ -178,45 +245,111 @@
         return auth;
     }
 
-    // POST 요청 처리
-    $('#ok-btn').on('click', function (event) {
-        event.preventDefault(); // 기본 동작 중단
+    let boardNameCheckStatus = 0;
 
-        const name = $('#board-name').val(); // 입력 데이터 가져오기
-        const description = $('#board-description').val(); // 입력 데이터 가져오기
-        const color = $('#color').spectrum('get').toRgb();
+    function nameConfirm() {
+        boardNameCheckStatus = 0;
+        let name = document.getElementById("board-name");
+        let error = document.getElementById("name-error");
+        let success = document.getElementById("name-success");
+
+        let regex = new RegExp('^(?=.*[a-z0-9가-힣])[a-z0-9가-힣]{2,16}$');
+        if (regex.test(name.value)) {
+            error.style.display = "none";
+            success.style.display = "block";
+            success.textContent = "사용가능한 보드이름입니다."
+            name.style.borderColor = "green";
+            boardNameCheckStatus = 1;
+        } else {
+            error.style.display = "block";
+            error.textContent = "보드이름은 2~16자의 영어, 숫자, 한글로 사용할 수 있습니다."
+            success.style.display = "none";
+            name.style.borderColor = "red";
+            boardNameCheckStatus = 0;
+        }
+    }
+
+    function addBoard() {
+        if (boardNameCheckStatus === 0) {
+            alert("적합한 보드명을 작성해주세요.")
+            return;
+        }
+        let name = $('#board-name').val();
+        let description = $('#board-description').val();
+        let color = $('#color').spectrum('get').toRgb();
+        let red
         console.log(name);
         console.log(description);
         console.log(color);
-        // const image = document.getElementById('imagefile').files[0]; // 입력 사진 가져오기
 
-        let formData = new FormData();
-        formData.append("name", name);
-        formData.append("description", description);
-        formData.append("color", JSON.stringify(color)); // 컬러값을 JSON 형태로 전달
 
-        $.ajax({
-            type: 'POST',
-            url: '/boards',
-            // data: JSON.stringify({ data: inputData }),
-            // contentType: 'application/json',
-            data: formData,
-            processData: false,
-            contentType: false,
-            // enctype: 'multipart/form-data', // 이미지 업로드를 위해 추가
-            success: function (response) {
-                console.log('POST 요청 성공:', response);
-                // 여기에서 POST 요청에 대한 응답 처리
+        let requestDto = {
+            "name": name,
+            "description": description,
+            "red": color.r,
+            "green": color.g,
+            "blue": color.b
+        }
+
+        fetch(`/boards`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
             },
-            error: function (jqXHR, textStatus, errorThrown) {
-                console.error('POST 요청 실패:', errorThrown);
-                // 여기에서 POST 요청 실패 처리
-            }
-        });
+            body: JSON.stringify(requestDto)
+        })
+            .then(function (response) {
+                return response.json();
+            })
+            .then(function (responseDto) {
+                alert(responseDto.msg);
+                window.location.href = "/";
+            })
+            .catch(function (error) {
+                console.error("보드 생성 실패", error);
 
-        alert(data['추가 완료!']);
-        // $('#input-post').val(''); // 작성 완료 시 내용 비우기
-    });
+            });
+    }
+
+    // POST 요청 처리
+    // $('#ok-btn').on('click', function (event) {
+    //     event.preventDefault(); // 기본 동작 중단
+    //
+    //     const name = $('#board-name').val(); // 입력 데이터 가져오기
+    //     const description = $('#board-description').val(); // 입력 데이터 가져오기
+    //     const color = $('#color').spectrum('get').toRgb();
+    //     console.log(name);
+    //     console.log(description);
+    //     console.log(color);
+    //     // const image = document.getElementById('imagefile').files[0]; // 입력 사진 가져오기
+    //
+    //     let formData = new FormData();
+    //     formData.append("name", name);
+    //     formData.append("description", description);
+    //     formData.append("color", JSON.stringify(color)); // 컬러값을 JSON 형태로 전달
+    //
+    //     $.ajax({
+    //         type: 'POST',
+    //         url: '/boards',
+    //         // data: JSON.stringify({ data: inputData }),
+    //         // contentType: 'application/json',
+    //         data: formData,
+    //         processData: false,
+    //         contentType: false,
+    //         // enctype: 'multipart/form-data', // 이미지 업로드를 위해 추가
+    //         success: function (response) {
+    //             console.log('POST 요청 성공',response.msg);
+    //             // 여기에서 POST 요청에 대한 응답 처리
+    //         },
+    //         error: function (jqXHR, textStatus, errorThrown) {
+    //             console.error('POST 요청 실패:', errorThrown);
+    //             // 여기에서 POST 요청 실패 처리
+    //         }
+    //     });
+    //
+    //     alert(data['추가 완료!']);
+    //     // $('#input-post').val(''); // 작성 완료 시 내용 비우기
+    // });
 
     $("#color").spectrum({
         //allowEmpty:true, //색없음 가능 여부 default - false

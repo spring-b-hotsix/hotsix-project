@@ -2,7 +2,9 @@ package com.sparta.hotsixproject.board.dto;
 
 import com.sparta.hotsixproject.board.entity.Board;
 import jakarta.persistence.Column;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 import java.awt.*;
 
@@ -10,16 +12,18 @@ import java.awt.*;
 public class BoardResponseDto {
     private Long id;
     private String name;
-    @Column
     private String description;
-    @Column
-    private Color color;
+    private Integer red;
+    private Integer green;
+    private Integer blue;
 
-    public BoardResponseDto(Board board){
+
+    public BoardResponseDto(Board board) {
         this.id = board.getId();
         this.name = board.getName();
         this.description = board.getDescription();
-        this.color = board.getColor();
+        this.red = board.getColor().getRed();
+        this.green = board.getColor().getGreen();
+        this.blue = board.getColor().getBlue();
     }
-
 }

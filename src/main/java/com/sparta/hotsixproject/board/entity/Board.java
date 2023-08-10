@@ -51,7 +51,7 @@ public class Board {
     public void update(BoardRequestDto request){
         this.name = request.getName();
         this.description = request.getDescription();
-        this.color = new Color(request.getColor().getRed(),request.getColor().getGreen(),request.getColor().getBlue());
+        this.color = new Color(request.getRed(),request.getGreen(),request.getBlue());
     }
 
 
