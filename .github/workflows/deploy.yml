@@ -33,9 +33,19 @@ jobs:
       with:
         distribution: 'temurin'
         java-version: '17'
+    # 환경 변수 세팅
+    - name: properties 파일 생성
+      run: |
+        cd ./src/main/resources
+        touch ./template.properties
+        echo "${{secrets.TEMPLATE_PROPERTIES}}" > ./template.properties
+        cp ./template.properties ./application.properties
+      shell: bash
+
     # Make gradlew executable
     - name: Run chmod to make gradlew executable
       run: chmod +x ./gradlew
+
     # (3) Gradle build (Test 제외)는 -x test
     - name: Build with Gradle
       uses: gradle/gradle-build-action@0d13054264b0bb894ded474f08ebb30921341cee
