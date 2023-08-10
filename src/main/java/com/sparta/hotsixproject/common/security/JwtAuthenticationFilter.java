@@ -22,10 +22,9 @@ import java.io.IOException;
 @Slf4j(topic = "로그인 및 JWT 생성")
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private final JwtUtil jwtUtil;
-    private final UserRepository userRepository;
-    public JwtAuthenticationFilter(JwtUtil jwtUtil, UserRepository userRepository) {
+
+    public JwtAuthenticationFilter(JwtUtil jwtUtil) {
         this.jwtUtil = jwtUtil;
-        this.userRepository = userRepository;
         setFilterProcessesUrl("/users/login");
     }
 
@@ -53,8 +52,10 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         String username = ((UserDetailsImpl) authResult.getPrincipal()).getUsername();
         UserRoleEnum role = ((UserDetailsImpl) authResult.getPrincipal()).getUser().getRole();
 
+//        String token = jwtUtil.createToken(username, role);
+//        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, token);
         String token = jwtUtil.createToken(username, role);
-        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, token);
+        jwtUtil.addJwtToCookie(token, response);
         ApiResponseDto apiResponseDto = new ApiResponseDto();
         apiResponseDto.setMsg("로그인 성공");
         apiResponseDto.setStatusCode(HttpStatus.OK.value());
@@ -63,7 +64,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         response.setCharacterEncoding("UTF-8");
         String json = new ObjectMapper().writeValueAsString(apiResponseDto);
         response.getWriter().write(json);
-
     }
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException {
