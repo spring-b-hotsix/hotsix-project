@@ -25,6 +25,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.List;
 import java.util.Locale;
 
@@ -116,10 +118,11 @@ public class UserController {
 
     //인가 코드 받아오기 위한 controller
     @GetMapping("/login/kakao/callback")
-    public String kakaoLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
+    public String kakaoLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException, UnsupportedEncodingException {
         String token = kakaoService.kakaoLogin(code);
-
-        Cookie cookie = new Cookie(JwtUtil.AUTHORIZATION_HEADER, token.substring(7));
+        // Cookie Value 에는 공백이 불가능해서 encoding 진행
+        token = URLEncoder.encode(token, "utf-8").replaceAll("\\+", "%20");
+        Cookie cookie = new Cookie(JwtUtil.AUTHORIZATION_HEADER, token);
         cookie.setPath("/");
         response.addCookie(cookie);
 
@@ -127,10 +130,11 @@ public class UserController {
     }
 
     @GetMapping("/login/google/callback")
-    public String googleLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
+    public String googleLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException, UnsupportedEncodingException {
         String token = googleLogin.googleLogin(code);
-
-        Cookie cookie = new Cookie(JwtUtil.AUTHORIZATION_HEADER, token.substring(7));
+        // Cookie Value 에는 공백이 불가능해서 encoding 진행
+        token = URLEncoder.encode(token, "utf-8").replaceAll("\\+", "%20");
+        Cookie cookie = new Cookie(JwtUtil.AUTHORIZATION_HEADER,token);
         cookie.setPath("/");
         response.addCookie(cookie);
 
