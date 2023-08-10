@@ -16,11 +16,11 @@ public class CardLabel {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn
+    @JoinColumn(name = "cardId", nullable = false)
     private Card card;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
-    @JoinColumn
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "labelId", nullable = false)
     private Label label;
 
     public CardLabel(Card card, Label label) {
