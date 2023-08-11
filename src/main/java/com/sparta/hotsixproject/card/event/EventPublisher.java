@@ -20,6 +20,7 @@ public class EventPublisher {
     public void publishCardUpdatedEvent(User user, Card card, String oldName, String newName,
                                         String oldDescription, String newDescription,
                                         String oldColor, String newColor) {
+        log.info("이벤트 생성");
         CardUpdateEvent event = new CardUpdateEvent(this, user, card, oldName, newName,
                 oldDescription, newDescription, oldColor, newColor);
         eventPublisher.publishEvent(event);

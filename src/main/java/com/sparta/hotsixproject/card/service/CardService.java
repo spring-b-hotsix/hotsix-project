@@ -87,12 +87,11 @@ public class CardService {
         String oldDescription = card.getDescription();
         card.updateDesc(description);
 
-        // 비동기적으로 이벤트 발생
+        // 비동기적으로 이벤트 발생, dto 내려 준 이후에 listener로 메소드 시작
         eventPublisher.publishCardUpdatedEvent(editor, card, card.getName(), card.getName(),
                 oldDescription, description,
                 card.getColor(), card.getColor());
-
-        System.out.println("비동기 event listener 수행 완료");
+        
         CardResponseDto cardResponseDto = new CardResponseDto(card);
         return new ResponseEntity<>(cardResponseDto, HttpStatus.OK);
     }

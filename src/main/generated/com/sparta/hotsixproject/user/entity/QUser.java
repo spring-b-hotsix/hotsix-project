@@ -18,8 +18,6 @@ public class QUser extends EntityPathBase<User> {
 
     private static final long serialVersionUID = 153707907L;
 
-    private static final PathInits INITS = PathInits.DIRECT2;
-
     public static final QUser user = new QUser("user");
 
     public final ListPath<com.sparta.hotsixproject.board.entity.Board, com.sparta.hotsixproject.board.entity.QBoard> boardList = this.<com.sparta.hotsixproject.board.entity.Board, com.sparta.hotsixproject.board.entity.QBoard>createList("boardList", com.sparta.hotsixproject.board.entity.Board.class, com.sparta.hotsixproject.board.entity.QBoard.class, PathInits.DIRECT2);
@@ -38,31 +36,22 @@ public class QUser extends EntityPathBase<User> {
 
     public final StringPath nickname = createString("nickname");
 
-    public final com.sparta.hotsixproject.notification.entity.QNotification notification;
+    public final ListPath<com.sparta.hotsixproject.notification.entity.Notification, com.sparta.hotsixproject.notification.entity.QNotification> notificationList = this.<com.sparta.hotsixproject.notification.entity.Notification, com.sparta.hotsixproject.notification.entity.QNotification>createList("notificationList", com.sparta.hotsixproject.notification.entity.Notification.class, com.sparta.hotsixproject.notification.entity.QNotification.class, PathInits.DIRECT2);
 
     public final StringPath password = createString("password");
 
     public final EnumPath<com.sparta.hotsixproject.user.UserRoleEnum> role = createEnum("role", com.sparta.hotsixproject.user.UserRoleEnum.class);
 
     public QUser(String variable) {
-        this(User.class, forVariable(variable), INITS);
+        super(User.class, forVariable(variable));
     }
 
     public QUser(Path<? extends User> path) {
-        this(path.getType(), path.getMetadata(), PathInits.getFor(path.getMetadata(), INITS));
+        super(path.getType(), path.getMetadata());
     }
 
     public QUser(PathMetadata metadata) {
-        this(metadata, PathInits.getFor(metadata, INITS));
-    }
-
-    public QUser(PathMetadata metadata, PathInits inits) {
-        this(User.class, metadata, inits);
-    }
-
-    public QUser(Class<? extends User> type, PathMetadata metadata, PathInits inits) {
-        super(type, metadata, inits);
-        this.notification = inits.isInitialized("notification") ? new com.sparta.hotsixproject.notification.entity.QNotification(forProperty("notification"), inits.get("notification")) : null;
+        super(User.class, metadata);
     }
 
 }

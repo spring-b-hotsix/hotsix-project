@@ -75,7 +75,7 @@ public class QCard extends EntityPathBase<Card> {
     public QCard(Class<? extends Card> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.side = inits.isInitialized("side") ? new com.sparta.hotsixproject.side.entity.QSide(forProperty("side"), inits.get("side")) : null;
-        this.user = inits.isInitialized("user") ? new com.sparta.hotsixproject.user.entity.QUser(forProperty("user"), inits.get("user")) : null;
+        this.user = inits.isInitialized("user") ? new com.sparta.hotsixproject.user.entity.QUser(forProperty("user")) : null;
     }
 
 }

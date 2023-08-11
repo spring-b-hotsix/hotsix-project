@@ -25,9 +25,8 @@ public class Notification {
     @Column
     private String detail;
 
-    // DB에 저장되지 않는 가상 필드
-    @Transient
-    private Duration timeSinceModified;
+    @Column
+    private String timeSinceModified;
 
 //    // 사람에게 뜨는 알림, 일단 전체 유저가 다 볼 수 있도록 주석처리
 //    @ManyToOne(fetch = FetchType.LAZY)
@@ -35,14 +34,14 @@ public class Notification {
 //    private User login_user;
     
     // 알림 발생 시킨 editor
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
     private User editor;
 
     public Notification(NotificationTitle title, String detail, LocalDateTime modifiedAt, User editor) {
         this.title = title;
         this.detail = detail;
-        this.timeSinceModified = Duration.between(modifiedAt, LocalDateTime.now());
+        this.timeSinceModified = Duration.between(modifiedAt, LocalDateTime.now()).toString();
         this.editor = editor;
     }
 }

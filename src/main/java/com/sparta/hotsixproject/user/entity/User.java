@@ -48,8 +48,8 @@ public class User {
 //    @OneToMany(mappedBy = "login_user", orphanRemoval = true)
 //    private List<Notification> notificationList = new ArrayList<>();
 
-    @OneToOne(mappedBy = "editor", orphanRemoval = true)
-    private Notification notification;
+    @OneToMany(mappedBy = "editor", orphanRemoval = true)
+    private List<Notification> notificationList = new ArrayList<>();
 
     @Column
     private Long kakaoId;
