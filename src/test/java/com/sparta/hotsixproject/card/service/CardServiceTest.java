@@ -10,6 +10,7 @@ import com.sparta.hotsixproject.card.dto.MoveRequestDto;
 import com.sparta.hotsixproject.card.entity.Card;
 import com.sparta.hotsixproject.card.repository.CardRepository;
 import com.sparta.hotsixproject.cardlabel.entity.CardLabel;
+import com.sparta.hotsixproject.cardlabel.repository.CardLabelRepository;
 import com.sparta.hotsixproject.carduser.entity.CardUser;
 import com.sparta.hotsixproject.carduser.repository.CardUserRepository;
 import com.sparta.hotsixproject.checklist.checklistItem.dto.ChecklistItemRequestDto;
@@ -78,6 +79,8 @@ class CardServiceTest {
     ChecklistRepository checklistRepository;
     @Autowired
     CardUserRepository cardUserRepository;
+    @Autowired
+    CardLabelRepository cardLabelRepository;
 
     /**
      * 테스트 요구사항(시나리오)
@@ -341,7 +344,57 @@ class CardServiceTest {
     @Test
     @DisplayName("카드 삭제")
     void deleteCard() {
-        //
+        /**
+         * 시나리오:
+         * 카드 생성
+         * → 체크리스트, 작업자, 라벨 추가
+         * → 카드 삭제 후
+         * CardUser, Card.checklistlist, Card.cardlabel 확인
+         */
+        // given
+        User user1 = createUser("nick1", "email1@email.com");
+        Board board = createBoard(user1);
+        BoardUser boardUser1 = createBoardUser(user1, board);
+        Side side = createSide(board, 1);
+        Card card = createCard(user1, side);
+
+        Long boardId = board.getId();
+        Long sideId = side.getId();
+        Long cardId = card.getId();
+
+        // when 1
+        /** 체크리스트, 작업자, 라벨 추가 **/
+        ChecklistRequestDto checkRequestDto = new ChecklistRequestDto("오늘 할 일");
+        ChecklistResponseDto checkResponseDto = checklistService.createChecklist(boardId, sideId, cardId, checkRequestDto, user1);
+
+        cardService.addWorker(boardId, sideId, cardId, user1.getEmail());
+
+        LabelRequestDto labelDto = new LabelRequestDto("label1", "yellow");
+        labelService.createLabel(boardId, labelDto, user1);
+        Label label = labelRepository.findByTitle("label1").orElse(null);
+        labelService.createCardLabel(boardId, sideId, cardId, label.getId(), user1);
+
+        // then 1
+        assertEquals("오늘 할 일", checkResponseDto.getName()); // 체크리스트
+        assertEquals(user1.getEmail(), card.getCardUserList().get(0).getUser().getEmail()); // 작업자
+        assertEquals("label1", label.getTitle()); // 라벨
+        assertEquals("yellow", label.getColor());
+        assertEquals("label1", card.getCardLabelList().get(0).getLabel().getTitle());
+
+        // when 2
+        /** 카드 삭제 후 CardUser, Card.checklistlist, Card.cardlabel 확인 **/
+        labelService.deleteCardLabel(boardId, sideId, cardId, label.getId(), user1);
+        cardService.deleteWorker(boardId, sideId, cardId, user1.getEmail());
+        checklistService.deleteChecklist(boardId, sideId, cardId, checkResponseDto.getId(), user1);
+
+        CardLabel deletedCardLabel = cardLabelRepository.findByCard_idAndLabel_id(cardId, label.getId()).orElse(null);
+        CardUser deletedCardUser = cardUserRepository.findByCard_IdAndUser_Email(cardId, user1.getEmail()).orElse(null);
+        Checklist deletedChecklist = checklistRepository.findById(checkResponseDto.getId()).orElse(null);
+
+        // then 2
+        assertNull(deletedChecklist);
+        assertNull(deletedCardUser);
+        assertNull(deletedCardLabel);
     }
 
 
@@ -353,6 +406,7 @@ class CardServiceTest {
     }
     private Side createSide(Board board, int pos) {
         Side side = new Side("side1", 1024 * pos, board);
+        board.addSide(side);
         em.persist(side);
         return side;
     }
