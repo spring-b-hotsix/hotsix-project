@@ -71,4 +71,7 @@ public class Board {
         this.sideList.remove(side);
         side.setBoard(null);
     }
+    public void setUser(User user) {
+        this.user = user;
+    }
 }

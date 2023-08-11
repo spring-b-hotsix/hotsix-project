@@ -5,8 +5,6 @@ import com.sparta.hotsixproject.user.dto.UpdateNicknameRequestDto;
 import com.sparta.hotsixproject.user.dto.UpdatePasswordRequestDto;
 import com.sparta.hotsixproject.user.entity.User;
 import com.sparta.hotsixproject.user.repository.UserRepository;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;

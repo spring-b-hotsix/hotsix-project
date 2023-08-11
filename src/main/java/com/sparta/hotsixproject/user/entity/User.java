@@ -83,4 +83,12 @@ public class User {
     public void updatePassword(String encodePassword) {
         this.password = encodePassword;
     }
+    public void addBoard(Board board) {
+        this.boardList.add(board);
+        board.setUser(this);
+    }
+    public void removeBoard(Board board) {
+        this.boardList.remove(board);
+        board.setUser(null);
+    }
 }
