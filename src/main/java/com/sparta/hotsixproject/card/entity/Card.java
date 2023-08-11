@@ -106,11 +106,12 @@ public class Card extends TimeStamped {
 
     public void addCardLabel(CardLabel cardLabel) {
         this.cardLabelList.add(cardLabel);
+        cardLabel.setCard(this);
     }
     public void removeCardLabel(CardLabel cardLabel) {
         this.cardLabelList.remove(cardLabel);
+        cardLabel.setCard(null);
     }
-
     public void addChecklist(Checklist checklist) {
         this.checklistList.add(checklist);
         checklist.setCard(this);

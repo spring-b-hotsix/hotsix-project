@@ -99,13 +99,12 @@ public class LabelService {
     @LabelCheckPageAndUser
     public ResponseEntity<ApiResponseDto> deleteCardLabel(Long boardId, Long sideId, Long cardId, Long labelId, User user) {
         CardLabel cardLabel = findCardLabel(cardId, labelId);
-
         Card card = cardRepository.findById(cardId).get();
-        card.removeCardLabel(cardLabel); // 연관관계 리스트 삭제
         Label label = labelRepository.findById(labelId).get();
+        card.removeCardLabel(cardLabel); // 연관관계 리스트 삭제
         label.removeCardLabel(cardLabel); // 연관관계 리스트 삭제
-        cardLabelRepository.delete(cardLabel);
 
+        cardLabelRepository.deleteById(cardLabel.getId());
         ApiResponseDto apiResponseDto = new ApiResponseDto("카드 내 라벨 삭제 완료", HttpStatus.OK.value());
         return new ResponseEntity<>(apiResponseDto, HttpStatus.OK);
     }

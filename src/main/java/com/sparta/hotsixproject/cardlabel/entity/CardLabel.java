@@ -27,4 +27,10 @@ public class CardLabel {
         this.card = card;
         this.label = label;
     }
+    public void setCard(Card card) {
+        this.card = card;
+    }
+    public void setLabel(Label label) {
+        this.label = label;
+    }
 }

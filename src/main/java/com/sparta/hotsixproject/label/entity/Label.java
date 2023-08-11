@@ -44,8 +44,10 @@ public class Label {
 
     public void addCardLabel(CardLabel cardLabel) {
         this.cardLabelList.add(cardLabel);
+        cardLabel.setLabel(this);
     }
     public void removeCardLabel(CardLabel cardLabel) {
         this.cardLabelList.remove(cardLabel);
+        cardLabel.setLabel(null);
     }
 }
