@@ -1,5 +1,45 @@
 const host = 'http://' + window.location.host;
 
+function toggleName(state) {
+    if (state === 'input') {
+        document.getElementById('name-default').style.display = 'none';
+        document.getElementById('name-input').style.display = 'flex';
+    }
+}
+
+function updateAndToggleName(state, boardId, sideId, cardId) {
+    if (state === 'default') {
+        let name = $('#card-name-input').val();
+        let requestDto = {"name": name};
+
+        fetch(`/boards/${boardId}/sides/${sideId}/cards/${cardId}/name`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(requestDto)
+        })
+            .then(function (response) {
+                return response.json();
+            })
+
+            .then(function (responseDto) {
+                alert("이름 수정 완료!");
+
+                // 모달 내용을 업데이트한 후 창을 새로고침
+                location.reload();
+                // toggleName('input')
+
+                // Update description text and toggle back to default state
+                $('#name-default .card-text').text(name);
+                document.getElementById('name-default').style.display = 'block';
+                document.getElementById('name-input').style.display = 'none';
+                // // 모달 내용을 다시 불러와서 업데이트
+                // refreshModalContent();
+            });
+    }
+}
+
 function toggleDescription(state) {
     if (state === 'input') {
         document.getElementById('description-default').style.display = 'none';
@@ -28,7 +68,7 @@ function updateAndToggleDescription(state, boardId, sideId, cardId) {
 
                 // 모달 내용을 업데이트한 후 창을 새로고침
                 location.reload();
-                toggleDescription('input')
+                // toggleDescription('input')
 
                 // Update description text and toggle back to default state
                 $('#description-default .card-text').text(description);
