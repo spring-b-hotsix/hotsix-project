@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<!-- Thymeleaf -->
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Hotsix::보드 페이지</title>
+    <!--  jquery  -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- 팔레트 -->
+    <link rel="stylesheet" type="text/css"
+          href="https://cdn.jsdelivr.net/npm/spectrum-colorpicker2/dist/spectrum.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/spectrum-colorpicker2/dist/spectrum.min.js"></script>
+
+    <style>
+        .popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+
+        }
+
+        .popup-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .popup.active {
+            display: block;
+        }
+
+        .error-message {
+            color: red;
+            font-size: 14px;
+            margin-top: 5px;
+            text-align: left;
+        }
+
+        .success-message {
+            color: green;
+            font-size: 14px;
+            margin-top: 5px;
+            text-align: left;
+        }
+
+        .board-content {
+            border-bottom: 1px solid black;
+            padding-bottom: 10px; /* 줄과의 간격을 주기 위해 padding-bottom 추가 */
+        }
+
+        .popup-content {
+            color: black;
+        }
+    </style>
+</head>
+
+<body th:style="'background-color: rgb(' + ${board.red} + ', ' + ${board.green} + ', ' + ${board.blue} + ')'">
+<h1 th:text="${board.name}"></h1>
+<p style="display:none">Red: <span id="red" th:text="${board.red}"></span></p>
+<p style="display:none">Green: <span id="green" th:text="${board.green}"></span></p>
+<p style="display:none">Blue: <span id="blue" th:text="${board.blue}"></span></p>
+<button id="open-popup-change-btn">보드 수정하기</button>
+<div id="popup-change-container" class="popup">
+    <div class="popup-content">
+        <div>Board title</div>
+        <input id="board-name" class="title-input" type="text" name="content" placeholder="제목을 입력하세요"
+               th:value="${board.name}"
+               onchange="nameConfirm()">
+        <div id="name-error" class="error-message" style="display: none;"></div>
+        <div id="name-success" class="success-message" style="display: none;"></div>
+        <div>Board Description</div>
+        <input id="board-description" class="description-input" type="text" name="content" placeholder="설명을 입력하세요"
+               th:value="${board.description}">
+        <div>RGB Color Picker</div>
+        <input type="text" id="color" readonly/>
+        <button id="ok-btn" onclick="changeBoard(this)" th:value="${board.boardId}">수정하기</button>
+        <button id="close-popup-change-btn">취소</button>
+    </div>
+</div>
+<button id="open-popup-invite-btn" onclick="getBoardMembers()">보드 초대하기</button>
+<div id="popup-invite-container" class="popup">
+    <div class="popup-content">
+        <div>보드 초대하기</div>
+        <input id="invite-email" class="title-input" type="text" name="content" placeholder="초대할 유저의 이메일을 입력하세요"
+               onchange="emailConfirm()">
+        <div>공유된 사용자 :</div>
+        <div class="board-user-list" id="board-user-list">
+        </div>
+        <button id="invite-ok-btn" onclick="inviteUser()">초대하기</button>
+        <button id="close-popup-invite-btn">취소</button>
+    </div>
+</div>
+<button id="open-popup-delete-btn" >보드 삭제하기</button>
+<div id="popup-delete-container" class="popup">
+    <div class="popup-content">
+        <div>해당 보드를 정말 삭제하시겠습니까?</div>
+        <button id="delete-ok-btn" onclick="inviteUser()">예</button>
+        <button id="close-popup-delete-btn">아니오</button>
+    </div>
+</div>
+<script>
+
+    $(document).ready(function () {
+        $('#open-popup-change-btn').on('click', function () {
+            $('#popup-change-container').addClass('active');
+        });
+        $('#open-popup-invite-btn').on('click', function () {
+            $('#popup-invite-container').addClass('active');
+        });
+        $('#open-popup-delete-btn').on('click', function () {
+            $('#popup-delete-container').addClass('active');
+        });
+
+        // 팝업 창 닫기 버튼 클릭 시 팝업 창 닫기
+        $('#close-popup-change-btn').on('click', function () {
+            $('#popup-change-container').removeClass('active');
+        });
+        $('#close-popup-invite-btn').on('click', function () {
+            $('#popup-invite-container').removeClass('active');
+        });
+        $('#close-popup-delete-btn').on('click', function () {
+            $('#popup-delete-container').removeClass('active');
+        });
+        //배경색에 따라 글씨 색상을 선택하는 함수 추가
+        applyTextColor();
+        const auth = getToken();
+        // "New board" 버튼 클릭 시 팝업 창 열기
+
+    });
+
+    // 쿠키에서 인증 토큰 가져오기
+    function getToken() {
+        let auth = Cookies.get('Authorization');
+
+        if (auth === undefined) {
+            return '';
+        }
+        return auth;
+    }
+
+
+    $("#color").spectrum({
+
+        //allowEmpty:true, //색없음 가능 여부 default - false
+        showButtons: true, //하단 close, choose 버튼
+        preferredFormat: "rgb",//색 포맷 형식 지정
+        color: $("body").css("background-color"), //초기 색상
+        showPalette: true,//왼쪽 색 파레트 사용여부
+        palette: [
+            ['rgb(0,0,0)', 'rgb(235,235,235)'], // 한 줄에 두 가지 색상씩 두줄로 표시됨
+            ['rgb(0,255,0)', 'rgb(255,0,0)']
+        ], // 왼쪽 색 파레트 초기색
+        showInitial: true, //현재 색 보여줄지 여부
+        showInput: false, // 문자로 입력 가능하도록 input추가
+        showAlpha: false, // 투명도 사용 여부
+        maxSelectionSize: 3, //이전 선택한 색 최대 몇 개까지 보여줄 지 갯수
+        show: function (color) {//파레트 보여줄 때 이벤트
+        },
+        change: function (color) {//색 선택 시 이벤트
+            // color.toHexString()
+        },
+        hide: function (color) { // 파레트 닫을 때 이벤트
+        },
+
+    });
+
+    function getBoardMembers() {
+        let url = window.location.href;
+        let boardId = url.split("/").pop();
+        console.log(boardId);
+
+        fetch(`/boards/${boardId}/members`)
+            .then(function (response) {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error("보드멤버 불러오기 실패");
+                }
+            })
+            .then(function (responseDto) {
+                $('#board-user-list').empty();
+                console.log(responseDto);
+                responseDto.forEach(function (member) {
+                    let id = member.userId;
+                    let nickname = member.nickname;
+                    let email = member.email;
+                    console.log(nickname, email);
+                    let temp_html = `<div class="board-user-item">
+                                        <div class="board-content" id="board-user-content-${id}">
+                                            <div>
+                                                <span>${nickname}</span>
+                                            </div>
+                                            <div>
+                                                <span>${email}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                `;
+                    $('#board-user-list').append(temp_html);
+                });
+            });
+    }
+
+    function inviteUser() {
+        //현재 url에서 보드id 가져오기
+        let url = window.location.href;
+        let boardId = url.split("/").pop();
+
+        let email = $('#invite-email').val();
+        //이메일 정규식
+        let regex = new RegExp('[a-z0-9]+@[a-z]+\.[a-z]{2,3}');
+        if (regex.test(email)) {
+            console.log("이메일 정규식 검증통과")
+
+            //request 생성
+            let requestDto = {
+                "email": email
+            };
+            fetch(`/boards/${boardId}/members`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(requestDto)
+            })
+                .then(function (response) {
+                    return response.json();
+                })
+                .then(function (responseDto) {
+                    alert(responseDto.msg);
+                    $('#popup-invite-container').removeClass('active');
+                })
+                .catch(function (error) {
+                    console.error("유저초대 실패", error);
+                });
+        }
+        else {
+            alert("입력한 이메일 형식이 올바르지 않습니다.");
+        }
+    }
+
+
+    function applyTextColor() {
+        let bgColor = getComputedStyle(document.body).backgroundColor;
+        let bgColorRGB = extractRGBValues(bgColor);
+
+        let lightness = calculateLightness(bgColorRGB.r, bgColorRGB.g, bgColorRGB.b);
+        let textColor = lightness < 50 ? 'white' : 'black';
+
+        document.body.style.color = textColor;
+    }
+
+    function extractRGBValues(rgbString) {
+        let rgbValues = rgbString.match(/\d+/g);
+        return {
+            r: parseInt(rgbValues[0]),
+            g: parseInt(rgbValues[1]),
+            b: parseInt(rgbValues[2])
+        };
+    }
+
+    function calculateLightness(red, green, blue) {
+        // Convert RGB to HSL
+        red /= 255;
+        green /= 255;
+        blue /= 255;
+
+        let max = Math.max(red, green, blue);
+        let min = Math.min(red, green, blue);
+        let lightness = (max + min) / 2;
+
+        return lightness * 100;
+    }
+
+    let boardNameCheckStatus = 1;
+
+    function nameConfirm() {
+        boardNameCheckStatus = 0;
+        let name = document.getElementById("board-name");
+        let error = document.getElementById("name-error");
+        let success = document.getElementById("name-success");
+
+        let regex = new RegExp('^(?=.*[a-z0-9가-힣])[a-z0-9가-힣]{2,16}$');
+        if (regex.test(name.value)) {
+            error.style.display = "none";
+            success.style.display = "block";
+            success.textContent = "사용가능한 보드이름입니다."
+            name.style.borderColor = "green";
+            boardNameCheckStatus = 1;
+        } else {
+            error.style.display = "block";
+            error.textContent = "보드이름은 2~16자의 영어, 숫자, 한글로 사용할 수 있습니다."
+            success.style.display = "none";
+            name.style.borderColor = "red";
+            boardNameCheckStatus = 0;
+        }
+    }
+
+    function changeBoard(button) {
+        let boardId = button.value;
+        if (boardNameCheckStatus === 0) {
+            alert("적합한 보드명을 작성해주세요.")
+            return;
+        }
+        let name = $('#board-name').val();
+        let description = $('#board-description').val();
+        let color = $('#color').spectrum('get').toRgb();
+        console.log(name);
+        console.log(description);
+        console.log(color);
+
+
+        let requestDto = {
+            "name": name,
+            "description": description,
+            "red": color.r,
+            "green": color.g,
+            "blue": color.b
+        }
+
+        fetch(`/boards/` + boardId, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(requestDto)
+        })
+            .then(function (response) {
+                return response.json();
+            })
+            .then(function (responseDto) {
+                alert(responseDto.msg);
+                window.location.href = "/boards/" + boardId;
+            })
+            .catch(function (error) {
+                console.error("보드 변경 실패", error);
+
+            });
+    }
+
+</script>
+
+
+</body>
+</html>
