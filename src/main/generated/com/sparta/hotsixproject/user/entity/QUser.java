@@ -36,6 +36,8 @@ public class QUser extends EntityPathBase<User> {
 
     public final StringPath nickname = createString("nickname");
 
+    public final ListPath<com.sparta.hotsixproject.notification.entity.Notification, com.sparta.hotsixproject.notification.entity.QNotification> notificationList = this.<com.sparta.hotsixproject.notification.entity.Notification, com.sparta.hotsixproject.notification.entity.QNotification>createList("notificationList", com.sparta.hotsixproject.notification.entity.Notification.class, com.sparta.hotsixproject.notification.entity.QNotification.class, PathInits.DIRECT2);
+
     public final StringPath password = createString("password");
 
     public final EnumPath<com.sparta.hotsixproject.user.UserRoleEnum> role = createEnum("role", com.sparta.hotsixproject.user.UserRoleEnum.class);
