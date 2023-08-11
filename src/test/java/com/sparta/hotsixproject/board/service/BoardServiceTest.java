@@ -121,6 +121,7 @@ class BoardServiceTest {
          * newUser2: 본인 1, 초대 0
          * newUser3: 본인 0, 초대 0
          */
+        /* 보드 생성 */
         User newUser1 = createUser("new1", "new1@email.com");
         User newUser2 = createUser("new2", "new2@email.com");
         User newUser3 = createUser("new3", "new3@email.com");
@@ -137,6 +138,7 @@ class BoardServiceTest {
          * newUser2: 본인 1(3번), 초대 2(1,2번)
          * newUser3: 본인 0, 초대 3(1,2,3번)
          */
+        /* 보드에 사용자 초대 */
         boardService.inviteBoard(board1.getId(), newUser2.getEmail(), board1.getUser()); // 초대할 보드, 초대할 사용자, 초대하는 사용자
         boardService.inviteBoard(board1.getId(), newUser3.getEmail(), board1.getUser()); // 초대할 보드, 초대할 사용자, 초대하는 사용자
         boardService.inviteBoard(board2.getId(), newUser2.getEmail(), board2.getUser()); // 초대할 보드, 초대할 사용자, 초대하는 사용자
@@ -156,25 +158,61 @@ class BoardServiceTest {
         List<BoardResponseDto> user3GuestBoardDtoList = boardService.getGuestBoards(newUser3);
 
         // then
-        /* 1. 본인이 생성한 보드 */
+        /* 1. 본인이 생성한 보드 개수 */
         assertEquals(2, user1MyBoardDtoList.size()); // user1 = 2개
         assertEquals(1, user2MyBoardDtoList.size()); // user2 = 1개
         assertEquals(0, user3MyBoardDtoList.size()); // user3 = null
 
-        /* 2. 본인이 초대된 보드 */
+        /* 2. 본인이 초대된 보드 개수 */
         assertEquals(1, user1GuestBoardDtoList.size()); // user1 = 1개
         assertEquals(2, user2GuestBoardDtoList.size()); // user2 = 2개
         assertEquals(3, user3GuestBoardDtoList.size()); // user3 = 3개
     }
 
     @Test
-    @DisplayName("보드 수정")
-    void updateBoard() {
-    }
-
-    @Test
     @DisplayName("보드 삭제")
     void deleteBoard() {
+        // given
+        /**
+         * 시나리오: 보드 생성 → 보드에 다른 사용자 초대 → 보드 삭제 후 BoardUser 연관관계 테이블 확인
+         */
+        /* 보드 생성 */
+        User newUser1 = createUser("new1", "new1@email.com");
+        User newUser2 = createUser("new2", "new2@email.com");
+        Board board1 = createBoard(newUser1);
+        BoardUser boardUser1to1 = createBoardUser(newUser1, board1);
+        Board board2 = createBoard(newUser2);
+        BoardUser boardUser2to2 = createBoardUser(newUser2, board2);
+
+        /**
+         * newUser1: 본인 1(1번), 초대 1(2번)
+         * newUser2: 본인 1(2번), 초대 1(1번)
+         */
+        /* 보드에 사용자 초대 */
+        boardService.inviteBoard(board1.getId(), newUser2.getEmail(), board1.getUser()); // 초대할 보드, 초대할 사용자, 초대하는 사용자
+        boardService.inviteBoard(board2.getId(), newUser1.getEmail(), board2.getUser()); // 초대할 보드, 초대할 사용자, 초대하는 사용자
+
+        // when
+        /* 보드 삭제 */
+        boardService.deleteBoard(board1.getId(), newUser1);
+        newUser1.removeBoard(board1);
+        newUser2.removeBoard(board1);
+
+        boardService.deleteBoard(board2.getId(), newUser2);
+        newUser1.removeBoard(board2);
+        newUser2.removeBoard(board2);
+
+        boardUser1to1 = boardUserRepository.findByUserAndBoard(newUser1, board1).orElse(null);
+        boardUser2to2 = boardUserRepository.findByUserAndBoard(newUser2, board2).orElse(null);
+
+        // then
+        /* 1. boardUser 테이블에서 지워졌는지 확인 */
+        assertNull(boardUser1to1);
+        assertNull(boardUser2to2);
+
+        /* 2. User 테이블에서 지워졌는지 확인 */
+        assertEquals(0, newUser1.getBoardList().size());
+        assertEquals(0, newUser2.getBoardList().size());
     }
 
 
