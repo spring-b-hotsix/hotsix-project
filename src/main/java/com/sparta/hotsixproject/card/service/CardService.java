@@ -115,8 +115,9 @@ public class CardService {
             throw new IllegalArgumentException("이미 카드 작업자 입니다.");
         }
 
-        Card card = cardRepository.findById(cardId).get();
-        CardUser cardUser = new CardUser(card, userRepository.findByEmail(email).get());
+        Card card = cardRepository.findById(cardId).orElse(null);
+        CardUser cardUser = new CardUser(card, userRepository.findByEmail(email).orElse(null));
+        card.addCardUser(cardUser);
         cardUserRepository.save(cardUser);
 
         CardResponseDto cardResponseDto = new CardResponseDto(card);
@@ -131,8 +132,7 @@ public class CardService {
         for (Card ca : side.getCardList()) {
             if (ca.getPosition() >= requestDto.getPosition() && ca.getPosition() < card.getPosition()) { // 아래에서 위로
                 ca.moveDown();
-            }
-            else if (ca.getPosition() <= requestDto.getPosition() && ca.getPosition() > card.getPosition()) { // 위에서 아래로
+            } else if (ca.getPosition() <= requestDto.getPosition() && ca.getPosition() > card.getPosition()) { // 위에서 아래로
                 ca.moveUp();
             }
         }
@@ -148,7 +148,10 @@ public class CardService {
         if (!card.getUser().equals(user)) {
             throw new UnauthorizedException("삭제 권한 없음");
         }
+        CardUser cardUser = cardUserRepository.findByCard_IdAndUser_Email(cardId, card.getUser().getEmail()).get();
+        card.removeCardUser(cardUser);
         cardRepository.delete(card);
+
         ApiResponseDto apiResponseDto = new ApiResponseDto("삭제 완료", HttpStatus.OK.value());
         return new ResponseEntity<>(apiResponseDto, HttpStatus.OK);
     }

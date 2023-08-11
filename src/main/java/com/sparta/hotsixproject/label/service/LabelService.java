@@ -80,6 +80,9 @@ public class LabelService {
         }
         CardLabel cardLabel = new CardLabel(card, label);
         cardLabelRepository.save(cardLabel);
+        card.addCardLabel(cardLabel); // 연관관계 리스트 추가
+        label.addCardLabel(cardLabel); // 연관관계 리스트 추가
+
         ApiResponseDto apiResponseDto = new ApiResponseDto("카드 내 라벨 추가 완료", HttpStatus.CREATED.value());
         return new ResponseEntity<>(apiResponseDto, HttpStatus.CREATED);
     }
@@ -96,7 +99,13 @@ public class LabelService {
     @LabelCheckPageAndUser
     public ResponseEntity<ApiResponseDto> deleteCardLabel(Long boardId, Long sideId, Long cardId, Long labelId, User user) {
         CardLabel cardLabel = findCardLabel(cardId, labelId);
+
+        Card card = cardRepository.findById(cardId).get();
+        card.removeCardLabel(cardLabel); // 연관관계 리스트 삭제
+        Label label = labelRepository.findById(labelId).get();
+        label.removeCardLabel(cardLabel); // 연관관계 리스트 삭제
         cardLabelRepository.delete(cardLabel);
+
         ApiResponseDto apiResponseDto = new ApiResponseDto("카드 내 라벨 삭제 완료", HttpStatus.OK.value());
         return new ResponseEntity<>(apiResponseDto, HttpStatus.OK);
     }

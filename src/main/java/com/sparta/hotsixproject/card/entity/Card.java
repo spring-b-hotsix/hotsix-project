@@ -101,7 +101,7 @@ public class Card extends TimeStamped {
     }
 
     public void moveUp() {
-        this.position = position -1;
+        this.position = position - 1;
     }
 
     public void addCardLabel(CardLabel cardLabel) {
@@ -110,6 +110,7 @@ public class Card extends TimeStamped {
     public void removeCardLabel(CardLabel cardLabel) {
         this.cardLabelList.remove(cardLabel);
     }
+
     public void addChecklist(Checklist checklist) {
         this.checklistList.add(checklist);
         checklist.setCard(this);
@@ -117,5 +118,13 @@ public class Card extends TimeStamped {
     public void removeChecklist(Checklist checklist) {
         this.checklistList.remove(checklist);
         checklist.setCard(null);
+    }
+    public void addCardUser(CardUser cardUser) {
+        this.cardUserList.add(cardUser);
+        cardUser.setCard(this);
+    }
+    public void removeCardUser(CardUser cardUser) {
+        this.cardUserList.remove(cardUser);
+        cardUser.setCard(null);
     }
 }
