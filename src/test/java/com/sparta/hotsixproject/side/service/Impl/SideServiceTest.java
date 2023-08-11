@@ -45,7 +45,6 @@ class SideServiceTest {
 
     @Test
     @DisplayName("컬럼 이름 변경")
-    @Transactional
     void updateSideName() {
         // given
         User user = createUser();
@@ -205,5 +204,4 @@ class SideServiceTest {
         em.persist(user);
         return user;
     }
-
 }
