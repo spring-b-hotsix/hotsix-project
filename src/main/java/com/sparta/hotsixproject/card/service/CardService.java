@@ -36,8 +36,11 @@ public class CardService {
     public ResponseEntity<ApiResponseDto> createCard(Long sideId, String name, User user) {
         Side side = sideRepository.findById(sideId).get();
         Card card = new Card(name, side.getCardList().size() + 1, user, side);
+        side.addCard(card); // 연관관계 리스트 추가
+        cardRepository.save(card);
 
         CardUser cardUser = new CardUser(card, user);
+        card.addCardUser(cardUser); // 연관관계 리스트 추가
         cardUserRepository.save(cardUser);
 
         ApiResponseDto apiResponseDto = new ApiResponseDto("카드 생성 완료", HttpStatus.CREATED.value());
@@ -150,6 +153,9 @@ public class CardService {
         }
         CardUser cardUser = cardUserRepository.findByCard_IdAndUser_Email(cardId, card.getUser().getEmail()).get();
         card.removeCardUser(cardUser);
+
+        Side side = sideRepository.findById(sideId).get();
+        side.removeCard(card); // 연관관계 리스트 삭제
         cardRepository.delete(card);
 
         ApiResponseDto apiResponseDto = new ApiResponseDto("삭제 완료", HttpStatus.OK.value());

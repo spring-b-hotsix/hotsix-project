@@ -127,4 +127,7 @@ public class Card extends TimeStamped {
         this.cardUserList.remove(cardUser);
         cardUser.setCard(null);
     }
+    public void setSide(Side side) {
+        this.side = side;
+    }
 }

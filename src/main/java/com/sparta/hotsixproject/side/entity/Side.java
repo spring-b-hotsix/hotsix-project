@@ -48,4 +48,12 @@ public class Side {
     public void setPosition(int position) {
         this.position = position;
     }
+    public void addCard(Card card) {
+        this.cardList.add(card);
+        card.setSide(this);
+    }
+    public void removeCard(Card card) {
+        this.cardList.remove(card);
+        card.setSide(null);
+    }
 }
