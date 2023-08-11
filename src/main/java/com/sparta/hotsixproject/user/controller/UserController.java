@@ -89,7 +89,7 @@ public class UserController {
             @Parameter(description = "변경할 닉네임 정보") @RequestBody UpdateNicknameRequestDto requestDto,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        userService.updateNicknmae(userId, requestDto, userDetails.getUser());
+        userService.updateNickname(userId, requestDto, userDetails.getUser());
         return ResponseEntity.ok().body(new ApiResponseDto("닉네임 변경이 완료되었습니다.", HttpStatus.OK.value()));
     }
 
