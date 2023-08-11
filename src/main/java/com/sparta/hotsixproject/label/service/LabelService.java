@@ -72,7 +72,7 @@ public class LabelService {
     // 카드에 라벨 추가
     @Transactional
     @LabelCheckPageAndUser
-    public ResponseEntity<ApiResponseDto> CreateCardLabel(Long boardId, Long sideId, Long cardId, Long labelId, User user) {
+    public ResponseEntity<ApiResponseDto> createCardLabel(Long boardId, Long sideId, Long cardId, Long labelId, User user) {
         Card card = findCard(cardId);
         Label label = findLabel(labelId);
         if (cardLabelRepository.findByCard_idAndLabel_id(cardId, labelId).orElse(null)!=null) {

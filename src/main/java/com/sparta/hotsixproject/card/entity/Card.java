@@ -103,4 +103,11 @@ public class Card extends TimeStamped {
     public void moveUp() {
         this.position = position -1;
     }
+
+    public void addCardLabel(CardLabel cardLabel) {
+        this.cardLabelList.add(cardLabel);
+    }
+    public void removeCardLabel(CardLabel cardLabel) {
+        this.cardLabelList.remove(cardLabel);
+    }
 }
