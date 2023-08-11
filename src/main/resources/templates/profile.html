@@ -8,25 +8,26 @@
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"
             integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
     <script src="/js/cookie.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
 </head>
 <body>
 <div class="container">
 <!--    <button th:onclick="|window.location.href='/'|">홈</button>-->
     <input type="hidden" id="userId" th:value="${user.id}" />
-    <h1 th:text="${user.nickname}"></h1>
+    <h1 th:text="${user.nickname + ' 님의 프로필'}">프로필</h1>
     <div class="profile">
         <label>Nickname:</label>
         <span id="nickname" th:text="${user.nickname}"></span>
     </div>
     <div class="edit-profile">
-        <input type="text" id="newNickname" placeholder="Enter new nickname">
-        <input type="text" id="nicknamePassword" placeholder="Enter new nickname">
-        <button id="updateNickname" onclick="updateNickname()">Update Nickname</button>
+        <input type="text" id="newNickname" placeholder="변경할 nickname 입력">
+        <input type="text" id="nicknamePassword" placeholder="password 입력">
+        <button class="btn btn-info" id="updateNickname" onclick="updateNickname()">Update Nickname</button>
     </div>
     <div class="edit-profile">
-        <input type="password" id="password" placeholder="Enter new password">
-        <input type="password" id="newPassword" placeholder="Enter new password">
-        <button id="updatePassword" onclick="updatePassword()">Update Password</button>
+        <input type="password" id="password" placeholder="password 입력">
+        <input type="password" id="newPassword" placeholder="변경할 password 입력">
+        <button class="btn btn-success" id="updatePassword" onclick="updatePassword()">Update Password</button>
     </div>
 </div>
 <script>
