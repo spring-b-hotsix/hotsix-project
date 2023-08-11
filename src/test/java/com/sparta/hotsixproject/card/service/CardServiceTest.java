@@ -5,6 +5,13 @@ import com.sparta.hotsixproject.boarduser.entity.BoardUser;
 import com.sparta.hotsixproject.card.entity.Card;
 import com.sparta.hotsixproject.card.repository.CardRepository;
 import com.sparta.hotsixproject.cardlabel.entity.CardLabel;
+import com.sparta.hotsixproject.checklist.checklistItem.dto.ChecklistItemRequestDto;
+import com.sparta.hotsixproject.checklist.checklistItem.dto.ChecklistItemResponseDto;
+import com.sparta.hotsixproject.checklist.checklistItem.entity.ChecklistItem;
+import com.sparta.hotsixproject.checklist.dto.ChecklistRequestDto;
+import com.sparta.hotsixproject.checklist.dto.ChecklistResponseDto;
+import com.sparta.hotsixproject.checklist.entity.Checklist;
+import com.sparta.hotsixproject.checklist.repository.ChecklistRepository;
 import com.sparta.hotsixproject.checklist.service.ChecklistServiceImpl;
 import com.sparta.hotsixproject.comment.repository.CommentRepository;
 import com.sparta.hotsixproject.comment.service.CommentServiceImpl;
@@ -26,7 +33,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -50,6 +57,8 @@ class CardServiceTest {
     CommentRepository commentRepository;
     @Autowired
     LabelRepository labelRepository;
+    @Autowired
+    ChecklistRepository checklistRepository;
 
     /**
      * 테스트 요구사항(시나리오)
@@ -81,9 +90,8 @@ class CardServiceTest {
         /* 3-2. 카드에 라벨 추가 */
         Label label1 = labelRepository.findByTitle("label1").orElse(null);
         labelService.createCardLabel(board.getId(), side.getId(), card.getId(), label1.getId(), user);
-        CardLabel cardLabel = new CardLabel(card, label1);
-        card.addCardLabel(cardLabel);
-        label1.addCardLabel(cardLabel);
+        card.addCardLabel(new CardLabel(card, label1));
+        label1.addCardLabel(new CardLabel(card, label1));
         /* 4. (카드)색상 수정 */
         cardService.updateColor(board.getId(), side.getId(), card.getId(), "blue");
 
@@ -102,8 +110,84 @@ class CardServiceTest {
     }
 
     @Test
-    @DisplayName("카드 수정2(체크리스트, 마감기한, 작업자)")
+    @DisplayName("카드 수정2(체크리스트)")
     void updateCard2() {
+        /**
+         * 1. 체크리스트 생성 → 체크리스트 아이템 생성
+         * 2. 체크리스트 수정 → 체크리스트 아이템 수정
+         * 3. 체크리스트 아이템 체크
+         */
+        // given
+        User user = createUser();
+        Board board = createBoard(user);
+        BoardUser boardUser = createBoardUser(user, board);
+        Side side = createSide(board, 1);
+        Card card = createCard(user, side);
+
+        Long boardId = board.getId();
+        Long sideId = side.getId();
+        Long cardId = card.getId();
+
+        // when 1
+        /** 체크리스트 생성 → 체크리스트 아이템 생성 **/
+        /* 1-1. 체크리스트 생성 */
+        ChecklistRequestDto checkRequestDto = new ChecklistRequestDto("오늘 할 일");
+        ChecklistResponseDto checkResponseDto = checklistService.createChecklist(boardId, sideId, cardId, checkRequestDto, user);
+        card.addChecklist(new Checklist(card, checkRequestDto));
+
+        /* 1-2. 체크리스트 아이템 생성 */
+        Long checklistId = checkResponseDto.getId();
+
+        ChecklistItemRequestDto checkItemRequestDto = new ChecklistItemRequestDto("테스트 코드 작성하기");
+        ChecklistItemResponseDto checkItem1ResponseDto = checklistService.createItem(boardId, sideId, cardId, checklistId, checkItemRequestDto, user);
+        Checklist checklist = new Checklist(card, checkRequestDto);
+        checklist.addChecklistItem(new ChecklistItem(checklist, checkItemRequestDto));
+
+        checkItemRequestDto = new ChecklistItemRequestDto("발표 준비하기");
+        ChecklistItemResponseDto checkItem2ResponseDto = checklistService.createItem(boardId, sideId, cardId, checklistId, checkItemRequestDto, user);
+        checklist = new Checklist(card, checkRequestDto);
+        checklist.addChecklistItem(new ChecklistItem(checklist, checkItemRequestDto));
+
+        // then 1
+        assertEquals("오늘 할 일", checkResponseDto.getName()); // 체크리스트
+        assertEquals("테스트 코드 작성하기", checkItem1ResponseDto.getContent()); // 체크리스트 아이템1
+        assertEquals("발표 준비하기", checkItem2ResponseDto.getContent()); // 체크리스트 아이템2
+
+        // when 2
+        /** 체크리스트 수정 → 체크리스트 아이템 수정 **/
+        /* 2-1. 체크리스트 수정 */
+        checkRequestDto = new ChecklistRequestDto("★ 오늘 할 일 ★");
+        checkResponseDto = checklistService.updateChecklistName(boardId, sideId, cardId, checklistId, checkRequestDto, user);
+
+        /* 2-2. 체크리스트 아이템 수정 */
+        checkItemRequestDto = new ChecklistItemRequestDto("테스트 코드 빨리 작성하기!!");
+        checkItem1ResponseDto = checklistService.updateItemContent(boardId, sideId, cardId, checklistId, checkItem1ResponseDto.getId(), checkItemRequestDto, user);
+
+        checkItemRequestDto = new ChecklistItemRequestDto("발표 자료 틀부터 준비하기");
+        checkItem2ResponseDto = checklistService.updateItemContent(boardId, sideId, cardId, checklistId, checkItem2ResponseDto.getId(), checkItemRequestDto, user);
+
+        // then 2
+        assertEquals("★ 오늘 할 일 ★", checkResponseDto.getName());
+        assertEquals("테스트 코드 빨리 작성하기!!", checkItem1ResponseDto.getContent()); // 체크리스트 아이템1
+        assertEquals("발표 자료 틀부터 준비하기", checkItem2ResponseDto.getContent()); // 체크리스트 아이템2
+
+        // when 3
+        /** 체크리스트 아이템 체크 **/
+        ChecklistItemResponseDto checkedItem1 = checklistService.updateItemChecked(boardId, sideId, cardId, checklistId, checkItem1ResponseDto.getId(), user); // 1번 아이템 체크
+
+        // 2번 아이템 체크 → 해제
+        checklistService.updateItemChecked(boardId, sideId, cardId, checklistId, checkItem2ResponseDto.getId(), user);
+        ChecklistItemResponseDto checkedItem2 = checklistService.updateItemChecked(boardId, sideId, cardId, checklistId, checkItem2ResponseDto.getId(), user);
+
+        // then 3
+        assertTrue(checkedItem1.getChecked()); // 1번 아이템 = 체크
+        assertFalse(checkedItem2.getChecked()); // 2번 아이템 = 체크 해제
+    }
+
+    @Test
+    @DisplayName("카드 수정3(작업자, 마감기한)")
+    void updateCard3() {
+
     }
 
     @Test

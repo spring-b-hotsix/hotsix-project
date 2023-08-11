@@ -6,10 +6,12 @@ import lombok.Getter;
 
 @Getter
 public class ChecklistItemResponseDto extends ApiResponseDto {
+    private Long id;
     private String content;
     private Boolean checked;
 
     public ChecklistItemResponseDto(ChecklistItem checklistItem) {
+        this.id = checklistItem.getId();
         this.content = checklistItem.getContent();
         this.checked = checklistItem.getChecked();
     }
