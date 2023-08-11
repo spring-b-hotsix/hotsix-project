@@ -63,6 +63,18 @@ public class CardController {
         return cardService.addWorker(boardId, sideId, cardId, requestDto.getEmail());
     }
 
+    @PutMapping("/{boardId}/sides/{sideId}/cards/{cardId}/worker")
+    @Operation(summary = "카드 작업자 삭제", description = "@PathVariable을 통해 boardId, sideId, cardId를 받아와, 해당 정보와 일치하는 카드에서 작업자를 삭제합니다.")
+    public ResponseEntity<ApiResponseDto> deleteWorker(
+            @Parameter(name = "boardId", description = "선택한 카드가 위치한 board의 id", in = ParameterIn.PATH) @PathVariable Long boardId,
+            @Parameter(name = "sideId", description = "선택한 카드가 위치한 side의 id", in = ParameterIn.PATH) @PathVariable Long sideId,
+            @Parameter(name = "cardId", description = "작업자를 추가할 card의 id", in = ParameterIn.PATH) @PathVariable Long cardId,
+            @Parameter(name = "requestDto", description = "편집(삭제)할 작업자의 정보 (email)") @RequestBody InviteCardRequestDto requestDto
+    ) {
+        return cardService.deleteWorker(boardId, sideId, cardId, requestDto.getEmail());
+    }
+
+
     @PutMapping("/{boardId}/sides/{sideId}/cards/{cardId}/name")
     @Operation(summary = "카드 이름 수정", description = "@PathVariable을 통해 boardId, sideId, cardId를 받아와, 해당 정보와 일치하는 카드에 Dto로부터 받아온 name(이름) 정보를 수정합니다.")
     public ResponseEntity<CardResponseDto> updateName(

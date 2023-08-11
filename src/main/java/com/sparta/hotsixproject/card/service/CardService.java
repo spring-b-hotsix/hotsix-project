@@ -40,7 +40,6 @@ public class CardService {
         cardRepository.save(card);
 
         CardUser cardUser = new CardUser(card, user);
-        card.addCardUser(cardUser); // 연관관계 리스트 추가
         cardUserRepository.save(cardUser);
 
         ApiResponseDto apiResponseDto = new ApiResponseDto("카드 생성 완료", HttpStatus.CREATED.value());
@@ -126,6 +125,21 @@ public class CardService {
         CardResponseDto cardResponseDto = new CardResponseDto(card);
         return new ResponseEntity<>(cardResponseDto, HttpStatus.CREATED);
     }
+
+    @Transactional
+    public ResponseEntity<ApiResponseDto> deleteWorker(Long boardId, Long sideId, Long cardId, String email) {
+        if (boardUserRepository.findByUser_EmailAndBoard_Id(email, boardId).isEmpty()) {
+            throw new IllegalArgumentException("보드 멤버가 아닙니다.");
+        }
+        Card card = cardRepository.findById(cardId).orElse(null);
+        CardUser cardUser = cardUserRepository.findByCard_IdAndUser_Email(cardId, card.getUser().getEmail()).get();
+        card.removeCardUser(cardUser); // 삭제 완료
+        cardUserRepository.delete(cardUser);
+
+        ApiResponseDto apiResponseDto = new ApiResponseDto("카드 내 삭제 완료", HttpStatus.OK.value());
+        return new ResponseEntity<>(apiResponseDto, HttpStatus.OK);
+    }
+
 
     @Transactional
     // 카드 이동
