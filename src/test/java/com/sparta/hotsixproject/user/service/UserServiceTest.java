@@ -24,8 +24,6 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @Transactional
 class UserServiceTest {
-    @PersistenceContext
-    EntityManager em;
     @Autowired
     PasswordEncoder passwordEncoder;
     @Autowired
@@ -97,7 +95,6 @@ class UserServiceTest {
         nickname = "newnick1";
         UpdateNicknameRequestDto nicknameDto = new UpdateNicknameRequestDto(nickname, signupDto.getPassword());
         userService.updateNickname(newUser.getId(), nicknameDto, newUser);
-
         /* 2. 비밀번호 변경 */
         encodePw = passwordEncoder.encode("newPass@1234");
         UpdatePasswordRequestDto pwDto = new UpdatePasswordRequestDto(signupDto.getPassword(), encodePw);
