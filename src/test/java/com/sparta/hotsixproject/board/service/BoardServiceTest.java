@@ -67,7 +67,7 @@ class BoardServiceTest {
 
         // when
         /**
-         * 시나리오?: newUser1이 만든 board1에 newUser2와 newUser3를 초대할 예정~
+         * 시나리오: newUser1이 만든 board1에 newUser2와 newUser3를 초대
          */
         boardService.inviteBoard(board1.getId(), newUser2.getEmail(), newUser1);
         boardService.inviteBoard(board1.getId(), newUser3.getEmail(), newUser1);
@@ -116,7 +116,7 @@ class BoardServiceTest {
     void getMyBoardsAndGuestBoards() {
         // given
         /**
-         * 초기 접근허가 보드 개수:
+         * 초기 접근허가 보드 개수 >
          * newUser1: 본인 2, 초대 0
          * newUser2: 본인 1, 초대 0
          * newUser3: 본인 0, 초대 0
@@ -134,6 +134,7 @@ class BoardServiceTest {
         BoardUser boardUser2to3 = createBoardUser(newUser2, board3);
 
         /**
+         * 초대 진행 후 >
          * newUser1: 본인 2(1,2번), 초대 1(3번)
          * newUser2: 본인 1(3번), 초대 2(1,2번)
          * newUser3: 본인 0, 초대 3(1,2,3번)
@@ -174,7 +175,10 @@ class BoardServiceTest {
     void deleteBoard() {
         // given
         /**
-         * 시나리오: 보드 생성 → 보드에 다른 사용자 초대 → 보드 삭제 후 BoardUser 연관관계 테이블 확인
+         * 시나리오:
+         * 보드 생성
+         * → 보드에 다른 사용자 초대
+         * → 보드 삭제 후 BoardUser 테이블, User.boardList 확인
          */
         /* 보드 생성 */
         User newUser1 = createUser("new1", "new1@email.com");
