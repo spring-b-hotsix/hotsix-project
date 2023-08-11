@@ -26,7 +26,7 @@ jobs:
     steps:
     # 워크플로우 실행 전 기본적으로 체크아웃 필요
     - uses: actions/checkout@v3 
-    # JDK 11 버전 설치
+    # JDK 17 버전 설치
     - name: Set up JDK 17
       uses: actions/setup-java@v3
       with:

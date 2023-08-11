@@ -8,12 +8,12 @@ import com.sparta.hotsixproject.user.dto.*;
 import com.sparta.hotsixproject.user.service.GoolgeService;
 import com.sparta.hotsixproject.user.service.KakaoService;
 import com.sparta.hotsixproject.user.service.UserService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
@@ -64,6 +64,7 @@ public class UserController {
     }
 
     @PostMapping("/signup")
+    @Operation(summary = "회원가입")
     public String signup(@Valid @RequestBody LoginRequestDto requestDto, BindingResult bindingResult) {
         // Validation 예외처리
         List<FieldError> fieldErrors = bindingResult.getFieldErrors();
@@ -134,7 +135,7 @@ public class UserController {
         String token = googleLogin.googleLogin(code);
         // Cookie Value 에는 공백이 불가능해서 encoding 진행
         token = URLEncoder.encode(token, "utf-8").replaceAll("\\+", "%20");
-        Cookie cookie = new Cookie(JwtUtil.AUTHORIZATION_HEADER,token);
+        Cookie cookie = new Cookie(JwtUtil.AUTHORIZATION_HEADER, token);
         cookie.setPath("/");
         response.addCookie(cookie);
 
