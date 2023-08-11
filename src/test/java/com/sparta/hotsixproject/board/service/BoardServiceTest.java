@@ -62,7 +62,6 @@ class BoardServiceTest {
         User newUser2 = createUser("new2", "new2@email.com");
         User newUser3 = createUser("new3", "new3@email.com");
         Board board1 = createBoard(newUser1);
-        newUser1.addBoard(board1);
         BoardUser boardUser1 = createBoardUser(newUser1, board1);
 
         // when
@@ -219,20 +218,17 @@ class BoardServiceTest {
         assertEquals(0, newUser2.getBoardList().size());
     }
 
-
     private BoardUser createBoardUser(User user, Board board) {
         BoardUser boardUser = new BoardUser(user, board);
         em.persist(boardUser);
         return boardUser;
     }
-
     private Board createBoard(User user) {
         Board board = new Board("board1", "descr1", user, 255, 255, 255);
         user.addBoard(board);
         em.persist(board);
         return board;
     }
-
     private User createUser(String nickname, String email) {
         String encodePw = passwordEncoder.encode("Password@1234");
         User user = new User(nickname, encodePw, email, UserRoleEnum.USER);
