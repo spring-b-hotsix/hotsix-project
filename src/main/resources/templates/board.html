@@ -11,16 +11,17 @@
     <title>Hotsix-Board</title>
     <!--bootstrap-->
     <link rel="canonical" href="https://getbootstrap.com/docs/5.3/examples/navbar-fixed/">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <!--    <link href="../assets/dist/css/bootstrap.min.css" rel="stylesheet">-->
     <!--  jquery  -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- 팔레트 -->
     <link rel="stylesheet" type="text/css"
           href="https://cdn.jsdelivr.net/npm/spectrum-colorpicker2/dist/spectrum.min.css">
     <script src="https://cdn.jsdelivr.net/npm/spectrum-colorpicker2/dist/spectrum.min.js"></script>
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
-    <!--    <link href="../assets/dist/css/bootstrap.min.css" rel="stylesheet">-->
     <style>
         .bd-placeholder-img {
             font-size: 1.125rem;
@@ -98,10 +99,12 @@
         .form-control-dark {
             border-color: var(--bs-gray);
         }
+
         .form-control-dark:focus {
             border-color: #fff;
             box-shadow: 0 0 0 .25rem rgba(255, 255, 255, .25);
         }
+
         .text-small {
             font-size: 85%;
         }
@@ -143,6 +146,7 @@
             width: 1000px;
             transition: bottom .75s ease-in-out;
         }
+
         .modal-sheet .modal-footer {
             padding-bottom: 2rem;
         }
@@ -169,6 +173,7 @@
             color: black;
         }
     </style>
+
 </head>
 <body style="padding-top: 3.5rem;">
 
@@ -188,7 +193,7 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarCollapse">
-            <!--        보드선택-->
+            <!--보드선택-->
             <ul class="navbar-nav me-auto mb-2 mb-md-0">
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown"
@@ -330,38 +335,44 @@
                 </div>
                 <div class="offcanvas-body">
                     <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
-                        <!--보드 이름-->
-                        <div style="margin-bottom: 50px">
-                            <li class="nav-item">
-                                <h6 class="nav-link active" aria-current="page"><b>Title</b></h6>
-                                <div style="margin-left: 10px; margin-right: 10px;"><p style="margin-left: 10px; margin-right: 10px">Board title</p></div>
-                                <a href="#" class="text-secondary ms-auto" data-bs-toggle="modal"
-                                   data-bs-target="#board-title" aria-current="true"style="margin-right: 10px; display: flex; justify-content: flex-end;">Edit</a>
-                            </li>
+                        <!--보드 관리-->
+                        <div style="margin-bottom: 70px">
+                            <!--보드 이름-->
+                            <div style="margin-bottom: 20px">
+                                <li class="nav-item">
+                                    <h6 class="nav-link active" aria-current="page"><b>Title</b></h6>
+                                    <div style="margin-left: 10px; margin-right: 10px;"><p
+                                            style="margin-left: 10px; margin-right: 10px">Board title</p></div>
+                                </li>
+                            </div>
+
+                            <!--보드 설명-->
+                            <div style="margin-bottom: 20px">
+                                <li class="nav-item">
+                                    <h6 class="nav-link active" aria-current="page"><b>Description</b></h6>
+                                    <div style="margin-left: 10px; margin-right: 10px; background-color: antiquewhite">
+                                        <p style="margin-left: 10px; margin-right: 10px">your board description</p>
+                                    </div>
+                                </li>
+                            </div>
+
+                            <!--보드 컬러-->
+                            <div style="margin-bottom: 20px">
+                                <li class="nav-item">
+                                    <div class="d-flex">
+                                        <h6 class="nav-link"><b>Color</b></h6>
+                                        <div style="margin-left: 10px; background-color: #cff4fc; width: 70px; height: 30px; margin-top: 10px">
+                                            <p style="margin-left: 10px; margin-right: 10px;">#cff4fc</p></div>
+                                    </div>
+                                </li>
+                            </div>
+
+                            <!--보드 수정하기-->
+                            <a href="#" class="text-secondary ms-auto" data-bs-toggle="modal"
+                               data-bs-target="#board-update"
+                               style="margin-right: 10px; display: flex; justify-content: flex-end;">Edit</a>
                         </div>
 
-                        <!--보드 설명-->
-                        <div style="margin-bottom: 50px">
-                            <li class="nav-item">
-                                <h6 class="nav-link active" aria-current="page"><b>Description</b></h6>
-                                <div style="margin-left: 10px; margin-right: 10px; background-color: antiquewhite"><p style="margin-left: 10px; margin-right: 10px">your board description</p></div>
-                                <a href="#" class="text-secondary ms-auto" data-bs-toggle="modal"
-                                   data-bs-target="#board-description" style="margin-right: 10px; display: flex; justify-content: flex-end;">Edit</a>
-                            </li>
-                        </div>
-
-                        <!--보드 컬러-->
-                        <div style="margin-bottom: 50px">
-                            <li class="nav-item">
-                                <div class="d-flex">
-                                    <h6 class="nav-link"><b>Color</b></h6>
-                                    <div style="margin-left: 10px; background-color: #cff4fc; width: 70px; height: 30px; margin-top: 10px">
-                                        <p style="margin-left: 10px; margin-right: 10px;">#cff4fc</p></div>
-                                </div>
-                                <a href="#" class="text-secondary ms-auto" data-bs-toggle="modal"
-                                   data-bs-target="#board-color" style="margin-right: 10px; display: flex; justify-content: flex-end;">Edit</a>
-                            </li>
-                        </div>
 
                         <!--보드 라벨-->
                         <div style="margin-bottom: 50px">
@@ -371,10 +382,12 @@
                                 <div id="labels-get">
                                     <div>
                                         <a class="btn" href="#" role="button"
-                                           style="margin-right: 5px; background-color: #92549E; color: white" data-bs-toggle="modal"
+                                           style="margin-right: 5px; background-color: #92549E; color: white"
+                                           data-bs-toggle="modal"
                                            data-bs-target="#board-label">Label1</a>
                                         <a class="btn" href="#" role="button"
-                                           style="margin-right: 5px; background-color: #eccccf; color: black" data-bs-toggle="modal"
+                                           style="margin-right: 5px; background-color: #eccccf; color: black"
+                                           data-bs-toggle="modal"
                                            data-bs-target="#board-label">Label1</a>
                                     </div>
                                 </div>
@@ -390,66 +403,29 @@
                 </div>
             </div>
 
-            <!--보드 이름 수정 모달창-->
-            <div class="modal fade" id="board-title" tabindex="-1" aria-labelledby="exampleModalLabel"
+            <!--보드 수정 모달창-->
+            <div class="modal fade" id="board-update" tabindex="-1" aria-labelledby="exampleModalLabel"
                  aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h1 class="modal-title fs-5">Edit title</h1>
+                            <h1 class="modal-title fs-5">Edit Board</h1>
                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                     aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <input type="text" class="form-control" placeholder="Enter board title..."
-                                   aria-label="user-invite" aria-describedby="basic-addon1">
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                                Close
-                            </button>
-                            <button type="button" class="btn btn-primary">Edit</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!--보드 설명 수정 모달창-->
-            <div class="modal fade" id="board-description" tabindex="-1" aria-labelledby="exampleModalLabel"
-                 aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h1 class="modal-title fs-5">Edit description</h1>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                    aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <input type="text" class="form-control" placeholder="Enter board description..."
-                                   aria-label="user-invite" aria-describedby="basic-addon1">
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                                Close
-                            </button>
-                            <button type="button" class="btn btn-primary">Edit</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!--보드 컬러 수정 모달창-->
-            <div class="modal fade" id="board-color" tabindex="-1" aria-labelledby="exampleModalLabel"
-                 aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h1 class="modal-title fs-5">Edit color</h1>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                    aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div>
+                            <div id="board-update-title" style="margin-bottom: 10px">
+                                <h6>Title</h6>
+                                <input type="text" class="form-control" placeholder="Enter board title..."
+                                       aria-label="user-invite" aria-describedby="basic-addon1">
+                            </div>
+                            <div id="board-update-description" style="margin-bottom: 10px">
+                                <h6>description</h6>
+                                <input type="text" class="form-control" placeholder="Enter board description..."
+                                       aria-label="user-invite" aria-describedby="basic-addon1">
+                            </div>
+                            <div id="board-update-color">
+                                <h6>color</h6>
                                 컬러판 필요
                             </div>
                         </div>
@@ -474,9 +450,13 @@
                                     aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <input type="text" class="form-control" placeholder="Enter label name..."
-                                   aria-label="user-invite" aria-describedby="basic-addon1">
-                            <div>
+                            <div id="label-update-name" style="margin-bottom: 10px">
+                                <h6>Name</h6>
+                                <input type="text" class="form-control" placeholder="Enter label name..."
+                                       aria-label="user-invite" aria-describedby="basic-addon1">
+                            </div>
+                            <div id="label-update-color">
+                                <h6>Color</h6>
                                 컬러판 필요
                             </div>
                         </div>
@@ -606,12 +586,24 @@
                                                         aria-label="Close"></button>
                                             </div>
                                             <div class="modal-body">
-                                                <select class="form-select" aria-label="Default select example">
-                                                    <option selected>Select Position</option>
-                                                    <option value="1">1</option>
-                                                    <option value="2">2(Current)</option>
-                                                    <option value="3">3</option>
-                                                </select>
+                                                <div>
+                                                    <h6>Board</h6>
+                                                    <select class="form-select" aria-label="Default select example">
+                                                        <option selected>board title</option>
+                                                        <option value="1">board title</option>
+                                                        <option value="2">another board</option>
+                                                    </select>
+                                                </div>
+
+                                                <div style="margin-top: 10px">
+                                                    <h6>Position</h6>
+                                                    <select class="form-select" aria-label="Default select example">
+                                                        <option selected>2</option>
+                                                        <option value="1">1</option>
+                                                        <option value="2">2(Current)</option>
+                                                        <option value="3">3</option>
+                                                    </select>
+                                                </div>
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
@@ -764,55 +756,58 @@
     };
     modalRequest.send();
 </script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+        crossorigin="anonymous"></script>
 <!--<script src="../assets/dist/js/bootstrap.bundle.min.js"></script>-->
-<!--</body>-->
-<!--</html>-->
+</body>
+</html>
 <!--woojin-->
-<body th:style="'background-color: rgb(' + ${board.red} + ', ' + ${board.green} + ', ' + ${board.blue} + ')'">
-<h1 th:text="${board.name}"></h1>
-<p style="display:none">Red: <span id="red" th:text="${board.red}"></span></p>
-<p style="display:none">Green: <span id="green" th:text="${board.green}"></span></p>
-<p style="display:none">Blue: <span id="blue" th:text="${board.blue}"></span></p>
-<button id="open-popup-change-btn">보드 수정하기</button>
-<div id="popup-change-container" class="popup">
-    <div class="popup-content">
-        <div>Board title</div>
-        <input id="board-name" class="title-input" type="text" name="content" placeholder="제목을 입력하세요"
-               th:value="${board.name}"
-               onchange="nameConfirm()">
-        <div id="name-error" class="error-message" style="display: none;"></div>
-        <div id="name-success" class="success-message" style="display: none;"></div>
-        <div>Board Description</div>
-        <input id="board-description" class="description-input" type="text" name="content" placeholder="설명을 입력하세요"
-               th:value="${board.description}">
-        <div>RGB Color Picker</div>
-        <input type="text" id="color" readonly/>
-        <button id="ok-btn" onclick="changeBoard(this)" th:value="${board.boardId}">수정하기</button>
-        <button id="close-popup-change-btn">취소</button>
-    </div>
-</div>
-<button id="open-popup-invite-btn" onclick="getBoardMembers()">보드 초대하기</button>
-<div id="popup-invite-container" class="popup">
-    <div class="popup-content">
-        <div>보드 초대하기</div>
-        <input id="invite-email" class="title-input" type="text" name="content" placeholder="초대할 유저의 이메일을 입력하세요"
-               onchange="emailConfirm()">
-        <div>공유된 사용자 :</div>
-        <div class="board-user-list" id="board-user-list">
-        </div>
-        <button id="invite-ok-btn" onclick="inviteUser()">초대하기</button>
-        <button id="close-popup-invite-btn">취소</button>
-    </div>
-</div>
-<button id="open-popup-delete-btn" >보드 삭제하기</button>
-<div id="popup-delete-container" class="popup">
-    <div class="popup-content">
-        <div>보드를 정말 삭제하시겠습니까?</div>
-        <button id="delete-ok-btn" onclick="deleteBoard()">예</button>
-        <button id="close-popup-delete-btn">아니오</button>
-    </div>
-</div>
+<!--<body th:style="'background-color: rgb(' + ${board.red} + ', ' + ${board.green} + ', ' + ${board.blue} + ')'">-->
+<!--<h1 th:text="${board.name}"></h1>-->
+<!--<p style="display:none">Red: <span id="red" th:text="${board.red}"></span></p>-->
+<!--<p style="display:none">Green: <span id="green" th:text="${board.green}"></span></p>-->
+<!--<p style="display:none">Blue: <span id="blue" th:text="${board.blue}"></span></p>-->
+<!--<button id="open-popup-change-btn">보드 수정하기</button>-->
+<!--<div id="popup-change-container" class="popup">-->
+<!--    <div class="popup-content">-->
+<!--        <div>Board title</div>-->
+<!--        <input id="board-name" class="title-input" type="text" name="content" placeholder="제목을 입력하세요"-->
+<!--               th:value="${board.name}"-->
+<!--               onchange="nameConfirm()">-->
+<!--        <div id="name-error" class="error-message" style="display: none;"></div>-->
+<!--        <div id="name-success" class="success-message" style="display: none;"></div>-->
+<!--        <div>Board Description</div>-->
+<!--        <input id="board-description" class="description-input" type="text" name="content" placeholder="설명을 입력하세요"-->
+<!--               th:value="${board.description}">-->
+<!--        <div>RGB Color Picker</div>-->
+<!--        <input type="text" id="color" readonly/>-->
+<!--        <button id="ok-btn" onclick="changeBoard(this)" th:value="${board.boardId}">수정하기</button>-->
+<!--        <button id="close-popup-change-btn">취소</button>-->
+<!--    </div>-->
+<!--</div>-->
+<!--<button id="open-popup-invite-btn" onclick="getBoardMembers()">보드 초대하기</button>-->
+<!--<div id="popup-invite-container" class="popup">-->
+<!--    <div class="popup-content">-->
+<!--        <div>보드 초대하기</div>-->
+<!--        <input id="invite-email" class="title-input" type="text" name="content" placeholder="초대할 유저의 이메일을 입력하세요"-->
+<!--               onchange="emailConfirm()">-->
+<!--        <div>공유된 사용자 :</div>-->
+<!--        <div class="board-user-list" id="board-user-list">-->
+<!--        </div>-->
+<!--        <button id="invite-ok-btn" onclick="inviteUser()">초대하기</button>-->
+<!--        <button id="close-popup-invite-btn">취소</button>-->
+<!--    </div>-->
+<!--</div>-->
+<!--<button id="open-popup-delete-btn" >보드 삭제하기</button>-->
+<!--<div id="popup-delete-container" class="popup">-->
+<!--    <div class="popup-content">-->
+<!--        <div>보드를 정말 삭제하시겠습니까?</div>-->
+<!--        <button id="delete-ok-btn" onclick="deleteBoard()">예</button>-->
+<!--        <button id="close-popup-delete-btn">아니오</button>-->
+<!--    </div>-->
+<!--</div>-->
 <script>
 
     $(document).ready(function () {
