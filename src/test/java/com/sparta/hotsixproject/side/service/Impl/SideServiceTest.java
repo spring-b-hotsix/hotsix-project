@@ -66,11 +66,8 @@ class SideServiceTest {
         User user = createUser();
         Board board1 = createBoard(user);
         Side side1 = createSide(board1, 1);
-        board1.addSide(side1);
         Side side2 = createSide(board1, 2);
-        board1.addSide(side2);
         Side side3 = createSide(board1, 3);
-        board1.addSide(side3);
 
         // when 1
         /** 1번째 이동
@@ -124,15 +121,11 @@ class SideServiceTest {
         User user = createUser();
         Board board1 = createBoard(user);
         Side side1 = createSide(board1, 1);
-        board1.addSide(side1);
         Side side2 = createSide(board1, 2);
-        board1.addSide(side2);
 
         Board board2 = createBoard(user);
         Side side3 = createSide(board1, 1);
-        board2.addSide(side3);
         Side side4 = createSide(board2, 2);
-        board2.addSide(side4);
 
         // when 1
         /** 1번째 이동
@@ -188,12 +181,14 @@ class SideServiceTest {
 
     private Side createSide(Board board, int pos) {
         Side side = new Side("side1", 1024 * pos, board);
+        board.addSide(side);
         em.persist(side);
         return side;
     }
 
     private Board createBoard(User user) {
         Board board = new Board("board1", "descr1", user, 255, 255, 255);
+        user.addBoard(board);
         em.persist(board);
         return board;
     }
