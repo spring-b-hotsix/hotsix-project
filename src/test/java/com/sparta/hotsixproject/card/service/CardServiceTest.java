@@ -5,6 +5,8 @@ import com.sparta.hotsixproject.boarduser.entity.BoardUser;
 import com.sparta.hotsixproject.card.entity.Card;
 import com.sparta.hotsixproject.card.repository.CardRepository;
 import com.sparta.hotsixproject.cardlabel.entity.CardLabel;
+import com.sparta.hotsixproject.carduser.entity.CardUser;
+import com.sparta.hotsixproject.carduser.repository.CardUserRepository;
 import com.sparta.hotsixproject.checklist.checklistItem.dto.ChecklistItemRequestDto;
 import com.sparta.hotsixproject.checklist.checklistItem.dto.ChecklistItemResponseDto;
 import com.sparta.hotsixproject.checklist.checklistItem.entity.ChecklistItem;
@@ -59,6 +61,8 @@ class CardServiceTest {
     LabelRepository labelRepository;
     @Autowired
     ChecklistRepository checklistRepository;
+    @Autowired
+    CardUserRepository cardUserRepository;
 
     /**
      * 테스트 요구사항(시나리오)
@@ -73,27 +77,29 @@ class CardServiceTest {
     @DisplayName("카드 수정1(이름, 설명, 라벨, 색상)")
     void updateCard1() {
         // given
-        User user = createUser();
+        User user = createUser("nick1", "email1@gmail.com");
         Board board = createBoard(user);
         BoardUser boardUser = createBoardUser(user, board);
         Side side = createSide(board, 1);
         Card card = createCard(user, side);
 
+        Long boardId = board.getId();
+        Long sideId = side.getId();
+        Long cardId = card.getId();
+
         // when
         /* 1. 이름 수정 */
-        cardService.updateName(board.getId(), side.getId(), card.getId(), "card name edit");
+        cardService.updateName(boardId, sideId, cardId, "card name edit");
         /* 2. 설명 추가(수정) */
-        cardService.updateDesc(board.getId(), side.getId(), card.getId(), "card desc edit");
+        cardService.updateDesc(boardId, sideId, cardId, "card desc edit");
         /* 3-1. 라벨 생성 */
         LabelRequestDto labelDto = new LabelRequestDto("label1", "yellow");
-        labelService.createLabel(board.getId(), labelDto, user);
+        labelService.createLabel(boardId, labelDto, user);
         /* 3-2. 카드에 라벨 추가 */
         Label label1 = labelRepository.findByTitle("label1").orElse(null);
-        labelService.createCardLabel(board.getId(), side.getId(), card.getId(), label1.getId(), user);
-        card.addCardLabel(new CardLabel(card, label1));
-        label1.addCardLabel(new CardLabel(card, label1));
+        labelService.createCardLabel(boardId, sideId, cardId, label1.getId(), user);
         /* 4. (카드)색상 수정 */
-        cardService.updateColor(board.getId(), side.getId(), card.getId(), "blue");
+        cardService.updateColor(boardId, sideId, cardId, "blue");
 
         // then
         /* 1. 이름 수정 */
@@ -118,7 +124,7 @@ class CardServiceTest {
          * 3. 체크리스트 아이템 체크
          */
         // given
-        User user = createUser();
+        User user = createUser("nick1", "email1@gmail.com");
         Board board = createBoard(user);
         BoardUser boardUser = createBoardUser(user, board);
         Side side = createSide(board, 1);
@@ -133,20 +139,15 @@ class CardServiceTest {
         /* 1-1. 체크리스트 생성 */
         ChecklistRequestDto checkRequestDto = new ChecklistRequestDto("오늘 할 일");
         ChecklistResponseDto checkResponseDto = checklistService.createChecklist(boardId, sideId, cardId, checkRequestDto, user);
-        card.addChecklist(new Checklist(card, checkRequestDto));
 
         /* 1-2. 체크리스트 아이템 생성 */
         Long checklistId = checkResponseDto.getId();
 
         ChecklistItemRequestDto checkItemRequestDto = new ChecklistItemRequestDto("테스트 코드 작성하기");
         ChecklistItemResponseDto checkItem1ResponseDto = checklistService.createItem(boardId, sideId, cardId, checklistId, checkItemRequestDto, user);
-        Checklist checklist = new Checklist(card, checkRequestDto);
-        checklist.addChecklistItem(new ChecklistItem(checklist, checkItemRequestDto));
 
         checkItemRequestDto = new ChecklistItemRequestDto("발표 준비하기");
         ChecklistItemResponseDto checkItem2ResponseDto = checklistService.createItem(boardId, sideId, cardId, checklistId, checkItemRequestDto, user);
-        checklist = new Checklist(card, checkRequestDto);
-        checklist.addChecklistItem(new ChecklistItem(checklist, checkItemRequestDto));
 
         // then 1
         assertEquals("오늘 할 일", checkResponseDto.getName()); // 체크리스트
@@ -185,8 +186,40 @@ class CardServiceTest {
     }
 
     @Test
-    @DisplayName("카드 수정3(작업자, 마감기한)")
+    @DisplayName("카드 수정3(작업자 추가)")
     void updateCard3() {
+        /**
+         * 1. 보드 생성 -> 사용자 초대
+         * 2. 사용자를 카드에 작업자로 추가
+         */
+        // given
+        User user1 = createUser("nick1", "email1@email.com");
+        User user2 = createUser("nick2", "email2@email.com");
+        User user3 = createUser("nick3", "email3@email.com");
+        Board board = createBoard(user1);
+        BoardUser boardUser1 = createBoardUser(user1, board);
+        BoardUser boardUser2 = createBoardUser(user2, board);
+        BoardUser boardUser3 = createBoardUser(user3, board);
+        Side side = createSide(board, 1);
+        Card card = createCard(user1, side);
+
+        Long boardId = board.getId();
+        Long sideId = side.getId();
+        Long cardId = card.getId();
+
+        // when
+        cardService.addWorker(boardId, sideId, cardId, user1.getEmail());
+        cardService.addWorker(boardId, sideId, cardId, user2.getEmail());
+        cardService.addWorker(boardId, sideId, cardId, user3.getEmail());
+
+        // then
+        assertEquals(user1.getEmail(), card.getCardUserList().get(0).getUser().getEmail());
+        assertEquals(user2.getEmail(), card.getCardUserList().get(1).getUser().getEmail());
+        assertEquals(user3.getEmail(), card.getCardUserList().get(2).getUser().getEmail());
+    }
+    @Test
+    @DisplayName("카드 수정4(마감기한)")
+    void updateCard4() {
 
     }
 
@@ -215,29 +248,25 @@ class CardServiceTest {
         em.persist(card);
         return card;
     }
-
     private Side createSide(Board board, int pos) {
         Side side = new Side("side1", 1024 * pos, board);
         em.persist(side);
         return side;
     }
-
     private BoardUser createBoardUser(User user, Board board) {
         BoardUser boardUser = new BoardUser(user, board);
         em.persist(boardUser);
         return boardUser;
     }
-
     private Board createBoard(User user) {
         Board board = new Board("board1", "descr1", user, 255, 255, 255);
         user.addBoard(board);
         em.persist(board);
         return board;
     }
-
-    private User createUser() {
+    private User createUser(String nickname, String email) {
         String encodePw = passwordEncoder.encode("Password@1234");
-        User user = new User("nick1", encodePw, "email1@email.com", UserRoleEnum.USER);
+        User user = new User(nickname, encodePw, email, UserRoleEnum.USER);
         em.persist(user);
         return user;
     }
