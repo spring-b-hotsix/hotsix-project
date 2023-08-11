@@ -1,9 +1,12 @@
 package com.sparta.hotsixproject.card.service;
 
+import com.sparta.hotsixproject.attachment.repository.AttachmentRepository;
+import com.sparta.hotsixproject.attachment.service.AttachmentService;
 import com.sparta.hotsixproject.board.entity.Board;
 import com.sparta.hotsixproject.boarduser.entity.BoardUser;
 import com.sparta.hotsixproject.card.dto.CardResponseDto;
 import com.sparta.hotsixproject.card.dto.DueRequestDto;
+import com.sparta.hotsixproject.card.dto.MoveRequestDto;
 import com.sparta.hotsixproject.card.entity.Card;
 import com.sparta.hotsixproject.card.repository.CardRepository;
 import com.sparta.hotsixproject.cardlabel.entity.CardLabel;
@@ -17,6 +20,8 @@ import com.sparta.hotsixproject.checklist.dto.ChecklistResponseDto;
 import com.sparta.hotsixproject.checklist.entity.Checklist;
 import com.sparta.hotsixproject.checklist.repository.ChecklistRepository;
 import com.sparta.hotsixproject.checklist.service.ChecklistServiceImpl;
+import com.sparta.hotsixproject.comment.dto.CommentRequestDto;
+import com.sparta.hotsixproject.comment.dto.CommentResponseDto;
 import com.sparta.hotsixproject.comment.repository.CommentRepository;
 import com.sparta.hotsixproject.comment.service.CommentServiceImpl;
 import com.sparta.hotsixproject.label.dto.LabelRequestDto;
@@ -33,12 +38,18 @@ import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.time.LocalDateTime;
 
+import static com.mysema.commons.lang.Assert.assertThat;
+import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.*;
 
 @RunWith(SpringRunner.class)
@@ -256,27 +267,87 @@ class CardServiceTest {
     }
 
     @Test
-    @DisplayName("첨부파일 확인")
-    void createCardAttachFile() {
-    }
+    @DisplayName("카드에 댓글 작성 및 수정")
+    void createAndUpdateCardComment() {
+        // given
+        User user1 = createUser("nick1", "email1@email.com");
+        Board board = createBoard(user1);
+        BoardUser boardUser1 = createBoardUser(user1, board);
+        Side side = createSide(board, 1);
+        Card card = createCard(user1, side);
 
-    @Test
-    @DisplayName("카드에 댓글 작성")
-    void createCardComment() {
+        Long boardId = board.getId();
+        Long sideId = side.getId();
+        Long cardId = card.getId();
+
+        // when 1
+        /** 1. 카드에 댓글 작성 **/
+        CommentRequestDto requestDto = new CommentRequestDto("와 멋지다~");
+        CommentResponseDto responseDto = commentService.createComment(boardId, sideId, cardId, requestDto, user1);
+
+        // then 1
+        assertEquals("와 멋지다~", responseDto.getContent());
+
+        // when 2
+        /** 2. 작성한 댓글 수정 **/
+        requestDto = new CommentRequestDto("와 멋지다~ 그런데 이 부분은 수정하면 좋겠어요.");
+        responseDto = commentService.updateComment(boardId, sideId, cardId, responseDto.getId(), requestDto, user1);
+
+        // then 2
+        assertEquals("와 멋지다~ 그런데 이 부분은 수정하면 좋겠어요.", responseDto.getContent());
     }
 
     @Test
     @DisplayName("카드 이동")
     void moveCard() {
+        // given
+        User user1 = createUser("nick1", "email1@email.com");
+        Board board = createBoard(user1);
+        BoardUser boardUser1 = createBoardUser(user1, board);
+        Side side = createSide(board, 1);
+        Card card1 = createCard(user1, side);
+        Card card2 = createCard(user1, side);
+        Card card3 = createCard(user1, side);
+        Card card4 = createCard(user1, side);
+
+        Long boardId = board.getId();
+        Long sideId = side.getId();
+
+        // when 1
+        MoveRequestDto requestDto = new MoveRequestDto(side.getName(), 2);
+        cardService.moveCard(boardId, sideId, card1.getId(), requestDto);
+
+        // then 1
+        assertEquals(2, card1.getPosition());
+        assertEquals(1, card2.getPosition());
+        assertEquals(3, card3.getPosition());
+        assertEquals(4, card4.getPosition());
+
+        // when 2
+        requestDto = new MoveRequestDto(side.getName(), 1);
+        cardService.moveCard(boardId, sideId, card2.getId(), requestDto);
+        requestDto = new MoveRequestDto(side.getName(), 3);
+        cardService.moveCard(boardId, sideId, card3.getId(), requestDto);
+        requestDto = new MoveRequestDto(side.getName(), 1);
+        cardService.moveCard(boardId, sideId, card4.getId(), requestDto);
+
+        // then 2
+        assertEquals(3, card1.getPosition());
+        assertEquals(2, card2.getPosition());
+        assertEquals(4, card3.getPosition());
+        assertEquals(1, card4.getPosition());
     }
 
     @Test
     @DisplayName("카드 삭제")
     void deleteCard() {
+        //
     }
+
 
     private Card createCard(User user, Side side) {
         Card card = new Card("card", side.getCardList().size() + 1, user, side);
+        side.addCard(card);
         em.persist(card);
         return card;
     }
