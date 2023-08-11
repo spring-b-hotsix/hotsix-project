@@ -26,6 +26,7 @@ public class CardResponseDto {
     private List<LabelResponseDto> labelList;
     private List<AttachmentResponseDto> attachmentList;
     private List<CommentResponseDto> commentList;
+    private String sideName;
 
     public CardResponseDto(Card card) {
         this.cardId = card.getId();
@@ -39,5 +40,6 @@ public class CardResponseDto {
         this.labelList = card.getCardLabelList().stream().map((cardLabel) -> new LabelResponseDto(cardLabel.getLabel())).toList();
         this.attachmentList = card.getAttachmentList().stream().map(AttachmentResponseDto::new).toList();
         this.commentList = card.getCommentList().stream().map(CommentResponseDto::new).toList();
+        this.sideName = card.getSide().getName();
     }
 }

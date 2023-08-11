@@ -11,11 +11,13 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
+@Controller
 @RequestMapping("/boards")
 @RequiredArgsConstructor
 @Tag(name = "카드 관련 API", description = "카드 관련 API 입니다.")
@@ -35,12 +37,15 @@ public class CardController {
 
     @GetMapping("/{boardId}/sides/{sideId}/cards/{cardId}")
     @Operation(summary = "카드 상세 조회", description = "@PathVariable을 통해 boardId, sideId, cardId를 받아와, 해당 정보와 일치하는 카드 1개의 상세 정보를 조회합니다.")
-    public ResponseEntity<CardResponseDto> getCard(
+    public String getCard(
             @Parameter(name = "boardId", description = "선택한 카드가 위치한 board의 id", in = ParameterIn.PATH) @PathVariable Long boardId,
             @Parameter(name = "sideId", description = "선택한 카드가 위치한 side(컬럼)의 id", in = ParameterIn.PATH) @PathVariable Long sideId,
-            @Parameter(name = "cardId", description = "상세 정보를 조회할 card의 id", in = ParameterIn.PATH) @PathVariable Long cardId
+            @Parameter(name = "cardId", description = "상세 정보를 조회할 card의 id", in = ParameterIn.PATH) @PathVariable Long cardId,
+            Model model
     ) {
-        return cardService.getCard(boardId, sideId, cardId);
+        ResponseEntity<CardResponseDto> card = cardService.getCard(boardId, sideId, cardId);
+        model.addAttribute("card", card);
+        return "card";
     }
 
     @GetMapping("/{boardId}/sides/{sideId}/cards")
