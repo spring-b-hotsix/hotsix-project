@@ -1,6 +1,7 @@
 package com.sparta.hotsixproject.board.service;
 
 import com.sparta.hotsixproject.board.dto.BoardRequestDto;
+import com.sparta.hotsixproject.board.dto.BoardResponseDto;
 import com.sparta.hotsixproject.board.entity.Board;
 import com.sparta.hotsixproject.board.repository.BoardRepository;
 import com.sparta.hotsixproject.boarduser.entity.BoardUser;
@@ -17,6 +18,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -84,7 +87,6 @@ class BoardServiceTest {
         User newUser1 = createUser("new1", "new1@email.com");
         User newUser2 = createUser("new2", "new2@email.com");
         Board board1 = createBoard(newUser1);
-        newUser1.addBoard(board1);
         BoardUser boardUser1 = createBoardUser(newUser1, board1);
 
         // when
@@ -110,9 +112,59 @@ class BoardServiceTest {
     }
 
     @Test
-    @DisplayName("내가 생성한 보드와 초대된 보드 확인하기")
+    @DisplayName("내가 생성한 보드와 초대된 보드 조회")
     void getMyBoardsAndGuestBoards() {
+        // given
+        /**
+         * 초기 접근허가 보드 개수:
+         * newUser1: 본인 2, 초대 0
+         * newUser2: 본인 1, 초대 0
+         * newUser3: 본인 0, 초대 0
+         */
+        User newUser1 = createUser("new1", "new1@email.com");
+        User newUser2 = createUser("new2", "new2@email.com");
+        User newUser3 = createUser("new3", "new3@email.com");
 
+        Board board1 = createBoard(newUser1);
+        BoardUser boardUser1to1 = createBoardUser(newUser1, board1);
+        Board board2 = createBoard(newUser1);
+        BoardUser boardUser1to2 = createBoardUser(newUser1, board2);
+        Board board3 = createBoard(newUser2);
+        BoardUser boardUser2to3 = createBoardUser(newUser2, board3);
+
+        /**
+         * newUser1: 본인 2(1,2번), 초대 1(3번)
+         * newUser2: 본인 1(3번), 초대 2(1,2번)
+         * newUser3: 본인 0, 초대 3(1,2,3번)
+         */
+        boardService.inviteBoard(board1.getId(), newUser2.getEmail(), board1.getUser()); // 초대할 보드, 초대할 사용자, 초대하는 사용자
+        boardService.inviteBoard(board1.getId(), newUser3.getEmail(), board1.getUser()); // 초대할 보드, 초대할 사용자, 초대하는 사용자
+        boardService.inviteBoard(board2.getId(), newUser2.getEmail(), board2.getUser()); // 초대할 보드, 초대할 사용자, 초대하는 사용자
+        boardService.inviteBoard(board2.getId(), newUser3.getEmail(), board2.getUser()); // 초대할 보드, 초대할 사용자, 초대하는 사용자
+        boardService.inviteBoard(board3.getId(), newUser1.getEmail(), board3.getUser()); // 초대할 보드, 초대할 사용자, 초대하는 사용자
+        boardService.inviteBoard(board3.getId(), newUser3.getEmail(), board3.getUser()); // 초대할 보드, 초대할 사용자, 초대하는 사용자
+
+        // when
+        /* 1. 본인이 생성한 보드 */
+        List<BoardResponseDto> user1MyBoardDtoList = boardService.getMyBoards(newUser1);
+        List<BoardResponseDto> user2MyBoardDtoList = boardService.getMyBoards(newUser2);
+        List<BoardResponseDto> user3MyBoardDtoList = boardService.getMyBoards(newUser3);
+
+        /* 2. 본인이 초대된 보드 */
+        List<BoardResponseDto> user1GuestBoardDtoList = boardService.getGuestBoards(newUser1);
+        List<BoardResponseDto> user2GuestBoardDtoList = boardService.getGuestBoards(newUser2);
+        List<BoardResponseDto> user3GuestBoardDtoList = boardService.getGuestBoards(newUser3);
+
+        // then
+        /* 1. 본인이 생성한 보드 */
+        assertEquals(2, user1MyBoardDtoList.size()); // user1 = 2개
+        assertEquals(1, user2MyBoardDtoList.size()); // user2 = 1개
+        assertEquals(0, user3MyBoardDtoList.size()); // user3 = null
+
+        /* 2. 본인이 초대된 보드 */
+        assertEquals(1, user1GuestBoardDtoList.size()); // user1 = 1개
+        assertEquals(2, user2GuestBoardDtoList.size()); // user2 = 2개
+        assertEquals(3, user3GuestBoardDtoList.size()); // user3 = 3개
     }
 
     @Test
@@ -134,6 +186,7 @@ class BoardServiceTest {
 
     private Board createBoard(User user) {
         Board board = new Board("board1", "descr1", user, 255, 255, 255);
+        user.addBoard(board);
         em.persist(board);
         return board;
     }
