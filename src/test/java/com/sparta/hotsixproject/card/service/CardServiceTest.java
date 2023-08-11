@@ -2,6 +2,8 @@ package com.sparta.hotsixproject.card.service;
 
 import com.sparta.hotsixproject.board.entity.Board;
 import com.sparta.hotsixproject.boarduser.entity.BoardUser;
+import com.sparta.hotsixproject.card.dto.CardResponseDto;
+import com.sparta.hotsixproject.card.dto.DueRequestDto;
 import com.sparta.hotsixproject.card.entity.Card;
 import com.sparta.hotsixproject.card.repository.CardRepository;
 import com.sparta.hotsixproject.cardlabel.entity.CardLabel;
@@ -34,6 +36,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -74,7 +78,7 @@ class CardServiceTest {
      */
 
     @Test
-    @DisplayName("카드 수정1(이름, 설명, 라벨, 색상)")
+    @DisplayName("카드 수정1(이름, 설명, 라벨, 색상 추가)")
     void updateCard1() {
         // given
         User user = createUser("nick1", "email1@gmail.com");
@@ -116,7 +120,7 @@ class CardServiceTest {
     }
 
     @Test
-    @DisplayName("카드 수정2(체크리스트)")
+    @DisplayName("카드 수정2(체크리스트 추가, 체크리스트 아이템 체크)")
     void updateCard2() {
         /**
          * 1. 체크리스트 생성 → 체크리스트 아이템 생성
@@ -217,10 +221,38 @@ class CardServiceTest {
         assertEquals(user2.getEmail(), card.getCardUserList().get(1).getUser().getEmail());
         assertEquals(user3.getEmail(), card.getCardUserList().get(2).getUser().getEmail());
     }
-    @Test
-    @DisplayName("카드 수정4(마감기한)")
-    void updateCard4() {
 
+    @Test
+    @DisplayName("카드 수정4(마감기한 추가, 마감기한 초과)")
+    void updateCard4() {
+        // given
+        User user1 = createUser("nick1", "email1@email.com");
+        Board board = createBoard(user1);
+        BoardUser boardUser1 = createBoardUser(user1, board);
+        Side side = createSide(board, 1);
+        Card card = createCard(user1, side);
+
+        Long boardId = board.getId();
+        Long sideId = side.getId();
+        Long cardId = card.getId();
+
+        // when 1
+        /** 마감기한 추가 **/
+        LocalDateTime localDateTime = LocalDateTime.of(2023, 9, 1, 13, 0);
+        DueRequestDto dueRequestDto = new DueRequestDto(localDateTime);
+        CardResponseDto cardResponseDto = cardService.updateDue(boardId, sideId, cardId, dueRequestDto).getBody();
+
+        // then 1
+        assertEquals(localDateTime, cardResponseDto.getDue());
+
+        // when 2
+        /** 마감기한 초과 **/
+        localDateTime = LocalDateTime.of(2023, 8, 12, 6, 0);
+        dueRequestDto = new DueRequestDto(localDateTime);
+        cardResponseDto = cardService.updateDue(boardId, sideId, cardId, dueRequestDto).getBody();
+
+        // then 2
+        assertTrue(cardResponseDto.isOverdue());
     }
 
     @Test
