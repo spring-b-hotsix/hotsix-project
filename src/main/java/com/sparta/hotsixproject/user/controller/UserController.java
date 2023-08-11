@@ -5,6 +5,7 @@ import com.sparta.hotsixproject.common.advice.ApiResponseDto;
 import com.sparta.hotsixproject.common.jwt.JwtUtil;
 import com.sparta.hotsixproject.common.security.UserDetailsImpl;
 import com.sparta.hotsixproject.user.dto.*;
+import com.sparta.hotsixproject.user.entity.User;
 import com.sparta.hotsixproject.user.service.GoolgeService;
 import com.sparta.hotsixproject.user.service.KakaoService;
 import com.sparta.hotsixproject.user.service.UserService;
@@ -21,6 +22,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
@@ -53,6 +55,13 @@ public class UserController {
     @GetMapping("/signup-page")
     public String signup() {
         return "signup";
+    }
+
+    @GetMapping("/profile")
+    public String UserProfile(@AuthenticationPrincipal UserDetailsImpl userDetails, Model model) {
+        User user = userDetails.getUser();
+        model.addAttribute("user", user);
+        return "profile";
     }
 
     @ResponseBody
