@@ -55,10 +55,11 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public UserInfoDto getUserInfo(User user) {
-        User newuser = userRepository.findById(user.getId()).orElseThrow(() -> new IllegalArgumentException("회원정보가 없습니다."));
+    public UserInfoDto getUserInfo(long userId) {
+        User newuser = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("회원정보가 없습니다."));
         String nickname = newuser.getNickname();
-        return new UserInfoDto(nickname);
+        String email = newuser.getEmail();
+        return new UserInfoDto(nickname,email);
     }
 
     @Transactional

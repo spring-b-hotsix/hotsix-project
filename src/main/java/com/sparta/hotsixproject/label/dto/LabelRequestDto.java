@@ -7,5 +7,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class LabelRequestDto {
     private String title;
-    private String color;
+    private Integer red;
+    private Integer green;
+    private Integer blue;
 }

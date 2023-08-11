@@ -1,5 +1,6 @@
 package com.sparta.hotsixproject.side.controller;
 
+import com.sparta.hotsixproject.common.advice.ApiResponseDto;
 import com.sparta.hotsixproject.common.security.UserDetailsImpl;
 import com.sparta.hotsixproject.side.dto.SideMoveDto;
 import com.sparta.hotsixproject.side.dto.SideRequestDto;
@@ -24,13 +25,13 @@ public class SideController {
 
     @PostMapping("/boards/{boardId}/sides")
     @Operation(summary = "컬럼(side) 생성", description = "@PathVariable을 통해 boardId를 받아와, 해당 위치에 컬럼(side)을 생성합니다. Dto를 통해 name(이름) 값을 받아와 side를 생성할 때 해당 name을 저장합니다.")
-    public ResponseEntity<SideResponseDto> createSide(
+    public ResponseEntity<ApiResponseDto> createSide(
             @Parameter(name = "boardId", description = "컬럼(side)을 생성할 board의 id", in = ParameterIn.PATH) @PathVariable Long boardId,
             @Parameter(description = "컬럼(side)을 생성 및 수정할 때 필요한 정보") @RequestBody SideRequestDto requestDto,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
         SideResponseDto result = sideCustomServiceImpl.createSide(boardId, requestDto, userDetails.getUser());
-        return ResponseEntity.ok().body(result);
+        return ResponseEntity.ok().body(new ApiResponseDto(result.getName()+"를 추가했습니다.",201));
     }
 
     @GetMapping("/boards/{boardId}/sides")

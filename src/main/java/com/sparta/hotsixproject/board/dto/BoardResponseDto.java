@@ -31,7 +31,7 @@ public class BoardResponseDto {
         this.blue = board.getColor().getBlue();
         this.sideList = board.getSideList().stream()
                 .map(SideResponseDto::new)
-                .sorted(Comparator.comparing(SideResponseDto::getPosition)) // position순
+                .sorted(Comparator.comparing(SideResponseDto::getPosition)) // position순서로 정렬
                 .toList();
         this.labelList = board.getLabelList().stream()
                 .map(LabelResponseDto::new)

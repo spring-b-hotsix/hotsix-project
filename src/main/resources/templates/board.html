@@ -400,16 +400,17 @@
 
 
                         <!--보드 라벨-->
-                        <div style="margin-bottom: 50px">
+                        <div style="margin-bottom: 50px; display: flex; flex-wrap: wrap;">
                             <li class="nav-item">
                                 <a class="nav-link" data-bs-toggle="modal"
                                    data-bs-target="#board-label" href="#"><b>Labels</b></a>
-                                <div id="labels-get">
+                                <div style="margin-bottom: 50px; display: flex; flex-wrap: wrap;">
                                     <div th:each="boardLabel : ${board.labelList}">
                                         <a class="btn mb-0 label-text" href="#" role="button"
-                                           th:style="'margin-right: 5px; background-color:rgb(' + ${boardLabel.red} + ', ' + ${boardLabel.green} + ', ' + ${boardLabel.blue} + ')'"
+                                           th:style="'margin-right: 5px; margin-bottom: 5px; background-color:rgb(' + ${boardLabel.red} + ', ' + ${boardLabel.green} + ', ' + ${boardLabel.blue} + ')'"
                                            data-bs-toggle="modal"
-                                           data-bs-target="#board-label" th:text="${boardLabel.title}"></a>
+                                           data-bs-target="#board-label" th:text="${boardLabel.title}"
+                                           th:attr="data-label-id=${boardLabel.labelId}"></a>
                                     </div>
                                 </div>
                             </li>
@@ -450,7 +451,7 @@
                             </div>
                             <div id="board-update-color">
                                 <h6>color</h6>
-                                <input type="text" id="board-color" readonly/>
+                                <input type="text" id="board-color" th:value="'rgb('+${board.red}+','+ ${board.green}+','+ ${board.blue}+')'" readonly/>
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -486,10 +487,10 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-danger" data-bs-toggle="modal"
-                                    data-bs-target="#label-delete">
+                                    data-bs-target="#label-delete" id="delete-label-btn" onclick="deleteLabel(this)">
                                 Delete
                             </button>
-                            <button type="button" class="btn btn-primary">Save</button>
+                            <button type="button" class="btn btn-primary" id="update-label-btn" onclick="updateLabel(this)">Save</button>
                         </div>
                     </div>
                 </div>
@@ -800,14 +801,18 @@
         var button = $(event.relatedTarget); // 클릭한 버튼
         var labelName = button.text(); // 버튼의 텍스트(라벨 이름)
         var backgroundColor = button.css('background-color'); // 버튼의 배경색
+        var labelId = button.data('label-id');
         var modal = $(this); // 모달
 
         // 모달 내 필드에 값 할당
         modal.find('#label-update-name input').val(labelName);
         modal.find('#label-update-color input').val(backgroundColor);
+        modal.find('#delete-label-btn').val(labelId);
+        modal.find('#update-label-btn').val(labelId);
 
     });
 
+    //라벨 색상에 따른 글씨색상 조정
     function applyTextColorToLabels() {
         let labelElements = document.querySelectorAll('.label-text');
 
@@ -822,16 +827,53 @@
         });
     }
 
-    // function applyTextColor() {
-    //     let bgColor = getComputedStyle(document.body).backgroundColor;
-    //     let bgColorRGB = extractRGBValues(bgColor);
-    //
-    //     let lightness = calculateLightness(bgColorRGB.r, bgColorRGB.g, bgColorRGB.b);
-    //     let textColor = lightness < 50 ? 'white' : 'black';
-    //
-    //     let element =
-    //     document.body.style.color = textColor;
-    // }
+    function deleteLabel(button){
+        let labelId = button.value;
+        let boardId = $('#this-board').val();
+        console.log("labelId:"+labelId);
+        fetch(`/boards/${boardId}/sides/${labelId}`, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+            .then(function (response) {
+                window.location.href = "/boards/" + boardId;
+            })
+            .catch(function (error) {
+                console.error("라벨 삭제 실패", error);
+            });
+    }
+    function updateLabel(button) {
+        let labelId = button.value;
+        console.log("labelId:" + labelId);
+        let title = $('#label-update-name input').val();
+        let color = $('#label-update-color input').spectrum('get').toRgb();
+        let boardId = $('#this-board').val();
+        console.log("boardId" + boardId);
+        let requestDto = {
+            "title": title,
+            "red": color.r,
+            "green": color.g,
+            "blue": color.b
+        };
+        fetch(`/boards/${boardId}/labels/${labelId}`, {  // 여기에서 중괄호 추가
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(requestDto)
+        })
+            .then(function (response) {
+                return response.json();
+            })
+            .then(function (responseDto) {
+                window.location.href = "/boards/" + boardId;
+            })
+            .catch(function (error) {
+                console.error("라벨 변경 실패", error);
+            });
+    }
 
     // 쿠키에서 인증 토큰 가져오기
     function getToken() {
@@ -859,7 +901,7 @@
         //allowEmpty:true, //색없음 가능 여부 default - false
         showButtons: true, //하단 close, choose 버튼
         preferredFormat: "rgb",//색 포맷 형식 지정
-        color: "rgb(128,128,128)", //초기 색상
+        // color: "rgb(128,128,128)", //초기 색상
         showPalette: true,//왼쪽 색 파레트 사용여부
         palette: [
             ['rgb(0,0,0)', 'rgb(235,235,235)'], // 한 줄에 두 가지 색상씩 두줄로 표시됨
@@ -882,7 +924,7 @@
         //allowEmpty:true, //색없음 가능 여부 default - false
         showButtons: true, //하단 close, choose 버튼
         preferredFormat: "rgb",//색 포맷 형식 지정
-        color: "rgb(128,128,128)", //초기 색상
+        color: $("#background-color").css("background-color"), //초기 색상
         showPalette: true,//왼쪽 색 파레트 사용여부
         palette: [
             ['rgb(0,0,0)', 'rgb(235,235,235)'], // 한 줄에 두 가지 색상씩 두줄로 표시됨
