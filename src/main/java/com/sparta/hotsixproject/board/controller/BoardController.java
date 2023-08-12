@@ -5,6 +5,7 @@ import com.sparta.hotsixproject.board.dto.BoardResponseDto;
 import com.sparta.hotsixproject.board.dto.InviteBoardRequestDto;
 import com.sparta.hotsixproject.board.dto.MemberResponseDto;
 import com.sparta.hotsixproject.board.service.BoardService;
+import com.sparta.hotsixproject.card.dto.CardResponseDto;
 import com.sparta.hotsixproject.common.advice.ApiResponseDto;
 import com.sparta.hotsixproject.common.security.UserDetailsImpl;
 import io.swagger.v3.oas.annotations.Operation;
@@ -25,7 +26,7 @@ public class BoardController {
 
     private BoardService boardService;
 
-    public BoardController(BoardService boardService){
+    public BoardController(BoardService boardService) {
         this.boardService = boardService;
     }
 
@@ -57,6 +58,10 @@ public class BoardController {
         return ResponseEntity.status(HttpStatus.OK).body(boardService.getBoard(boardId, userDetails.getUser()));
     }
 
+    @GetMapping("/boards/{boardId}/word")
+    public List<CardResponseDto> searchCards(@PathVariable Long boardId, String keyword, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return boardService.searchCards(boardId, keyword,userDetails.getUser());
+    }
     @PostMapping("/boards")
     @Operation(summary = "보드 생성", description = "보드를 생성하고, 유저 정보에 생성된 보드를 추가합니다.")
     public ResponseEntity<ApiResponseDto> createBoard(
@@ -92,7 +97,7 @@ public class BoardController {
             @Parameter(description = "초대할 사용자의 정보 (email)") @RequestBody InviteBoardRequestDto requestDto,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(boardService.inviteBoard(boardId,requestDto.getEmail(),userDetails.getUser()));
+        return ResponseEntity.status(HttpStatus.CREATED).body(boardService.inviteBoard(boardId, requestDto.getEmail(), userDetails.getUser()));
     }
 
     // 보드 멤버 전체 조회
