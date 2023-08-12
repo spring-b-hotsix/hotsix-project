@@ -31,6 +31,9 @@ public class User {
     @Column(nullable = false)
     private String email;
 
+    @Column
+    private String imageUrl;
+
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
     private UserRoleEnum role;
@@ -82,5 +85,9 @@ public class User {
 
     public void updatePassword(String encodePassword) {
         this.password = encodePassword;
+    }
+
+    public void updateImage(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }

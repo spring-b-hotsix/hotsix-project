@@ -1,5 +1,6 @@
 package com.sparta.hotsixproject.user.service;
 
+import com.sparta.hotsixproject.common.file.FileUploader;
 import com.sparta.hotsixproject.user.UserRoleEnum;
 import com.sparta.hotsixproject.user.dto.*;
 import com.sparta.hotsixproject.user.entity.User;
@@ -9,7 +10,9 @@ import org.springframework.context.MessageSource;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Locale;
 
 @Service
@@ -19,6 +22,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final MessageSource messageSource;
+    private final FileUploader fileUploader;
 
     @Transactional
     public void signup(LoginRequestDto requestDto) {
@@ -55,10 +59,10 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public UserInfoDto getUserInfo(User user) {
-        User newuser = userRepository.findById(user.getId()).orElseThrow(() -> new IllegalArgumentException("회원정보가 없습니다."));
-        String nickname = newuser.getNickname();
-        return new UserInfoDto(nickname);
+    public UserInfoResponseDto getUserInfo(User user) {
+        User dbUser = userRepository.findById(user.getId()).orElseThrow(() -> new IllegalArgumentException("회원정보가 없습니다."));
+        UserInfoResponseDto userInfo = new UserInfoResponseDto(dbUser);
+        return userInfo;
     }
 
     @Transactional
@@ -108,6 +112,16 @@ public class UserService {
 
 
     }
+
+    @Transactional
+    public void updateImage(Long userId, MultipartFile file, User user) throws IOException {
+        User dbUser = userRepository.findById(userId).get();
+        if (file != null) {
+            String imageUrl = fileUploader.upload(file, "file");
+            dbUser.updateImage(imageUrl);
+        }
+    }
+
     @Transactional
     public void deleteUser(Long userId, DeleteUserRequestDto requestDto, User user) {
         User newuser = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("회원이 존재하지 않습니다"));
