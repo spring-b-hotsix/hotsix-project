@@ -47,7 +47,7 @@ class SideServiceTest {
     @DisplayName("컬럼 이름 변경")
     void updateSideName() {
         // given
-        User user = createUser();
+        User user = createUser("nick1", "email1@email.com");
         Board board = createBoard(user);
         Side side = createSide(board, 1);
 
@@ -63,7 +63,7 @@ class SideServiceTest {
     @DisplayName("같은 보드 내에서 컬럼 이동")
     void moveSideToSameBoard() {
         // given
-        User user = createUser();
+        User user = createUser("nick1", "email1@email.com");
         Board board1 = createBoard(user);
         Side side1 = createSide(board1, 1);
         Side side2 = createSide(board1, 2);
@@ -118,7 +118,7 @@ class SideServiceTest {
     @DisplayName("다른 보드로 컬럼 이동")
     void moveSideToDifferBoard() {
         // given
-        User user = createUser();
+        User user = createUser("nick1", "email1@email.com");
         Board board1 = createBoard(user);
         Side side1 = createSide(board1, 1);
         Side side2 = createSide(board1, 2);
@@ -193,9 +193,9 @@ class SideServiceTest {
         return board;
     }
 
-    private User createUser() {
+    private User createUser(String nickname, String email) {
         String encodePw = passwordEncoder.encode("Password@1234");
-        User user = new User("nick1", encodePw, "email1@email.com", UserRoleEnum.USER);
+        User user = new User(nickname, encodePw, email, UserRoleEnum.USER);
         em.persist(user);
         return user;
     }
