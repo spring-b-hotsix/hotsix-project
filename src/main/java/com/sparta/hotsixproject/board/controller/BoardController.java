@@ -5,6 +5,7 @@ import com.sparta.hotsixproject.board.dto.BoardResponseDto;
 import com.sparta.hotsixproject.board.dto.InviteBoardRequestDto;
 import com.sparta.hotsixproject.board.dto.MemberResponseDto;
 import com.sparta.hotsixproject.board.service.BoardService;
+import com.sparta.hotsixproject.card.dto.CardResponseDto;
 import com.sparta.hotsixproject.common.advice.ApiResponseDto;
 import com.sparta.hotsixproject.common.security.UserDetailsImpl;
 import io.swagger.v3.oas.annotations.Operation;
@@ -25,7 +26,7 @@ public class BoardController {
 
     private BoardService boardService;
 
-    public BoardController(BoardService boardService){
+    public BoardController(BoardService boardService) {
         this.boardService = boardService;
     }
 
@@ -37,11 +38,13 @@ public class BoardController {
         boards.addAll(boardService.getGuestBoards(userDetails.getUser()));
         return ResponseEntity.status(HttpStatus.OK).body(boards);
     }
+
     @GetMapping("/myboard")
     @Operation(summary = "내 보드 전체 조회", description = "내가 생성한 모든 보드를 조회합니다.")
     public ResponseEntity<List<BoardResponseDto>> getMyBoards(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return ResponseEntity.status(HttpStatus.OK).body(boardService.getMyBoards(userDetails.getUser()));
     }
+
     @GetMapping("/guestboard")
     @Operation(summary = "내가 초대된 보드 전체 조회", description = "내가 게스트로 추가된 모든 보드를 조회합니다.")
     public ResponseEntity<List<BoardResponseDto>> getGuestBoards(@AuthenticationPrincipal UserDetailsImpl userDetails) {
@@ -55,6 +58,15 @@ public class BoardController {
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
         return ResponseEntity.status(HttpStatus.OK).body(boardService.getBoard(boardId, userDetails.getUser()));
+    }
+
+    @GetMapping("/boards/{boardId}/word")
+    @Operation(summary = "보드에서 카드리스트 검색", description = "입력한 키워드로 카드 리스트를 조회합니다.")
+    public List<CardResponseDto> searchCards(
+            @Parameter(name = "boardId", description = "조회할 board의 id", in = ParameterIn.PATH) @PathVariable Long boardId,
+            @Parameter(name = "keyword", description = "검색할 keyword", in = ParameterIn.QUERY) String keyword,
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return boardService.searchCards(boardId, keyword, userDetails.getUser());
     }
 
     @PostMapping("/boards")
@@ -92,7 +104,7 @@ public class BoardController {
             @Parameter(description = "초대할 사용자의 정보 (email)") @RequestBody InviteBoardRequestDto requestDto,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(boardService.inviteBoard(boardId,requestDto.getEmail(),userDetails.getUser()));
+        return ResponseEntity.status(HttpStatus.CREATED).body(boardService.inviteBoard(boardId, requestDto.getEmail(), userDetails.getUser()));
     }
 
     // 보드 멤버 전체 조회
