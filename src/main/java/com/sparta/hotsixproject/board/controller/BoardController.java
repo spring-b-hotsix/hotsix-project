@@ -38,11 +38,13 @@ public class BoardController {
         boards.addAll(boardService.getGuestBoards(userDetails.getUser()));
         return ResponseEntity.status(HttpStatus.OK).body(boards);
     }
+
     @GetMapping("/myboard")
     @Operation(summary = "내 보드 전체 조회", description = "내가 생성한 모든 보드를 조회합니다.")
     public ResponseEntity<List<BoardResponseDto>> getMyBoards(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return ResponseEntity.status(HttpStatus.OK).body(boardService.getMyBoards(userDetails.getUser()));
     }
+
     @GetMapping("/guestboard")
     @Operation(summary = "내가 초대된 보드 전체 조회", description = "내가 게스트로 추가된 모든 보드를 조회합니다.")
     public ResponseEntity<List<BoardResponseDto>> getGuestBoards(@AuthenticationPrincipal UserDetailsImpl userDetails) {
@@ -59,9 +61,14 @@ public class BoardController {
     }
 
     @GetMapping("/boards/{boardId}/word")
-    public List<CardResponseDto> searchCards(@PathVariable Long boardId, String keyword, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return boardService.searchCards(boardId, keyword,userDetails.getUser());
+    @Operation(summary = "보드에서 카드리스트 검색", description = "입력한 키워드로 카드 리스트를 조회합니다.")
+    public List<CardResponseDto> searchCards(
+            @Parameter(name = "boardId", description = "조회할 board의 id", in = ParameterIn.PATH) @PathVariable Long boardId,
+            @Parameter(name = "keyword", description = "검색할 keyword", in = ParameterIn.QUERY) String keyword,
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return boardService.searchCards(boardId, keyword, userDetails.getUser());
     }
+
     @PostMapping("/boards")
     @Operation(summary = "보드 생성", description = "보드를 생성하고, 유저 정보에 생성된 보드를 추가합니다.")
     public ResponseEntity<ApiResponseDto> createBoard(
