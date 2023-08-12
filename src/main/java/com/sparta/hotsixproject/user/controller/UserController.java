@@ -26,7 +26,9 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.List;
@@ -67,9 +69,8 @@ public class UserController {
     @ResponseBody
     @GetMapping("/user-info")
     @Operation(summary = "사용자 정보 조회", description = "선택한 사용자의 정보를 가져옵니다.")
-    public UserInfoDto getUserInfo(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        UserInfoDto userInfoDto = userService.getUserInfo(userDetails.getUser());
-        return userInfoDto;
+    public UserInfoResponseDto getUserInfo(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return userService.getUserInfo(userDetails.getUser());
     }
 
     @PostMapping("/signup")
@@ -114,6 +115,17 @@ public class UserController {
         return ResponseEntity.ok().body(new ApiResponseDto("비밀번호 변경이 완료되었습니다.", HttpStatus.OK.value()));
     }
 
+    @PutMapping("/{userId}/files")
+    @ResponseBody
+    @Operation(summary = "프로필 사진 업데이트", description = "선택한 사용자의 프로필 사진을 변경합니다.")
+    public ResponseEntity<ApiResponseDto> updateImage(
+            @Parameter(name = "userId", description = "사진을 변경할 user의 id", in = ParameterIn.PATH) @PathVariable Long userId,
+            @Parameter(description = "사진") @RequestParam MultipartFile file, @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) throws IOException {
+        userService.updateImage(userId, file, userDetails.getUser());
+        return new ResponseEntity<>(new ApiResponseDto("프로필 사진이 변경되었습니다.", HttpStatus.OK.value()), HttpStatus.OK);
+    }
+
     @DeleteMapping("/{userId}/sign-out")
     @Operation(summary = "사용자 탈퇴", description = "선택한 사용자를 탈퇴시킵니다. 현재는 사용자가 스스로 탈퇴할 때 사용합니다.")
     public ResponseEntity<ApiResponseDto> deleteUser(
@@ -150,4 +162,5 @@ public class UserController {
 
         return "redirect:/";
     }
+
 }
