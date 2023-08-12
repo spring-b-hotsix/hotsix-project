@@ -4,9 +4,11 @@ import com.sparta.hotsixproject.board.dto.BoardRequestDto;
 import com.sparta.hotsixproject.board.dto.BoardResponseDto;
 import com.sparta.hotsixproject.board.dto.MemberResponseDto;
 import com.sparta.hotsixproject.board.entity.Board;
-import com.sparta.hotsixproject.boarduser.entity.BoardUser;
 import com.sparta.hotsixproject.board.repository.BoardRepository;
+import com.sparta.hotsixproject.boarduser.entity.BoardUser;
 import com.sparta.hotsixproject.boarduser.repository.BoardUserRepository;
+import com.sparta.hotsixproject.card.dto.CardResponseDto;
+import com.sparta.hotsixproject.card.repository.CardRepository;
 import com.sparta.hotsixproject.common.advice.ApiResponseDto;
 import com.sparta.hotsixproject.user.entity.User;
 import com.sparta.hotsixproject.user.repository.UserRepository;
@@ -25,6 +27,7 @@ public class BoardServiceImpl implements BoardService{
     private final BoardRepository boardRepository;
     private final UserRepository userRepository;
     private final BoardUserRepository boardUserRepository;
+    private final CardRepository cardRepository;
 
     //메인화면 - 로그인한 사용자가 생성한 보드 불러오는 메서드
     @Override
@@ -60,6 +63,15 @@ public class BoardServiceImpl implements BoardService{
         return new BoardResponseDto(findBoard(id));
     }
 
+    @Override
+    public List<CardResponseDto> searchCards(Long boardId, String keyword,User user) {
+        User loginedUser = findUser(user.getId());
+        Board targetBoard = findBoard(boardId);
+        //보드에 속한 유저인지 확인
+        checkBoardMember(loginedUser,targetBoard);
+
+        return cardRepository.findBySide_Board_IdAndNameContainingOrDescriptionContaining(boardId,keyword,keyword).stream().map(CardResponseDto::new).toList();
+    }
     //새 보드 생성 메서드
     @Override
     public ApiResponseDto createBoard(BoardRequestDto requestDto, User user) {
