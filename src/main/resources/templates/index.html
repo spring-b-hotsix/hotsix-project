@@ -221,7 +221,7 @@
         </div>
     </div>
 </div>
-
+</div>
 <script>
 
     $(document).ready(function () {
@@ -280,7 +280,6 @@
         let name = $('#board-name').val();
         let description = $('#board-description').val();
         let color = $('#color').spectrum('get').toRgb();
-        let red
         console.log(name);
         console.log(description);
         console.log(color);
@@ -313,46 +312,6 @@
 
             });
     }
-
-    // POST 요청 처리
-    // $('#ok-btn').on('click', function (event) {
-    //     event.preventDefault(); // 기본 동작 중단
-    //
-    //     const name = $('#board-name').val(); // 입력 데이터 가져오기
-    //     const description = $('#board-description').val(); // 입력 데이터 가져오기
-    //     const color = $('#color').spectrum('get').toRgb();
-    //     console.log(name);
-    //     console.log(description);
-    //     console.log(color);
-    //     // const image = document.getElementById('imagefile').files[0]; // 입력 사진 가져오기
-    //
-    //     let formData = new FormData();
-    //     formData.append("name", name);
-    //     formData.append("description", description);
-    //     formData.append("color", JSON.stringify(color)); // 컬러값을 JSON 형태로 전달
-    //
-    //     $.ajax({
-    //         type: 'POST',
-    //         url: '/boards',
-    //         // data: JSON.stringify({ data: inputData }),
-    //         // contentType: 'application/json',
-    //         data: formData,
-    //         processData: false,
-    //         contentType: false,
-    //         // enctype: 'multipart/form-data', // 이미지 업로드를 위해 추가
-    //         success: function (response) {
-    //             console.log('POST 요청 성공',response.msg);
-    //             // 여기에서 POST 요청에 대한 응답 처리
-    //         },
-    //         error: function (jqXHR, textStatus, errorThrown) {
-    //             console.error('POST 요청 실패:', errorThrown);
-    //             // 여기에서 POST 요청 실패 처리
-    //         }
-    //     });
-    //
-    //     alert(data['추가 완료!']);
-    //     // $('#input-post').val(''); // 작성 완료 시 내용 비우기
-    // });
 
     $("#color").spectrum({
         //allowEmpty:true, //색없음 가능 여부 default - false

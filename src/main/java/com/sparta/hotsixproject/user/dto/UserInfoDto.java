@@ -5,8 +5,9 @@ import lombok.Getter;
 @Getter
 public class UserInfoDto {
     private String nickname;
-
-    public UserInfoDto(String nickname) {
+    private String email;
+    public UserInfoDto(String nickname, String email) {
         this.nickname = nickname;
+        this.email = email;
     }
 }

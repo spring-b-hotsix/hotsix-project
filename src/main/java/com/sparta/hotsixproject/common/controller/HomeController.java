@@ -1,6 +1,7 @@
 package com.sparta.hotsixproject.common.controller;
 
 import com.sparta.hotsixproject.board.dto.BoardResponseDto;
+import com.sparta.hotsixproject.board.dto.MemberResponseDto;
 import com.sparta.hotsixproject.board.service.BoardService;
 import com.sparta.hotsixproject.common.security.UserDetailsImpl;
 import io.swagger.v3.oas.annotations.Operation;
@@ -26,7 +27,6 @@ public class HomeController {
         List<BoardResponseDto> getMyBoards = boardService.getMyBoards(userDetails.getUser());
         List<BoardResponseDto> getGuestBoards = boardService.getGuestBoards(userDetails.getUser());
 //        return ResponseEntity.ok().body(boardService.getAllBoards());
-
         model.addAttribute("nickname", nickname);
         model.addAttribute("myboards", getMyBoards);
         model.addAttribute("guestboards", getGuestBoards);

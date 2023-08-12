@@ -21,8 +21,11 @@ public class Label {
     private String title;
 
     @Column
-    private String color;
-
+    private Integer red;
+    @Column
+    private Integer green;
+    @Column
+    private Integer blue;
     @ManyToOne
     @JoinColumn(name="board_id", nullable = false)
     private Board board;
@@ -30,14 +33,18 @@ public class Label {
     @OneToMany(mappedBy = "label", orphanRemoval = true)
     private List<CardLabel> cardLabelList;
 
-    public Label(Board board, String title, String color) {
+    public Label(Board board, String title, Integer red,Integer green,Integer blue) {
         this.board = board;
         this.title = title;
-        this.color = color;
+        this.red = red;
+        this.green = green;
+        this.blue = blue;
     }
 
-    public void update(String title, String color) {
+    public void update(String title, Integer red, Integer green, Integer blue) {
         this.title = title;
-        this.color = color;
+        this.red = red;
+        this.green = green;
+        this.blue = blue;
     }
 }

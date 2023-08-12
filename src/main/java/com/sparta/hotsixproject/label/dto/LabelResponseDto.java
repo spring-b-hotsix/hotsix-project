@@ -8,17 +8,23 @@ import lombok.Getter;
 public class LabelResponseDto {
     private Long labelId;
     private String title;
-    private String color;
+    private Integer red;
+    private Integer green;
+    private Integer blue;
 
     public LabelResponseDto(Label label) {
         this.labelId = label.getId();
         this.title = label.getTitle();
-        this.color = label.getColor();
+        this.red = label.getRed();
+        this.green = label.getGreen();
+        this.blue = label.getBlue();
     }
 
     public LabelResponseDto(CardLabel cardLabel) {
         this.labelId = cardLabel.getLabel().getId();
         this.title = cardLabel.getLabel().getTitle();
-        this.color = cardLabel.getLabel().getColor();
+        this.red = cardLabel.getLabel().getRed();
+        this.green = cardLabel.getLabel().getGreen();
+        this.blue = cardLabel.getLabel().getBlue();
     }
 }
