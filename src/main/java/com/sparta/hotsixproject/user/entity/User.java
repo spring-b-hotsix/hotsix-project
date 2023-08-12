@@ -3,6 +3,7 @@ package com.sparta.hotsixproject.user.entity;
 import com.sparta.hotsixproject.board.entity.Board;
 import com.sparta.hotsixproject.card.entity.Card;
 import com.sparta.hotsixproject.carduser.entity.CardUser;
+import com.sparta.hotsixproject.notification.entity.Notification;
 import com.sparta.hotsixproject.user.UserRoleEnum;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -16,7 +17,7 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@EqualsAndHashCode(exclude = {"boardList", "cardList"})
+@EqualsAndHashCode(exclude = {"boardList", "cardList", "notificationList", "notification"})
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,6 +44,12 @@ public class User {
 
     @OneToMany(mappedBy = "user", orphanRemoval = true)
     private List<CardUser> cardUserList = new ArrayList<>();
+
+//    @OneToMany(mappedBy = "login_user", orphanRemoval = true)
+//    private List<Notification> notificationList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "editor", orphanRemoval = true)
+    private List<Notification> notificationList = new ArrayList<>();
 
     @Column
     private Long kakaoId;
