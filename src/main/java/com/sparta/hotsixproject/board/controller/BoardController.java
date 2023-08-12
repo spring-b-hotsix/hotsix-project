@@ -115,4 +115,16 @@ public class BoardController {
     ) {
         return boardService.getMembers(boardId);
     }
+
+    @ResponseBody
+    // 보드 멤버 전체 조회
+    @DeleteMapping ("/boards/{boardId}/members/{memberId}")
+    @Operation(summary = "해당 보드의 참여자 삭제", description = "선택한 보드에서 선택된 사용자를 참여자에서 제외합니다.")
+    public ApiResponseDto deleteMember(
+            @Parameter(name = "boardId", description = "board의 id", in = ParameterIn.PATH) @PathVariable Long boardId,
+            @Parameter(name = "memberId", description = "삭제할 사용자의 id", in = ParameterIn.PATH) @PathVariable Long memberId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        return boardService.deleteMember(boardId,memberId,userDetails.getUser());
+    }
 }
