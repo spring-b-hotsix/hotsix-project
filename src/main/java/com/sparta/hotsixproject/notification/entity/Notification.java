@@ -1,5 +1,6 @@
 package com.sparta.hotsixproject.notification.entity;
 
+import com.sparta.hotsixproject.board.entity.Board;
 import com.sparta.hotsixproject.notification.NotificationTitle;
 import com.sparta.hotsixproject.user.entity.User;
 import jakarta.persistence.*;
@@ -38,10 +39,16 @@ public class Notification {
     @JoinColumn(nullable = false)
     private User editor;
 
-    public Notification(NotificationTitle title, String detail, LocalDateTime modifiedAt, User editor) {
+    // 알림이 속한 board
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false)
+    private Board board;
+
+    public Notification(NotificationTitle title, String detail, LocalDateTime modifiedAt, User editor, Board board) {
         this.title = title;
         this.detail = detail;
         this.timeSinceModified = Duration.between(modifiedAt, LocalDateTime.now()).toString();
         this.editor = editor;
+        this.board = board;
     }
 }

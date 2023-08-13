@@ -22,6 +22,8 @@ public class QNotification extends EntityPathBase<Notification> {
 
     public static final QNotification notification = new QNotification("notification");
 
+    public final com.sparta.hotsixproject.board.entity.QBoard board;
+
     public final StringPath detail = createString("detail");
 
     public final com.sparta.hotsixproject.user.entity.QUser editor;
@@ -50,6 +52,7 @@ public class QNotification extends EntityPathBase<Notification> {
 
     public QNotification(Class<? extends Notification> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
+        this.board = inits.isInitialized("board") ? new com.sparta.hotsixproject.board.entity.QBoard(forProperty("board"), inits.get("board")) : null;
         this.editor = inits.isInitialized("editor") ? new com.sparta.hotsixproject.user.entity.QUser(forProperty("editor")) : null;
     }
 
