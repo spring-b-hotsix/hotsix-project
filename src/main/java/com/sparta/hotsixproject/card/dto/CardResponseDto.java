@@ -2,6 +2,7 @@ package com.sparta.hotsixproject.card.dto;
 
 import com.sparta.hotsixproject.attachment.dto.AttachmentResponseDto;
 import com.sparta.hotsixproject.card.entity.Card;
+import com.sparta.hotsixproject.checklist.dto.ChecklistResponseDto;
 import com.sparta.hotsixproject.comment.dto.CommentResponseDto;
 import com.sparta.hotsixproject.label.dto.LabelResponseDto;
 import com.sparta.hotsixproject.user.dto.UserInfoResponseDto;

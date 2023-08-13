@@ -122,17 +122,20 @@ function addAttachment(boardId, sideId, cardId) {
 }
 
 // 첨부파일명 수정 토글
-function toggleAttachmentName(state) {
+function toggleAttachmentName(state, fileId) {
+    let attachmentDefaultId = "attachment-file-name-default-" + fileId;
+    let attachmentupdateId = "attachment-file-name-update-" + fileId;
     if (state === 'input') {
-        document.getElementById('attachment-file-name-default').style.display = 'none';
-        document.getElementById('attachment-file-name-update').style.display = 'flex';
+        document.getElementById(attachmentDefaultId).style.display = 'none';
+        document.getElementById(attachmentupdateId).style.display = 'flex';
     }
 }
 
 // 첨부파일명 수정하기
 function updateAndtoggleAttachmentName(state, boardId, sideId, cardId, fileId) {
     if (state === 'default') {
-        let fileName = $('#attachment-file-name-input').val();
+        let attachmentInputId = "attachment-file-name-input-" + fileId;
+        let fileName = $('#' + attachmentInputId).val();
         let requestDto = {"fileName": fileName};
 
         fetch(`/boards/${boardId}/sides/${sideId}/cards/${cardId}/files/${fileId}`, {
@@ -154,7 +157,7 @@ function updateAndtoggleAttachmentName(state, boardId, sideId, cardId, fileId) {
                 // toggleName('input')
 
                 // Update description text and toggle back to default state
-                $('#attachment-file-name-default .card-text').text(name);
+                $('#attachment-file-name-default-' + fileId + ' .card-text').text(fileName);
                 document.getElementById('attachment-file-name-default').style.display = 'block';
                 document.getElementById('attachment-file-name-update').style.display = 'none';
                 // // 모달 내용을 다시 불러와서 업데이트
