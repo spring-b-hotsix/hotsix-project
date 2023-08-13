@@ -84,9 +84,9 @@ public class ChecklistServiceImpl implements ChecklistService {
     @Override
     @Transactional
     @ChecklistItemCheckPageAndUser
-    public ChecklistItemResponseDto updateItemChecked (Long boardId, Long sideId, Long cardId, Long checklistId, Long itemId, User user) {
+    public ChecklistItemResponseDto updateItemChecked(Long boardId, Long sideId, Long cardId, Long checklistId, Long itemId, User user, boolean isChecked) {
         ChecklistItem checklistItem = findChecklistItem(itemId);
-        checklistItem.updateChecked();
+        checklistItem.setChecked(isChecked); // Use setter method to update checked state
         return new ChecklistItemResponseDto(checklistItem);
     }
 

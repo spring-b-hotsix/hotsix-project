@@ -124,7 +124,7 @@ public class BoardController {
     }
 
     @ResponseBody
-    // 보드 멤버 전체 조회
+    // 보드 멤버 삭제
     @DeleteMapping ("/boards/{boardId}/members/{memberId}")
     @Operation(summary = "해당 보드의 참여자 삭제", description = "선택한 보드에서 선택된 사용자를 참여자에서 제외합니다.")
     public ApiResponseDto deleteMember(

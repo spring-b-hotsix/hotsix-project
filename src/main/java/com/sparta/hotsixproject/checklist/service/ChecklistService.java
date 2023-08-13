@@ -77,7 +77,7 @@ public interface ChecklistService {
      * @param user 로그인한 유저
      * @return 아이템 체크 결과
      */
-    ChecklistItemResponseDto updateItemChecked (Long boardId, Long sideId, Long cardId, Long checklistId, Long itemId, User user);
+    ChecklistItemResponseDto updateItemChecked (Long boardId, Long sideId, Long cardId, Long checklistId, Long itemId, User user, boolean isChecked);
 
     /**
      * 체크리스트 아이템 수정
