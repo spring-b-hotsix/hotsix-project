@@ -32,6 +32,13 @@ jobs:
       with:
         java-version: '17'
         distribution: 'temurin'
+    # 환경 변수 세팅
+    - name: properties 파일 생성
+      run: |
+        cd ./src/main/resources
+        touch ./application-test.properties
+        echo "${{secrets.APPLICATION_TEST_PROPERTIES}}" > ./application-test.properties
+      shell: bash
     # Make gradlew executable
     - name: Run chmod to make gradlew executable
       run: chmod +x ./gradlew
