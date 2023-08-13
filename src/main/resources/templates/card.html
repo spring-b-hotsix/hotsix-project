@@ -165,7 +165,7 @@
             <path d="M3 8.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5zm0-5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5v-1z"/>
         </svg>
         <!--디폴트-->
-        <a id="name-default" onclick="toggleName('input')">
+        <a href="#" id="name-default" onclick="toggleName('input')" style="color: inherit; text-decoration: none;">
             <h4>
                 <b th:text="${card.body.name}"></b>
             </h4>
@@ -349,17 +349,17 @@
                         <!--파일 올린 시간-->
                         <div style="display: flex">
                             <div style="display: flex; margin-right: 20px">Added
-                                <span th:text="${#temporals.format(attachment.createAt, 'yyyy-MM-dd HH:mm:ss')}"
+                                <span th:text="${#temporals.format(attachment.createdAt, 'yyyy-MM-dd HH:mm:ss')}"
                                       class="formattedDate" style="display: none;"></span>
                                 <span class="relativeTime" style="margin-left: 10px"></span>
                             </div>
 
                             <!--파일 수정 클릭-->
-                            <a class="text-secondary" style="margin-right: 10px"
+                            <a href="#" class="text-secondary" style="margin-right: 10px"
                                onclick="toggleAttachmentName('input')">Edit</a>
 
                             <!--파일 삭제 클릭-->
-                            <a class="text-secondary" style="margin-right: 10px" data-bs-toggle="modal"
+                            <a href="#" class="text-secondary" style="margin-right: 10px" data-bs-toggle="modal"
                                data-bs-target="#attachment-delete-modal">Delete</a>
                         </div>
                     </div>
@@ -482,10 +482,10 @@
                                 <div class="d-flex">
                                     <h6 class="form-check-label" th:text="${item.content}"></h6>
                                     <!--아이템 내용 수정 클릭-->
-                                    <a class="text-secondary" style="margin-left: 10px"
+                                    <a href="#" class="text-secondary" style="margin-left: 10px"
                                        onclick="toggleItemContent('input')">Edit</a>
                                     <!--아이템 삭제 클릭-->
-                                    <a class="text-secondary" style="margin-left: 10px"
+                                    <a href="#" class="text-secondary" style="margin-left: 10px"
                                        data-bs-toggle="modal" data-bs-target="#item-delete-modal">Delete</a>
 
                                 </div>
@@ -594,45 +594,96 @@
                              class="rounded-circle">
                     </div>
                     <div class="input-group input-group-sm mb-3" style="margin-right: 10px">
-                        <input type="text" class="form-control" placeholder="Write a comment..."
+                        <input id="card-comment-input" type="text" class="form-control" placeholder="Write a comment..."
                                aria-label="Write a comment" aria-describedby="inputGroup-sizing-sm"
                                style="font-size: 15px">
                     </div>
+                    <!--댓글 추가-->
                     <div id="comment-save" style="margin-left: 10px; margin-top: -5px">
-                        <button type="button" class="btn btn-secondary">
+                        <button type="button" class="btn btn-secondary" onclick="addComment(boardId, sideId, cardId)">
                             Save
                         </button>
                     </div>
                 </div>
+                <!--댓글 조회-->
                 <div id="comments-get">
-                    <div id="comment-box" style="margin-bottom: 10px; margin-right: 80px;">
-                        <div id="comment-box-header" style="display: flex; margin-bottom: -5px">
-                            <div id="comment-user-image"
-                                 class="d-block link-body-emphasis text-decoration-none"
-                                 aria-expanded="false">
-                                <img src="https://vignette.wikia.nocookie.net/the-sun-vanished/images/5/5d/Twitter-avi-gender-balanced-figure.png/revision/latest?cb=20180713020754"
-                                     alt="mdo" width="32" height="32" style="margin-right: 10px"
-                                     class="rounded-circle">
+                    <th:block th:each="comment: ${card.body.commentList}">
+                        <div id="comment-box" style="margin-bottom: 20px; margin-right: 80px;">
+                            <div id="comment-box-header" style="display: flex; margin-bottom: -5px">
+                                <div id="comment-user-image"
+                                     class="d-block link-body-emphasis text-decoration-none"
+                                     aria-expanded="false">
+                                    <img src="https://vignette.wikia.nocookie.net/the-sun-vanished/images/5/5d/Twitter-avi-gender-balanced-figure.png/revision/latest?cb=20180713020754"
+                                         alt="mdo" width="32" height="32" style="margin-right: 10px"
+                                         class="rounded-circle">
+                                </div>
+                                <!--댓글 작성자 닉네임-->
+                                <div id="comment-user-nickname">
+                                    <b th:text="${comment.nickname}"></b>
+                                </div>
+                                <!--댓글 작성 시간-->
+                                <div id="comment-createa-at" class="text-secondary"
+                                     style="margin-left: 10px; font-size: 14px">
+                                   <span th:text="${#temporals.format(comment.createdAt, 'yyyy-MM-dd HH:mm:ss')}"
+                                         class="formattedDate" style="display: none;"></span>
+                                    <span class="relativeTime" style="margin-left: 10px"></span>
+                                </div>
                             </div>
-                            <div id="comment-user-nickname">
-                                <b>작성자</b>
+<!--댓글 조회 디폴트-->
+                            <div id="comment-box-content">
+                                <a id="comment-content-default" type="text" class="form-control"
+                                     style="font-size: 15px; margin-left: 40px; margin-bottom: 5px; width: 625px; text-decoration: none;"
+                                     th:text="${comment.content}">
+                                </a>
                             </div>
-                            <div id="comment-createa-at" class="text-secondary"
-                                 style="margin-left: 10px; font-size: 14px">
-                                2023.08.10. T 23:30
+
+                            <!--댓글 수정-->
+                            <div id="comment-content-update" style="display: none">
+                                <input id="comment-content-input" type="text" class="form-control"
+                                       aria-label="Update a comment" aria-describedby="inputGroup-sizing-sm"
+                                       style="font-size: 15px; margin-left: 40px;" th:value="${comment.content}">
+                                <button type="button" class="btn btn-primary ms-auto" th:value="${comment.commentId}"
+                                        onclick="updateAndToggleCommentContent('default', boardId, sideId, cardId, this.getAttribute('value'))">
+                                    Save
+                                </button>
+                            </div>
+
+                            <div id="comment-box-footer" style="display: flex; margin-left: 45px;">
+<!--댓글 수정 클릭-->
+                                <a href="#" class="text-secondary" style="margin-right: 10px" onclick="toggleComment('input')">Edit</a>
+<!--댓글 삭제 클릭-->
+                                <a href="#" class="text-secondary" style="margin-right: 10px" data-bs-toggle="modal"
+                                   data-bs-target="#comment-delete-modal">Delete</a>
                             </div>
                         </div>
-                        <div id="comment-box-content">
-                            <div type="text" class="form-control"
-                                 style="font-size: 15px; margin-left: 40px; margin-bottom: 5px; width: 625px;">
-                                여기에 작성된 댓글을 불러옵니다.
+
+                        <!--댓글 삭제 확인 모달-->
+                        <div class="modal fade" id="comment-delete-modal" tabindex="-1"
+                             aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h1 class="modal-title fs-5">Delete</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <b style="margin-right: 10px"></b>
+                                        댓글을 삭제하시겠습니까?
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-danger" th:value="${comment.commentId}"
+                                                onclick="deleteComment(boardId, sideId, cardId, this.getAttribute('value'))">
+                                            Delete
+                                        </button>
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                            Close
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <div id="comment-box-footer" style="display: flex; margin-left: 45px;">
-                            <a href="#" class="text-secondary" style="margin-right: 10px">Edit</a>
-                            <a href="#" class="text-secondary" style="margin-right: 10px">Delete</a>
-                        </div>
-                    </div>
+                    </th:block>
                 </div>
             </div>
         </div>

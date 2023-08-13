@@ -398,3 +398,98 @@ function deleteItem(boardId, sideId, cardId, checklistId, itemId) {
         });
 
 }
+
+// 댓글 생성
+function addComment(boardId, sideId, cardId) {
+    let content = $('#card-comment-input').val();
+    let requestDto = {"content": content};
+
+    fetch(`/boards/${boardId}/sides/${sideId}/cards/${cardId}/comments`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(requestDto)
+    })
+        .then(function (response) {
+            return response.json();
+        })
+
+        .then(function (responseDto) {
+            alert(responseDto.msg);
+
+            // 모달 내용을 업데이트한 후 창을 새로고침
+            location.reload();
+            // toggleDescription('input')
+
+            // // 모달 내용을 다시 불러와서 업데이트
+            // refreshModalContent();
+        });
+}
+
+// 댓글 수정 토글
+function toggleComment(state) {
+    if (state === 'input') {
+        document.getElementById('comment-content-default').style.display = 'none';
+        document.getElementById('comment-content-update').style.display = 'flex';
+    }
+}
+
+// 댓글 수정하기
+function updateAndToggleCommentContent(state, boardId, sideId, cardId, commentId) {
+    if (state === 'default') {
+        let content = $('#comment-content-input').val();
+        let requestDto = {"content": content};
+
+        fetch(`/boards/${boardId}/sides/${sideId}/cards/${cardId}/comments/${commentId}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(requestDto)
+        })
+            .then(function (response) {
+                return response.json();
+            })
+
+            .then(function (responseDto) {
+                alert("댓글 수정 완료!");
+
+                // 모달 내용을 업데이트한 후 창을 새로고침
+                location.reload();
+                // toggleName('input')
+
+                // Update description text and toggle back to default state
+                $('#comment-content-default').text(content);
+                document.getElementById('comment-content-default').style.display = 'flex';
+                document.getElementById('comment-content-update').style.display = 'none';
+                // // 모달 내용을 다시 불러와서 업데이트
+                // refreshModalContent();
+            });
+    }
+}
+
+// 댓글 삭제
+function deleteComment(boardId, sideId, cardId, commentId) {
+    fetch(`/boards/${boardId}/sides/${sideId}/cards/${cardId}/comments/${commentId}`, {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json"
+        }
+    })
+        .then(function (response) {
+            return response.json();
+        })
+
+        .then(function (responseDto) {
+            alert(responseDto.msg);
+
+            // 모달 내용을 업데이트한 후 창을 새로고침
+            location.reload();
+            // toggleName('input')
+
+            // // 모달 내용을 다시 불러와서 업데이트
+            // refreshModalContent();
+        });
+
+}

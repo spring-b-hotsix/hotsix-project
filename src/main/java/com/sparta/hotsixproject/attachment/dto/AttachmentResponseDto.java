@@ -10,12 +10,12 @@ public class AttachmentResponseDto {
     private Long fileId;
     private String fileName;
     private String source;
-    private LocalDateTime createAt;
+    private LocalDateTime createdAt;
 
     public AttachmentResponseDto(Attachment attachment) {
         this.fileId = attachment.getId();
         this.fileName = attachment.getFileName();
         this.source = attachment.getSource();
-        this.createAt = attachment.getCreatedAt();
+        this.createdAt = attachment.getCreatedAt();
     }
 }
