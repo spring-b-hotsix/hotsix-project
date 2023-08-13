@@ -59,6 +59,14 @@ public class UserService {
         userRepository.save(user);
     }
 
+    public UserInfoDto getUserInfo(long userId) {
+        User newuser = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("회원정보가 없습니다."));
+        String nickname = newuser.getNickname();
+        String email = newuser.getEmail();
+        return new UserInfoDto(nickname,email);
+    }
+
+    //dev
     public UserInfoResponseDto getUserInfo(User user) {
         User dbUser = userRepository.findById(user.getId()).orElseThrow(() -> new IllegalArgumentException("회원정보가 없습니다."));
         UserInfoResponseDto userInfo = new UserInfoResponseDto(dbUser);

@@ -1,7 +1,14 @@
 package com.sparta.hotsixproject.board.dto;
 
 import com.sparta.hotsixproject.board.entity.Board;
+import com.sparta.hotsixproject.comment.dto.CommentResponseDto;
+import com.sparta.hotsixproject.label.dto.LabelResponseDto;
+import com.sparta.hotsixproject.label.entity.Label;
+import com.sparta.hotsixproject.side.dto.SideResponseDto;
 import lombok.Getter;
+
+import java.util.Comparator;
+import java.util.List;
 
 @Getter
 public class BoardResponseDto {
@@ -11,6 +18,8 @@ public class BoardResponseDto {
     private Integer red;
     private Integer green;
     private Integer blue;
+    private List<SideResponseDto> sideList;
+    private List<LabelResponseDto> labelList;
 
 
     public BoardResponseDto(Board board){
@@ -20,5 +29,12 @@ public class BoardResponseDto {
         this.red = board.getColor().getRed();
         this.green = board.getColor().getGreen();
         this.blue = board.getColor().getBlue();
+        this.sideList = board.getSideList().stream()
+                .map(SideResponseDto::new)
+                .sorted(Comparator.comparing(SideResponseDto::getPosition)) // position순서로 정렬
+                .toList();
+        this.labelList = board.getLabelList().stream()
+                .map(LabelResponseDto::new)
+                .toList();
     }
 }

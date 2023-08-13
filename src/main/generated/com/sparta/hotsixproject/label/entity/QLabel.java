@@ -22,13 +22,17 @@ public class QLabel extends EntityPathBase<Label> {
 
     public static final QLabel label = new QLabel("label");
 
+    public final NumberPath<Integer> blue = createNumber("blue", Integer.class);
+
     public final com.sparta.hotsixproject.board.entity.QBoard board;
 
     public final ListPath<com.sparta.hotsixproject.cardlabel.entity.CardLabel, com.sparta.hotsixproject.cardlabel.entity.QCardLabel> cardLabelList = this.<com.sparta.hotsixproject.cardlabel.entity.CardLabel, com.sparta.hotsixproject.cardlabel.entity.QCardLabel>createList("cardLabelList", com.sparta.hotsixproject.cardlabel.entity.CardLabel.class, com.sparta.hotsixproject.cardlabel.entity.QCardLabel.class, PathInits.DIRECT2);
 
-    public final StringPath color = createString("color");
+    public final NumberPath<Integer> green = createNumber("green", Integer.class);
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
+
+    public final NumberPath<Integer> red = createNumber("red", Integer.class);
 
     public final StringPath title = createString("title");
 

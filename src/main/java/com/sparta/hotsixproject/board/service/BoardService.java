@@ -32,4 +32,6 @@ public interface BoardService {
 
     @Transactional(readOnly = true)
     List<MemberResponseDto> getMembers(Long boardId);
+
+    ApiResponseDto deleteMember(Long boardId, Long memberId,User user);
 }
