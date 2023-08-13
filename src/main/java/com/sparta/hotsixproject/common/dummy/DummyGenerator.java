@@ -9,7 +9,11 @@ import com.sparta.hotsixproject.card.entity.Card;
 import com.sparta.hotsixproject.card.repository.CardRepository;
 import com.sparta.hotsixproject.carduser.entity.CardUser;
 import com.sparta.hotsixproject.carduser.repository.CardUserRepository;
+import com.sparta.hotsixproject.checklist.checklistItem.dto.ChecklistItemRequestDto;
+import com.sparta.hotsixproject.checklist.checklistItem.entity.ChecklistItem;
 import com.sparta.hotsixproject.checklist.checklistItem.repository.ChecklistItemRepository;
+import com.sparta.hotsixproject.checklist.dto.ChecklistRequestDto;
+import com.sparta.hotsixproject.checklist.entity.Checklist;
 import com.sparta.hotsixproject.checklist.repository.ChecklistRepository;
 import com.sparta.hotsixproject.comment.dto.CommentRequestDto;
 import com.sparta.hotsixproject.comment.entity.Comment;
@@ -26,7 +30,10 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Component
 public class DummyGenerator implements CommandLineRunner {
@@ -83,8 +90,9 @@ public class DummyGenerator implements CommandLineRunner {
         // 라벨
         List<Label> labelList = DummyLabelGenerator(userList, boardMap);
         // 체크리스트 - 전체 중 한 개의 카드에만 생성함
-
-        // 작업자 초대 - 전체 중 한 개의 카드에만 생성함
+        Map<Checklist, List<ChecklistItem>> checklistListMap = DummyChecklistGenerator(userList, boardMap, sideListMap, cardListMap);
+        // 작업자 추가 - 전체 중 한 개의 카드에만 생성함
+        Map<Card, List<CardUser>> cardUserListMap = DummyCardUserGenerator(userList, boardMap, sideListMap, cardListMap);
     }
 
     // User
@@ -222,7 +230,46 @@ public class DummyGenerator implements CommandLineRunner {
     }
 
     // 2. 체크리스트
+    private Map<Checklist, List<ChecklistItem>> DummyChecklistGenerator(List<User> userList, Map<User, Board> boardMap, Map<Board, List<Side>> sideListMap, Map<Side, List<Card>> cardListMap) {
+        Map<Card, Checklist> checklistMap = new HashMap<>();
 
+        User user = userList.get(0);
+        Board board = boardMap.get(user);
+        Side side = sideListMap.get(board).get(0);
+        Card card = cardListMap.get(side).get(0);
+
+        ChecklistRequestDto requestDto = new ChecklistRequestDto("checklist");
+        Checklist checklist = new Checklist(card, requestDto);
+
+        checklistRepository.save(checklist);
+        checklistMap.put(card, checklist);
+
+        Map<Checklist, List<ChecklistItem>> checklistItemListMap = new HashMap<>();
+        List<ChecklistItem> checklistItemList = DummyChecklistItemGenerator(card, checklistMap);
+        checklistItemListMap.put(checklist, checklistItemList);
+
+        return checklistItemListMap;
+    }
+    private List<ChecklistItem> DummyChecklistItemGenerator(Card card, Map<Card, Checklist> checklistMap) {
+        List<ChecklistItem> checklistItemList = new ArrayList<>();
+
+        Checklist checklist = checklistMap.get(card);
+        ChecklistItemRequestDto requestDto1 = new ChecklistItemRequestDto("시연 영상 촬영하기");
+        ChecklistItemRequestDto requestDto2 = new ChecklistItemRequestDto("발표 자료 준비하기");
+        ChecklistItemRequestDto requestDto3 = new ChecklistItemRequestDto("취침!!!!!!!!");
+
+        ChecklistItem checklistItem1 = new ChecklistItem(checklist, requestDto1);
+        ChecklistItem checklistItem2 = new ChecklistItem(checklist, requestDto2);
+        ChecklistItem checklistItem3 = new ChecklistItem(checklist, requestDto3);
+
+        checklistItemRepository.save(checklistItem1);
+        checklistItemRepository.save(checklistItem2);
+        checklistItemRepository.save(checklistItem3);
+        checklistItemList.add(checklistItem1);
+        checklistItemList.add(checklistItem2);
+        checklistItemList.add(checklistItem3);
+        return checklistItemList;
+    }
 
     // 3. 작업자 추가
     private Map<Card, List<CardUser>> DummyCardUserGenerator(List<User> userList, Map<User, Board> boardMap, Map<Board, List<Side>> sideListMap, Map<Side, List<Card>> cardListMap) {
