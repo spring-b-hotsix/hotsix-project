@@ -115,17 +115,33 @@ class BoardServiceTest {
         LoginRequestDto signupDto = new LoginRequestDto(nickname, encodePw, email);
 
         userService.signup(signupDto);
-        User user = userRepository.findByEmail(email).orElse(null);
-        UserDetailsImpl userDetails = new UserDetailsImpl(user);
+        User user1 = userRepository.findByEmail(email).orElse(null);
+        UserDetailsImpl userDetails = new UserDetailsImpl(user1);
         // 보드 생성
         Board board = createBoard(userDetails.getUser());
 
+        // user 2
+        nickname = "test3";
+        email = "test3@email.com";
+        encodePw = passwordEncoder.encode("Password@1234");
+        signupDto = new LoginRequestDto(nickname, encodePw, email);
+
+        userService.signup(signupDto);
+        User user2 = userRepository.findByEmail(email).orElse(null);
+
+        // user 3
+        nickname = "test4";
+        email = "test4@email.com";
+        encodePw = passwordEncoder.encode("Password@1234");
+        signupDto = new LoginRequestDto(nickname, encodePw, email);
+
+        userService.signup(signupDto);
+        User user3 = userRepository.findByEmail(email).orElse(null);
+
         // when
         /**
-         * 시나리오: newUser1이 만든 board1에 newUser2와 newUser3를 초대
+         * 시나리오: user1이 만든 board1에 user2와 user3을 초대
          */
-        User user2 = userRepository.findByEmail("email2@email.com").orElse(null);
-        User user3 = userRepository.findByEmail("email3@email.com").orElse(null);
         boardService.inviteBoard(board.getId(), user2.getEmail(), userDetails.getUser());
         boardService.inviteBoard(board.getId(), user3.getEmail(), userDetails.getUser());
 
@@ -141,8 +157,8 @@ class BoardServiceTest {
     @DisplayName("보드에 사용자 초대 실패")
     void inviteBoardFail() throws IllegalArgumentException {
         // given
-        String nickname = "test3";
-        String email = "test3@email.com";
+        String nickname = "test5";
+        String email = "test5@email.com";
         String encodePw = passwordEncoder.encode("Password@1234");
         LoginRequestDto signupDto = new LoginRequestDto(nickname, encodePw, email);
 
@@ -150,8 +166,8 @@ class BoardServiceTest {
         User user1 = userRepository.findByEmail(email).orElse(null);
         UserDetailsImpl userDetails = new UserDetailsImpl(user1);
 
-        nickname = "test4";
-        email = "test4@email.com";
+        nickname = "test6";
+        email = "test6@email.com";
         encodePw = passwordEncoder.encode("Password@1234");
         signupDto = new LoginRequestDto(nickname, encodePw, email);
 
@@ -161,8 +177,9 @@ class BoardServiceTest {
 
         // when
         /**
-         * 시나리오?: newUser1이 만든 board1에 사용자를 초대
-         *      1. 없는 이메일(사용자), 2. newUser2를 초대 후 -> 한 번 더 초대(이러면 실패함)
+         * 시나리오?: user1이 만든 board1에 사용자를 초대
+         *      1. 없는 이메일(사용자) 초대 시도
+         *      2. user2를 초대 후 -> 한 번 더 초대(이러면 실패함)
          */
         IllegalArgumentException exception2 = assertThrows(     // 없는 email로 초대를 요청한 경우
                 IllegalArgumentException.class, () -> {
