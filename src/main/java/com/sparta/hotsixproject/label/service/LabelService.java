@@ -72,7 +72,7 @@ public class LabelService {
     // 카드에 라벨 추가
     @Transactional
     @LabelCheckPageAndUser
-    public ResponseEntity<ApiResponseDto> CreateCardLabel(Long boardId, Long sideId, Long cardId, Long labelId, User user) {
+    public ResponseEntity<ApiResponseDto> createCardLabel(Long boardId, Long sideId, Long cardId, Long labelId, User user) {
         Card card = findCard(cardId);
         Label label = findLabel(labelId);
         if (cardLabelRepository.findByCard_idAndLabel_id(cardId, labelId).orElse(null)!=null) {
@@ -80,6 +80,9 @@ public class LabelService {
         }
         CardLabel cardLabel = new CardLabel(card, label);
         cardLabelRepository.save(cardLabel);
+        card.addCardLabel(cardLabel); // 연관관계 리스트 추가
+        label.addCardLabel(cardLabel); // 연관관계 리스트 추가
+
         ApiResponseDto apiResponseDto = new ApiResponseDto("카드 내 라벨 추가 완료", HttpStatus.CREATED.value());
         return new ResponseEntity<>(apiResponseDto, HttpStatus.CREATED);
     }
@@ -96,7 +99,12 @@ public class LabelService {
     @LabelCheckPageAndUser
     public ResponseEntity<ApiResponseDto> deleteCardLabel(Long boardId, Long sideId, Long cardId, Long labelId, User user) {
         CardLabel cardLabel = findCardLabel(cardId, labelId);
-        cardLabelRepository.delete(cardLabel);
+        Card card = cardRepository.findById(cardId).get();
+        Label label = labelRepository.findById(labelId).get();
+        card.removeCardLabel(cardLabel); // 연관관계 리스트 삭제
+        label.removeCardLabel(cardLabel); // 연관관계 리스트 삭제
+
+        cardLabelRepository.deleteById(cardLabel.getId());
         ApiResponseDto apiResponseDto = new ApiResponseDto("카드 내 라벨 삭제 완료", HttpStatus.OK.value());
         return new ResponseEntity<>(apiResponseDto, HttpStatus.OK);
     }

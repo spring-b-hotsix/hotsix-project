@@ -4,7 +4,6 @@ import com.sparta.hotsixproject.common.advice.ApiResponseDto;
 import com.sparta.hotsixproject.common.security.UserDetailsImpl;
 import com.sparta.hotsixproject.label.dto.LabelRequestDto;
 import com.sparta.hotsixproject.label.dto.LabelResponseDto;
-import com.sparta.hotsixproject.label.entity.Label;
 import com.sparta.hotsixproject.label.service.LabelService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -69,7 +68,7 @@ public class LabelController {
                                                           @Parameter(name = "cardId", description = "라벨 정보를 가져올 card의 id", in = ParameterIn.PATH) @PathVariable Long cardId,
                                                           @Parameter(name = "labelId", description = "카드에 추가할 label의 id", in = ParameterIn.PATH) @PathVariable Long labelId,
                                                           @Parameter(description = "로그인 한 User의 정보") @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return labelService.CreateCardLabel(boardId, sideId, cardId, labelId, userDetails.getUser());
+        return labelService.createCardLabel(boardId, sideId, cardId, labelId, userDetails.getUser());
     }
 
     // 카드에 추가된 라벨 전체 조회

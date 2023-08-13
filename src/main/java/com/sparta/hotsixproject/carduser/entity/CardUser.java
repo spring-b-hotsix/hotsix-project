@@ -28,4 +28,7 @@ public class CardUser {
         this.card = card;
         this.user = user;
     }
+    public void setCard(Card card) {
+        this.card = card;
+    }
 }

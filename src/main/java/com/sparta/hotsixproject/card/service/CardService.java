@@ -40,6 +40,8 @@ public class CardService {
     public ResponseEntity<ApiResponseDto> createCard(Long sideId, String name, User user) {
         Side side = sideRepository.findById(sideId).get();
         Card card = new Card(name, side.getCardList().size() + 1, user, side);
+        side.addCard(card); // 연관관계 리스트 추가
+        cardRepository.save(card);
 
         CardUser cardUser = new CardUser(card, user);
         cardUserRepository.save(cardUser);
@@ -140,13 +142,29 @@ public class CardService {
             throw new IllegalArgumentException("이미 카드 작업자 입니다.");
         }
 
-        Card card = cardRepository.findById(cardId).get();
-        CardUser cardUser = new CardUser(card, userRepository.findByEmail(email).get());
+        Card card = cardRepository.findById(cardId).orElse(null);
+        CardUser cardUser = new CardUser(card, userRepository.findByEmail(email).orElse(null));
+        card.addCardUser(cardUser);
         cardUserRepository.save(cardUser);
 
         CardResponseDto cardResponseDto = new CardResponseDto(card);
         return new ResponseEntity<>(cardResponseDto, HttpStatus.CREATED);
     }
+
+    @Transactional
+    public ResponseEntity<ApiResponseDto> deleteWorker(Long boardId, Long sideId, Long cardId, String email) {
+        if (boardUserRepository.findByUser_EmailAndBoard_Id(email, boardId).isEmpty()) {
+            throw new IllegalArgumentException("보드 멤버가 아닙니다.");
+        }
+        Card card = cardRepository.findById(cardId).orElse(null);
+        CardUser cardUser = cardUserRepository.findByCard_IdAndUser_Email(cardId, card.getUser().getEmail()).get();
+        card.removeCardUser(cardUser); // 삭제 완료
+        cardUserRepository.delete(cardUser);
+
+        ApiResponseDto apiResponseDto = new ApiResponseDto("카드 내 삭제 완료", HttpStatus.OK.value());
+        return new ResponseEntity<>(apiResponseDto, HttpStatus.OK);
+    }
+
 
     @Transactional
     // 카드 이동
@@ -156,8 +174,7 @@ public class CardService {
         for (Card ca : side.getCardList()) {
             if (ca.getPosition() >= requestDto.getPosition() && ca.getPosition() < card.getPosition()) { // 아래에서 위로
                 ca.moveDown();
-            }
-            else if (ca.getPosition() <= requestDto.getPosition() && ca.getPosition() > card.getPosition()) { // 위에서 아래로
+            } else if (ca.getPosition() <= requestDto.getPosition() && ca.getPosition() > card.getPosition()) { // 위에서 아래로
                 ca.moveUp();
             }
         }
@@ -173,7 +190,13 @@ public class CardService {
         if (!card.getUser().equals(user)) {
             throw new UnauthorizedException("삭제 권한 없음");
         }
+        CardUser cardUser = cardUserRepository.findByCard_IdAndUser_Email(cardId, card.getUser().getEmail()).get();
+        card.removeCardUser(cardUser);
+
+        Side side = sideRepository.findById(sideId).get();
+        side.removeCard(card); // 연관관계 리스트 삭제
         cardRepository.delete(card);
+
         ApiResponseDto apiResponseDto = new ApiResponseDto("삭제 완료", HttpStatus.OK.value());
         return new ResponseEntity<>(apiResponseDto, HttpStatus.OK);
     }

@@ -84,7 +84,7 @@ public class BoardServiceImpl implements BoardService{
         //새 보드 추가
         boardRepository.save(board);
 
-        //보드-유저 관계 테이블에 추가
+        // 보드-유저 관계 테이블에 추가
         BoardUser boardUser = new BoardUser(loginedUser,board);
         boardUserRepository.save(boardUser);
 
@@ -114,6 +114,12 @@ public class BoardServiceImpl implements BoardService{
         if(!targetBoard.getUser().equals(loginedUser)) {
             throw new IllegalArgumentException("보드 작성자만 삭제할 수 있습니다.");
         }
+        // boarduser 연관관계 테이블 삭제
+        List<BoardUser> boardUserList = boardUserRepository.findByBoard_Id(targetBoard.getId());
+        boardUserRepository.deleteAll(boardUserList);
+        // user에서 board 명시적으로 삭제
+
+        // board 삭제
         boardRepository.delete(targetBoard);
         return new ApiResponseDto("보드가 삭제되었습니다.",200);
     }
@@ -136,7 +142,7 @@ public class BoardServiceImpl implements BoardService{
             throw new IllegalArgumentException("해당 유저는 이미 보드의 멤버입니다.");
         }
 
-        //보드-유저 관계 테이블에 추가
+        // 보드-유저 관계 테이블에 추가
         BoardUser boardUser = new BoardUser(inviteUser,targetBoard);
         boardUserRepository.save(boardUser);
         return new ApiResponseDto(inviteUser.getNickname()+"님을 보드 멤버에 추가했습니다.",201);

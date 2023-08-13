@@ -74,7 +74,7 @@ public class UserService {
     }
 
     @Transactional
-    public void updateNicknmae(Long userId, UpdateNicknameRequestDto requestDto, User user) {
+    public void updateNickname(Long userId, UpdateNicknameRequestDto requestDto, User user) {
 
         User newuser = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("회원이 존재하지 않습니다"));
 

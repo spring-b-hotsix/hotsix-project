@@ -35,6 +35,7 @@ public class ChecklistServiceImpl implements ChecklistService {
     public ChecklistResponseDto createChecklist (Long boardId, Long sideId, Long cardId, ChecklistRequestDto requestDto, User user) {
         Card card = findCard(cardId);
         Checklist checklist = new Checklist(card, requestDto);
+        card.addChecklist(checklist); // 연관관계 리스트 추가
         return new ChecklistResponseDto(checklistRepository.save(checklist));
     }
 
@@ -66,6 +67,9 @@ public class ChecklistServiceImpl implements ChecklistService {
     @ChecklistCheckPageAndUser
     public void deleteChecklist (Long boardId, Long sideId, Long cardId, Long checklistId, User user) {
         Checklist checklist = findChecklist(checklistId);
+        Card card = cardRepository.findById(cardId).get();
+        card.removeChecklist(checklist); // 연관관계 리스트 삭제
+
         checklistRepository.delete(checklist);
     }
 
@@ -77,6 +81,7 @@ public class ChecklistServiceImpl implements ChecklistService {
                                                 ChecklistItemRequestDto requestDto, User user) {
         Checklist checklist = findChecklist(checklistId);
         ChecklistItem checklistItem = new ChecklistItem(checklist, requestDto);
+        checklist.addChecklistItem(checklistItem); // 연관관계 리스트 추가
         return new ChecklistItemResponseDto(checklistItemRepository.save(checklistItem));
     }
 
@@ -107,6 +112,9 @@ public class ChecklistServiceImpl implements ChecklistService {
     @ChecklistItemCheckPageAndUser
     public void deleteItem (Long boardId, Long sideId, Long cardId, Long checklistId, Long itemId, User user) {
         ChecklistItem checklistItem = findChecklistItem(itemId);
+        Checklist checklist = checklistRepository.findById(checklistId).get();
+        checklist.addChecklistItem(checklistItem); // 연관관계 리스트 삭제
+
         checklistItemRepository.delete(checklistItem);
     }
 

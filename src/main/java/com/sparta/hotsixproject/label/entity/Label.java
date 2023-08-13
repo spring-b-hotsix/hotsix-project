@@ -7,6 +7,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -31,7 +32,7 @@ public class Label {
     private Board board;
 
     @OneToMany(mappedBy = "label", orphanRemoval = true)
-    private List<CardLabel> cardLabelList;
+    private List<CardLabel> cardLabelList = new ArrayList<>();
 
     public Label(Board board, String title, Integer red,Integer green,Integer blue) {
         this.board = board;
@@ -46,5 +47,14 @@ public class Label {
         this.red = red;
         this.green = green;
         this.blue = blue;
+    }
+
+    public void addCardLabel(CardLabel cardLabel) {
+        this.cardLabelList.add(cardLabel);
+        cardLabel.setLabel(this);
+    }
+    public void removeCardLabel(CardLabel cardLabel) {
+        this.cardLabelList.remove(cardLabel);
+        cardLabel.setLabel(null);
     }
 }

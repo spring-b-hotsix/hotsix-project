@@ -40,10 +40,10 @@ public class Board {
     private List<BoardUser> boardUsers;
 
     @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE)
-    private List<Side> sideList;
+    private List<Side> sideList = new ArrayList<>();
 
     @OneToMany(mappedBy = "board", orphanRemoval = true)
-    private List<Label> labelList;
+    private List<Label> labelList = new ArrayList<>();
 
     @OneToMany(mappedBy = "board", orphanRemoval = true)
     private List<Notification> notificationList = new ArrayList<>();
@@ -65,5 +65,17 @@ public class Board {
         this.name = request.getName();
         this.description = request.getDescription();
         this.color = new Color(request.getRed(),request.getGreen(),request.getBlue());
+    }
+
+    public void addSide(Side side) {
+        this.sideList.add(side);
+        side.setBoard(this);
+    }
+    public void removeSide(Side side) {
+        this.sideList.remove(side);
+        side.setBoard(null);
+    }
+    public void setUser(User user) {
+        this.user = user;
     }
 }

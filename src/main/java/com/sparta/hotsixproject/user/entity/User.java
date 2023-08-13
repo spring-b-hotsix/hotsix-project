@@ -98,4 +98,13 @@ public class User {
     public void updateImage(String imageUrl) {
         this.imageUrl = imageUrl;
     }
+
+    public void addBoard(Board board) {
+        this.boardList.add(board);
+        board.setUser(this);
+    }
+    public void removeBoard(Board board) {
+        this.boardList.remove(board);
+        board.setUser(null);
+    }
 }
