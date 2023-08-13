@@ -3,7 +3,6 @@ package com.sparta.hotsixproject.board.entity;
 import com.sparta.hotsixproject.board.dto.BoardRequestDto;
 import com.sparta.hotsixproject.boarduser.entity.BoardUser;
 import com.sparta.hotsixproject.label.entity.Label;
-import com.sparta.hotsixproject.notification.entity.Notification;
 import com.sparta.hotsixproject.side.entity.Side;
 import com.sparta.hotsixproject.user.entity.User;
 import jakarta.persistence.*;
@@ -11,7 +10,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -44,9 +42,6 @@ public class Board {
 
     @OneToMany(mappedBy = "board", orphanRemoval = true)
     private List<Label> labelList;
-
-    @OneToMany(mappedBy = "board", orphanRemoval = true)
-    private List<Notification> notificationList = new ArrayList<>();
 
     public Board(String name, String description, User user,Integer red, Integer green, Integer blue){
         this.name = name;

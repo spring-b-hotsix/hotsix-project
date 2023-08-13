@@ -34,8 +34,6 @@ public class QBoard extends EntityPathBase<Board> {
 
     public final StringPath name = createString("name");
 
-    public final ListPath<com.sparta.hotsixproject.notification.entity.Notification, com.sparta.hotsixproject.notification.entity.QNotification> notificationList = this.<com.sparta.hotsixproject.notification.entity.Notification, com.sparta.hotsixproject.notification.entity.QNotification>createList("notificationList", com.sparta.hotsixproject.notification.entity.Notification.class, com.sparta.hotsixproject.notification.entity.QNotification.class, PathInits.DIRECT2);
-
     public final ListPath<com.sparta.hotsixproject.side.entity.Side, com.sparta.hotsixproject.side.entity.QSide> sideList = this.<com.sparta.hotsixproject.side.entity.Side, com.sparta.hotsixproject.side.entity.QSide>createList("sideList", com.sparta.hotsixproject.side.entity.Side.class, com.sparta.hotsixproject.side.entity.QSide.class, PathInits.DIRECT2);
 
     public final com.sparta.hotsixproject.user.entity.QUser user;

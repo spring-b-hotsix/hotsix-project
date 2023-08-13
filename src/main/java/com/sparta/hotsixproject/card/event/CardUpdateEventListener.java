@@ -21,17 +21,17 @@ public class CardUpdateEventListener implements ApplicationListener<CardUpdateEv
         Card card = event.getCard();
         if (event.getOldName() != event.getNewName()) {
             log.info("Update Card Name");
-            Notification notification = new Notification(CARD_NAME_UPDATED, card.getName(), card.getModifiedAt(), event.getUser(), card.getSide().getBoard());
+            Notification notification = new Notification(CARD_NAME_UPDATED, card.getName(), card.getModifiedAt(), event.getUser());
             notificationService.saveNotification(notification);
         }
         else if (event.getOldDescription() != event.getNewDescription()) {
             log.info("Update Card Description");
-            Notification notification = new Notification(CARD_DESC_UPDATED, card.getDescription(), card.getModifiedAt(), event.getUser(), card.getSide().getBoard());
+            Notification notification = new Notification(CARD_DESC_UPDATED, card.getDescription(), card.getModifiedAt(), event.getUser());
             notificationService.saveNotification(notification);
         }
         else {
             log.info("Update Card Color");
-            Notification notification = new Notification(CARD_COLOR_UPDATED, card.getColor(), card.getModifiedAt(), event.getUser(), card.getSide().getBoard());
+            Notification notification = new Notification(CARD_COLOR_UPDATED, card.getColor(), card.getModifiedAt(), event.getUser());
             notificationService.saveNotification(notification);
         }
     }

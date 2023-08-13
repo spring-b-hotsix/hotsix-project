@@ -11,12 +11,12 @@ import org.springframework.stereotype.Component;
 
 @Slf4j(topic = "비동기 처리를 위한 Custom EventPublisher")
 @Component
-// @EnableAsync
+@EnableAsync
 @RequiredArgsConstructor
 public class EventPublisher {
     public final ApplicationEventPublisher eventPublisher;
 
-    // @Async
+    @Async
     public void publishCardUpdatedEvent(User user, Card card, String oldName, String newName,
                                         String oldDescription, String newDescription,
                                         String oldColor, String newColor) {
