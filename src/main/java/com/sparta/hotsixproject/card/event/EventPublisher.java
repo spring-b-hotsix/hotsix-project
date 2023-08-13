@@ -8,6 +8,9 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.event.TransactionalEventListener;
 
 @Slf4j(topic = "비동기 처리를 위한 Custom EventPublisher")
 @Component
@@ -17,6 +20,7 @@ public class EventPublisher {
     public final ApplicationEventPublisher eventPublisher;
 
     @Async
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void publishCardUpdatedEvent(User user, Card card, String oldName, String newName,
                                         String oldDescription, String newDescription,
                                         String oldColor, String newColor) {

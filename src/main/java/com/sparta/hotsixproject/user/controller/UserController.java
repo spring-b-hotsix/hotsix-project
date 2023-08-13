@@ -67,10 +67,10 @@ public class UserController {
     }
 
     @ResponseBody
-    @GetMapping("/user-info")
+    @GetMapping("/user-info/{userId}")
     @Operation(summary = "사용자 정보 조회", description = "선택한 사용자의 정보를 가져옵니다.")
-    public UserInfoResponseDto getUserInfo(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return userService.getUserInfo(userDetails.getUser());
+    public UserInfoDto getUserInfo(@PathVariable long userId) {
+        return userService.getUserInfo(userId);
     }
 
     @PostMapping("/signup")
@@ -162,5 +162,4 @@ public class UserController {
 
         return "redirect:/";
     }
-
 }

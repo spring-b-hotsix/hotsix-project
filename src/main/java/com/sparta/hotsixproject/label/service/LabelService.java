@@ -35,7 +35,7 @@ public class LabelService {
     @LabelCheckPageAndUser
     public ResponseEntity<ApiResponseDto> createLabel(Long boardId, LabelRequestDto requestDto, User user) {
         Board board = findBoard(boardId);
-        Label label = new Label(board, requestDto.getTitle(), requestDto.getColor());
+        Label label = new Label(board, requestDto.getTitle(), requestDto.getRed(),requestDto.getGreen(),requestDto.getBlue());
         labelRepository.save(label);
 
         ApiResponseDto apiResponseDto = new ApiResponseDto("라벨 생성 완료", HttpStatus.CREATED.value());
@@ -54,7 +54,7 @@ public class LabelService {
     @LabelCheckPageAndUser
     public ResponseEntity<LabelResponseDto> updateLabel(Long boardId, Long labelId, LabelRequestDto requestDto, User user) {
         Label label = findLabel(labelId);
-        label.update(requestDto.getTitle(), requestDto.getColor());
+        label.update(requestDto.getTitle(), requestDto.getRed(),requestDto.getGreen(),requestDto.getBlue());
         LabelResponseDto responseDto = new LabelResponseDto(label);
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }

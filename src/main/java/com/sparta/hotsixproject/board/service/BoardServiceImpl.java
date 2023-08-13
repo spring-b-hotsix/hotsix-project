@@ -14,9 +14,11 @@ import com.sparta.hotsixproject.user.entity.User;
 import com.sparta.hotsixproject.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.awt.*;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 
@@ -152,6 +154,28 @@ public class BoardServiceImpl implements BoardService{
         return boardUserRepository.findByBoard_Id(boardId).stream().map(MemberResponseDto::new).toList();
     }
 
+    @Override
+    @Transactional
+    public ApiResponseDto deleteMember(Long boardId, Long memberId, User user){
+        User loginedUser = findUser(user.getId());
+        Board targetBoard = findBoard(boardId);
+        User targetUser = findUser(memberId);
+
+        //보드를 생성하지 않은 유저가 삭제 시도할 때
+        if(!targetBoard.getUser().equals(loginedUser)) {
+            throw new IllegalArgumentException("보드 작성자만 유저를 제외시킬 수 있습니다.");
+        }
+
+        BoardUser boardUser = boardUserRepository.findByUserAndBoard(targetUser, targetBoard).orElse(null);
+        if(boardUser==null){
+            throw new IllegalArgumentException("보드에 참여한 유저가 아닙니다.");
+        }
+        if(Objects.equals(loginedUser, targetUser)){
+            throw new IllegalArgumentException("자기자신을 보드에서 제외시킬 수 없습니다.");
+        }
+        boardUserRepository.delete(boardUser);
+        return new ApiResponseDto(targetUser.getNickname()+" 유저는 보드에서 제외되었습니다.",200);
+    }
 
     // --private methods--
 

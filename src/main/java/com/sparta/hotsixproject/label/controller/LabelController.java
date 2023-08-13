@@ -28,7 +28,7 @@ public class LabelController {
     @PostMapping("/{boardId}/labels")
     @Operation(summary = "보드 라벨 생성", description = "보드에 새로운 라벨을 생성합니다.")
     public ResponseEntity<ApiResponseDto> createLabel(@Parameter(name = "boardId", description = "라벨을 만들 board의 id", in = ParameterIn.PATH) @PathVariable Long boardId,
-                                                      @Parameter(description = "라벨 생성 시 필요한 정보 (title, color)") @RequestBody LabelRequestDto requestDto,
+                                                      @Parameter(description = "라벨 생성 시 필요한 정보 (title, color(red,green,blue)") @RequestBody LabelRequestDto requestDto,
                                                       @Parameter(description = "로그인 한 User의 정보") @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return labelService.createLabel(boardId, requestDto, userDetails.getUser());
     }
