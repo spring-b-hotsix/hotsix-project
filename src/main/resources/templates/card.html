@@ -242,35 +242,38 @@
             <!-- 마감기한-->
             <div id="card-due">
                 <h6>Due date</h6>
-                <button type="button" class="btn btn-light" data-bs-toggle="modal"
-                        data-bs-target="#dueDate" style="display: flex; bor">
-                    2023.08.10. T 18:00
-                    <div style="background-color: red; color: white; margin-left: 10px">Overdue</div>
-                </button>
-            </div>
-
-            <!-- 마감기한 모달창-->
-            <div class="modal fade" id="dueDate" tabindex="-1" aria-labelledby="exampleModalLabel"
-                 aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                    aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            ...
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                                Close
-                            </button>
-                            <button type="button" class="btn btn-primary">Save changes</button>
-                        </div>
+                <div class="d-flex">
+                    <button type="button" class="btn btn-light" style="display: flex;"
+                            th:text="${card.body.due}">
+                    </button>
+                    <div th:if="${card.body.overdue}" style="background-color: red; color: white; margin-left: 10px">
+                        Overdue
                     </div>
                 </div>
             </div>
+
+            <!-- 마감기한 모달창-->
+<!--            <div class="modal fade" id="dueDate" tabindex="-1" aria-labelledby="exampleModalLabel"-->
+<!--                 aria-hidden="true">-->
+<!--                <div class="modal-dialog">-->
+<!--                    <div class="modal-content">-->
+<!--                        <div class="modal-header">-->
+<!--                            <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>-->
+<!--                            <button type="button" class="btn-close" data-bs-dismiss="modal"-->
+<!--                                    aria-label="Close"></button>-->
+<!--                        </div>-->
+<!--                        <div class="modal-body">-->
+<!--                            ...-->
+<!--                        </div>-->
+<!--                        <div class="modal-footer">-->
+<!--                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">-->
+<!--                                Close-->
+<!--                            </button>-->
+<!--                            <button type="button" class="btn btn-primary">Save changes</button>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
         </div>
 
         <!--설명-->
@@ -629,11 +632,11 @@
                                     <span class="relativeTime" style="margin-left: 10px"></span>
                                 </div>
                             </div>
-<!--댓글 조회 디폴트-->
+                            <!--댓글 조회 디폴트-->
                             <div id="comment-box-content">
                                 <a id="comment-content-default" type="text" class="form-control"
-                                     style="font-size: 15px; margin-left: 40px; margin-bottom: 5px; width: 625px; text-decoration: none;"
-                                     th:text="${comment.content}">
+                                   style="font-size: 15px; margin-left: 40px; margin-bottom: 5px; width: 625px; text-decoration: none;"
+                                   th:text="${comment.content}">
                                 </a>
                             </div>
 
@@ -649,9 +652,10 @@
                             </div>
 
                             <div id="comment-box-footer" style="display: flex; margin-left: 45px;">
-<!--댓글 수정 클릭-->
-                                <a href="#" class="text-secondary" style="margin-right: 10px" onclick="toggleComment('input')">Edit</a>
-<!--댓글 삭제 클릭-->
+                                <!--댓글 수정 클릭-->
+                                <a href="#" class="text-secondary" style="margin-right: 10px"
+                                   onclick="toggleComment('input')">Edit</a>
+                                <!--댓글 삭제 클릭-->
                                 <a href="#" class="text-secondary" style="margin-right: 10px" data-bs-toggle="modal"
                                    data-bs-target="#comment-delete-modal">Delete</a>
                             </div>
@@ -725,14 +729,24 @@
             </button>
 
             <!--마감기한-->
-            <button type="button" class="btn btn-secondary btn-card-menu text-start">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-                     class="bi bi-clock icon-card-menu" viewBox="0 0 16 16">
-                    <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/>
-                    <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z"/>
-                </svg>
-                Dates
-            </button>
+            <div class="container" style="margin-left: -10px">
+                <button id="showDatePicker" type="button" class="btn btn-secondary btn-card-menu text-start"
+                        onclick="toggleDatePicker()">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                         class="bi bi-clock icon-card-menu" viewBox="0 0 16 16">
+                        <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/>
+                        <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z"/>
+                    </svg>
+                    Dates
+                </button>
+                <div id="datePickerContainer" style="display: none;">
+                    <input type="datetime-local" id="dateTimePicker" class="form-control" style="margin-top: 5px">
+                    <button id="selectDateTime" class="btn btn-primary mt-2"
+                            style="margin-left: 180px; margin-top: 10px; margin-bottom: 10px"
+                            onclick="selectDateTime(boardId, sideId, cardId)">Select
+                    </button>
+                </div>
+            </div>
 
             <!--첨부파일-->
             <button type="button" class="btn btn-secondary btn-card-menu text-start"
@@ -845,10 +859,8 @@
     var boardId = /*[[ ${boardId} ]]*/ 0;
     var sideId = /*[[ ${sideId} ]]*/ 0;
     var cardId = /*[[ ${cardId} ]]*/ 0;
-</script>
 
-<!--상대 시간 표시-->
-<script>
+    <!--상대 시간 표시-->
     const formattedDateElements = document.querySelectorAll('.formattedDate');
     formattedDateElements.forEach(element => {
         const formattedDate = element.textContent;
@@ -856,6 +868,37 @@
         const relativeTimeElement = element.nextElementSibling;
         relativeTimeElement.textContent = relativeTime;
     });
+
+    <!--마감 기한 날짜 선택-->
+    function toggleDatePicker() {
+        const datePickerContainer = document.getElementById('datePickerContainer');
+        datePickerContainer.style.display = datePickerContainer.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function selectDateTime(boardId, sideId, cardId) {
+        const dateTimePicker = document.getElementById('dateTimePicker');
+        const selectedDateTime = new Date(dateTimePicker.value);
+        const requestDto = {
+            due: selectedDateTime
+        };
+
+        fetch(`/boards/${boardId}/sides/${sideId}/cards/${cardId}/due`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestDto)
+        })
+            .then(function (response) {
+                return response.json();
+            })
+            .then(function (responseDto) {
+                alert("마감기한 설정 완료!");
+
+                // 모달 내용을 업데이트한 후 창을 새로고침
+                location.reload();
+            });
+    }
 </script>
 </body>
 </html>

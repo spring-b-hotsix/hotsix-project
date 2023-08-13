@@ -21,7 +21,7 @@ public class CardResponseDto {
     private String color;
     private int position;
     private LocalDateTime due;
-    private boolean overdue;
+    private Boolean overdue;
     private List<UserInfoResponseDto> userList;
     private List<LabelResponseDto> labelList;
     private List<AttachmentResponseDto> attachmentList;
