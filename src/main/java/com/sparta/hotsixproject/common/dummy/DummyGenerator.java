@@ -7,6 +7,10 @@ import com.sparta.hotsixproject.boarduser.entity.BoardUser;
 import com.sparta.hotsixproject.boarduser.repository.BoardUserRepository;
 import com.sparta.hotsixproject.card.entity.Card;
 import com.sparta.hotsixproject.card.repository.CardRepository;
+import com.sparta.hotsixproject.carduser.entity.CardUser;
+import com.sparta.hotsixproject.carduser.repository.CardUserRepository;
+import com.sparta.hotsixproject.checklist.checklistItem.repository.ChecklistItemRepository;
+import com.sparta.hotsixproject.checklist.repository.ChecklistRepository;
 import com.sparta.hotsixproject.comment.dto.CommentRequestDto;
 import com.sparta.hotsixproject.comment.entity.Comment;
 import com.sparta.hotsixproject.comment.repository.CommentRepository;
@@ -35,16 +39,19 @@ public class DummyGenerator implements CommandLineRunner {
     private final CardRepository cardRepository;
     private final CommentRepository commentRepository;
     private final LabelRepository labelRepository;
+    private final ChecklistRepository checklistRepository;
+    private final ChecklistItemRepository checklistItemRepository;
+    private final CardUserRepository cardUserRepository;
 
     // 상수
     private static final int COUNT = 3;
 
     @Autowired
     public DummyGenerator(
-            PasswordEncoder passwordEncoder,
-            UserRepository userRepository, BoardRepository boardRepository, BoardUserRepository boardUserRepository,
-            SideRepository sideRepository, CardRepository cardRepository, CommentRepository commentRepository,
-            LabelRepository labelRepository
+            PasswordEncoder passwordEncoder, UserRepository userRepository, BoardRepository boardRepository,
+            BoardUserRepository boardUserRepository, SideRepository sideRepository, CardRepository cardRepository,
+            CommentRepository commentRepository, LabelRepository labelRepository, ChecklistRepository checklistRepository,
+            ChecklistItemRepository checklistItemRepository, CardUserRepository cardUserRepository
     ) {
         this.faker = new Faker();
         this.passwordEncoder = passwordEncoder;
@@ -55,6 +62,9 @@ public class DummyGenerator implements CommandLineRunner {
         this.cardRepository = cardRepository;
         this.commentRepository = commentRepository;
         this.labelRepository = labelRepository;
+        this.checklistRepository = checklistRepository;
+        this.checklistItemRepository = checklistItemRepository;
+        this.cardUserRepository = cardUserRepository;
     }
 
     // 실행
@@ -100,7 +110,11 @@ public class DummyGenerator implements CommandLineRunner {
             String name = "board" + (i + 1);
             String description = "설명" + (i + 1);
 
-            Board board = new Board(name, description, userList.get(i), 255, 255, 255);
+            int red = (int) (Math.random() * 256);
+            int green = (int) (Math.random() * 256);
+            int blue = (int) (Math.random() * 256);
+
+            Board board = new Board(name, description, userList.get(i), red, green, blue);
             BoardUser boardUser = new BoardUser(userList.get(i), board);
             boardRepository.save(board);
             boardUserRepository.save(boardUser);
@@ -209,5 +223,38 @@ public class DummyGenerator implements CommandLineRunner {
 
     // 2. 체크리스트
 
-    // 3. 작업자 초대
+
+    // 3. 작업자 추가
+    private Map<Card, List<CardUser>> DummyCardUserGenerator(List<User> userList, Map<User, Board> boardMap, Map<Board, List<Side>> sideListMap, Map<Side, List<Card>> cardListMap) {
+        Map<Card, List<CardUser>> cardUserListMap = new HashMap<>();
+        List<CardUser> cardUserList = new ArrayList<>();
+
+        User user = userList.get(0);
+        Board board = boardMap.get(user);
+        Side side = sideListMap.get(board).get(0);
+        Card card = cardListMap.get(side).get(0);
+
+        /// 사용자를 보드에 초대
+        User inviteUser1 = userList.get(1);
+        User inviteUser2 = userList.get(2);
+
+        BoardUser boardUser1 = new BoardUser(inviteUser1, board);
+        BoardUser boardUser2 = new BoardUser(inviteUser2, board);
+
+        boardUserRepository.save(boardUser1);
+        boardUserRepository.save(boardUser2);
+
+        /// 사용자를 카드에 작업자로 추가
+        CardUser cardUser1 = new CardUser(card, inviteUser1);
+        CardUser cardUser2 = new CardUser(card, inviteUser2);
+
+        cardUserRepository.save(cardUser1);
+        cardUserRepository.save(cardUser2);
+
+        cardUserList.add(cardUser1);
+        cardUserList.add(cardUser2);
+        cardUserListMap.put(card, cardUserList);
+
+        return cardUserListMap;
+    }
 }
