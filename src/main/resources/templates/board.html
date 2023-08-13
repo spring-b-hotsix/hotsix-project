@@ -199,6 +199,26 @@
             margin-bottom: 5px; /* 다음 줄로 내려갈 때 간격 설정 */
             font-size: 14px;
         }
+        #search-results {
+            position: absolute;
+            z-index: 999; /* 큰 값을 사용하여 다른 요소 위로 덮어지도록 설정 */
+            background-color: white; /* 배경색 설정 */
+            border: 1px solid #ccc; /* 테두리 설정 */
+            padding: 10px; /* 여백 설정 */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* 그림자 설정 */
+            text-align:center;
+            margin-top:3px;
+            margin-bottom:5px;
+            font-weight:bold;
+        }
+        #search-result-item{
+            background-color: white;
+            transition:color 0.3s;
+            margin-bottom:5px;
+        }
+        #search-result-item:hover{
+            background-color: #f0f0f0; /* 호버 시 백그라운드 색상 변경 */
+        }
     </style>
 
 
@@ -239,17 +259,48 @@
                             <a class="dropdown-item" href="#">Board1</a>
                             <a class="dropdown-item" href="#">Board1</a>
                         </li>
-                        <!--                        <li><a class="dropdown-item" href="#">Board1</a></li>-->
-                        <!--                        <li><a class="dropdown-item" href="#">Board2</a></li>-->
-                        <!--                        <li><a class="dropdown-item" href="#">Board3</a></li>-->
                     </ul>
                 </li>
             </ul>
-            <!--            검색창-->
-            <form class="d-flex" role="search">
-                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                <button class="btn btn-outline-light" type="submit">Search</button>
-            </form>
+            <!-- 검색창과 검색 결과를 감싸는 부모 요소 -->
+            <div class="search-container">
+                <!-- 검색창 -->
+                <form class="d-flex" role="search">
+                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" id="search-input">
+                    <button class="btn btn-outline-light" type="button" id="search-btn" onclick="searchCards()">Search</button>
+                </form>
+
+                <!-- 검색 결과 표시 영역 -->
+                <div id="search-results" style="display: none;">
+                    <ul id="search-results-list">
+                        <!-- 검색 결과는 여기에 추가될 예정 -->
+                    </ul>
+                </div>
+            </div>
+            <script>
+                function searchCards() {
+                    // 검색 버튼 클릭 시
+                    let keyword = $('#search-input').val();
+                    console.log(keyword);
+                    let boardId = $('#this-board').val();
+                    fetch(`/boards/${boardId}/word?keyword=${keyword}`)
+                        .then(function (response) {
+                            return response.json();
+                        })
+                        .then(function (responseDto) {
+                            $('#search-results-list').empty();
+                            responseDto.forEach(function (searchlist) {
+                                let cardId = searchlist.cardId;
+                                let name = searchlist.name;
+                                let temp_html = `<li class="search-result-item" href="/boards/${boardId}/cards/${cardId}" value="${cardId}">${name}</li>`;
+                                $('#search-results-list').append(temp_html);
+                            });
+                        });
+                    // 검색 결과 표시 영역을 보이게 설정
+                    document.getElementById("search-results").style.display = "block";
+                }
+
+            </script>
             <!--            계정-->
             <div class="dropdown text-end account-padding">
                 <a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle"
