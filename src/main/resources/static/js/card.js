@@ -187,3 +187,126 @@ function deleteAttachment(boardId, sideId, cardId, fileId) {
             });
 
 }
+
+// 체크리스트 생성
+function addChecklist(boardId, sideId, cardId) {
+        let name = $('#card-checklist-input').val();
+        let requestDto = {"name": name};
+
+        fetch(`/boards/${boardId}/sides/${sideId}/cards/${cardId}/checklists`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(requestDto)
+        })
+            .then(function (response) {
+                return response.json();
+            })
+
+            .then(function (responseDto) {
+                alert(responseDto.msg);
+
+                // 모달 내용을 업데이트한 후 창을 새로고침
+                location.reload();
+                // toggleDescription('input')
+
+                // // 모달 내용을 다시 불러와서 업데이트
+                // refreshModalContent();
+            });
+}
+
+// 체크리스트 이름 수정 토글
+function toggleChecklistName(state) {
+    if (state === 'input') {
+        document.getElementById('checklist-name-default').style.display = 'none';
+        document.getElementById('checklist-name-input').style.display = 'flex';
+    }
+}
+
+// 체크리스트 이름 수정하기
+function updateAndToggleChecklistName(state, boardId, sideId, cardId, checklistId) {
+    if (state === 'default') {
+        let name = $('#checklist-name-update-input').val();
+        let requestDto = {"name": name};
+
+        fetch(`/boards/${boardId}/sides/${sideId}/cards/${cardId}/checklists/${checklistId}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(requestDto)
+        })
+            .then(function (response) {
+                return response.json();
+            })
+
+            .then(function (responseDto) {
+                alert(responseDto.msg);
+
+                // 모달 내용을 업데이트한 후 창을 새로고침
+                location.reload();
+                // toggleName('input')
+
+                // Update description text and toggle back to default state
+                $('#checklist-name-default').text(name);
+                document.getElementById('checklist-name-default').style.display = 'flex';
+                document.getElementById('checklist-name-input').style.display = 'none';
+                // // 모달 내용을 다시 불러와서 업데이트
+                // refreshModalContent();
+            });
+    }
+}
+
+// 첨부파일 삭제
+function deleteChecklist(boardId, sideId, cardId, checklistId) {
+    fetch(`/boards/${boardId}/sides/${sideId}/cards/${cardId}/checklists/${checklistId}`, {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json"
+        },
+    })
+        .then(function (response) {
+            return response.json();
+        })
+
+        .then(function (responseDto) {
+            alert(responseDto.msg);
+
+            // 모달 내용을 업데이트한 후 창을 새로고침
+            location.reload();
+            // toggleName('input')
+
+            // // 모달 내용을 다시 불러와서 업데이트
+            // refreshModalContent();
+        });
+
+}
+
+// 체크리스트 아이템 생성
+function addItem(boardId, sideId, cardId, checklistId) {
+    let content = $('#card-checklist-item-input').val();
+    let requestDto = {"content": content};
+
+    fetch(`/boards/${boardId}/sides/${sideId}/cards/${cardId}/checklists/${checklistId}/item`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(requestDto)
+    })
+        .then(function (response) {
+            return response.json();
+        })
+
+        .then(function (responseDto) {
+            alert(responseDto.msg);
+
+            // 모달 내용을 업데이트한 후 창을 새로고침
+            location.reload();
+            // toggleDescription('input')
+
+            // // 모달 내용을 다시 불러와서 업데이트
+            // refreshModalContent();
+        });
+}

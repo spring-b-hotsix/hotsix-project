@@ -14,9 +14,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-@RestController
+@Controller
 @RequiredArgsConstructor
 @RequestMapping("/boards")
 @Tag(name = "체크리스트 관련 API", description = "카드 체크리스트 관련 API 입니다.")
@@ -50,7 +51,7 @@ public class ChecklistController {
             @PathVariable Long boardId, @PathVariable Long sideId, @PathVariable Long cardId, @PathVariable Long checklistId,
             @RequestBody ChecklistRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         ChecklistResponseDto responseDto = checklistService.updateChecklistName(boardId, sideId, cardId, checklistId, requestDto, userDetails.getUser());
-        return ResponseEntity.ok().body(responseDto);
+        return ResponseEntity.ok().body(new ApiResponseDto("체크리스트 이름이 수정되었습니다.", HttpStatus.OK.value()));
     }
 
     // 체크리스트 삭제
@@ -64,7 +65,7 @@ public class ChecklistController {
     }
 
     // 체크리스트 아이템 추가
-    @PostMapping("/{boardId}/sides/{sideId}/cards/{cardId}/checklists/{checklistId}")
+    @PostMapping("/{boardId}/sides/{sideId}/cards/{cardId}/checklists/{checklistId}/item")
     @Operation(summary = "체크리스트 아이템 추가", description = "Dto로 정보를 받아와 해당 체크리스트에 아이템을 추가합니다.")
     public ResponseEntity<ApiResponseDto> createItem(
             @PathVariable Long boardId, @PathVariable Long sideId, @PathVariable Long cardId, @PathVariable Long checklistId,
