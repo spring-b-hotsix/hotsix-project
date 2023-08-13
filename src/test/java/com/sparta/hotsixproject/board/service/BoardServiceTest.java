@@ -21,6 +21,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -38,37 +39,38 @@ import static org.springframework.security.test.web.servlet.setup.SecurityMockMv
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@ActiveProfiles("test")
 @RunWith(SpringRunner.class)
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Transactional
 class BoardServiceTest {
-//    @PersistenceContext
-//    EntityManager em;
-//    @LocalServerPort
-//    private int port;
-//    @Autowired
-//    private BoardServiceImpl boardService;
-//    @Autowired
-//    private BoardRepository boardRepository;
-//    @Autowired
-//    private BoardUserRepository boardUserRepository;
-//    @Autowired
-//    private UserRepository userRepository;
-//    @Autowired
-//    private WebApplicationContext context;
-//    private MockMvc mvc;
-//
-//    @BeforeEach
-//    public void setup() {
-//        mvc = MockMvcBuilders
-//                .webAppContextSetup(context)
-//                .apply(springSecurity())
-//                .build();
-//    }
+    @PersistenceContext
+    EntityManager em;
+    @LocalServerPort
+    private int port;
+    @Autowired
+    private BoardServiceImpl boardService;
+    @Autowired
+    private BoardRepository boardRepository;
+    @Autowired
+    private BoardUserRepository boardUserRepository;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private WebApplicationContext context;
+    private MockMvc mvc;
+
+    @BeforeEach
+    public void setup() {
+        mvc = MockMvcBuilders
+                .webAppContextSetup(context)
+                .apply(springSecurity())
+                .build();
+    }
 //
 //    @Test
-//    @DisplayName("보드 생성")`
+//    @DisplayName("보드 생성")
 //    @WithMockUser(roles = "USER")
 //    void createBoard() throws Exception {
 //        // given
@@ -257,12 +259,12 @@ class BoardServiceTest {
 //       assertEquals(0, newUser2.getBoardList().size());
 //   }
 
-//    private Board createBoard(User user) {
-//        Board board = new Board("board1", "descr1", user, 255, 255, 255);
-//        user.addBoard(board);
-//        BoardUser boardUser = new BoardUser(user, board);
-//        em.persist(board);
-//        em.persist(boardUser);
-//        return board;
-//    }
+    private Board createBoard(User user) {
+        Board board = new Board("board1", "descr1", user, 255, 255, 255);
+        user.addBoard(board);
+        BoardUser boardUser = new BoardUser(user, board);
+        em.persist(board);
+        em.persist(boardUser);
+        return board;
+    }
 }
