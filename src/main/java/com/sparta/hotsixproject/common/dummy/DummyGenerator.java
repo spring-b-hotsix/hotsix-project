@@ -141,15 +141,21 @@ public class DummyGenerator implements CommandLineRunner {
             User user = userList.get(i);
             Board board = boardMap.get(user);
             List<Side> sideList = sideListMap.get(board);
+            for (int m = 0; m < sideList.size(); m++) {
+                List<Card> cardList = new ArrayList<>();
+                Card card1 = new Card("card1", 1, user, sideList.get(m));
+                Card card2 = new Card("card2", 2, user, sideList.get(m));
+                Card card3 = new Card("card3", 3, user, sideList.get(m));
 
-            List<Card> cardList = new ArrayList<>();
-            for (int m = 0; m < sideList.size(); m++) { // 이거 다시 써야댐
-                Card card = new Card("card" + m, m, user, sideList.get(i));
-                cardRepository.save(card);
+                cardRepository.save(card1);
+                cardRepository.save(card2);
+                cardRepository.save(card3);
 
-                cardList.add(card);
+                cardList.add(card1);
+                cardList.add(card2);
+                cardList.add(card3);
+                cardListMap.put(sideList.get(m), cardList);
             }
-            cardListMap.put(sideList.get(i), cardList);
         }
         return cardListMap;
     }
