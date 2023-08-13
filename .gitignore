@@ -35,3 +35,9 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### CD 전용 template.properties ###
+template.properties
+
+### For Test properties ###
+application-test.properties
