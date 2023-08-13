@@ -78,21 +78,21 @@ public class DummyGenerator implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         // 사용자
-        List<User> userList = DummyUserGenerator();
+        // List<User> userList = DummyUserGenerator();
         // 보드
-        Map<User, Board> boardMap = DummyBoardGenerator(userList);
+        // Map<User, Board> boardMap = DummyBoardGenerator(userList);
         // 컬럼
-        Map<Board, List<Side>> sideListMap = DummySideGenerator(userList, boardMap);
+        // Map<Board, List<Side>> sideListMap = DummySideGenerator(userList, boardMap);
         // 카드
-        Map<Side, List<Card>> cardListMap = DummyCardGenerator(userList, boardMap, sideListMap);
+        // Map<Side, List<Card>> cardListMap = DummyCardGenerator(userList, boardMap, sideListMap);
         // 댓글 - 전체 중 한 개의 카드에만 생성함
-        Map<Card, List<Comment>> commentListMap = DummyCommentGenerator(userList, boardMap, sideListMap, cardListMap);
+        // Map<Card, List<Comment>> commentListMap = DummyCommentGenerator(userList, boardMap, sideListMap, cardListMap);
         // 라벨
-        List<Label> labelList = DummyLabelGenerator(userList, boardMap);
+        // List<Label> labelList = DummyLabelGenerator(userList, boardMap);
         // 체크리스트 - 전체 중 한 개의 카드에만 생성함
-        Map<Checklist, List<ChecklistItem>> checklistListMap = DummyChecklistGenerator(userList, boardMap, sideListMap, cardListMap);
+        // Map<Checklist, List<ChecklistItem>> checklistListMap = DummyChecklistGenerator(userList, boardMap, sideListMap, cardListMap);
         // 작업자 추가 - 전체 중 한 개의 카드에만 생성함
-        Map<Card, List<CardUser>> cardUserListMap = DummyCardUserGenerator(userList, boardMap, sideListMap, cardListMap);
+        // Map<Card, List<CardUser>> cardUserListMap = DummyCardUserGenerator(userList, boardMap, sideListMap, cardListMap);
     }
 
     // User
