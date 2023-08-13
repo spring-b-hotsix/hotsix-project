@@ -68,87 +68,87 @@ class BoardServiceTest {
                 .apply(springSecurity())
                 .build();
     }
-//
-//    @Test
-//    @DisplayName("보드 생성")
-//    @WithMockUser(roles = "USER")
-//    void createBoard() throws Exception {
-//        // given
-//        String url = "http://localhost:" + port + "/boards";
-//        // Set the necessary userDetails object in UserDetailsImpl
-//        User user = userRepository.findByEmail("email1@email.com").orElse(null);
-//        UserDetailsImpl userDetails = new UserDetailsImpl(user);
-//
-//        // when
-//        BoardRequestDto requestDto = new BoardRequestDto("board1", "desc1", 255, 255, 255);
-//        mvc.perform(post(url)
-//                        .contentType(MediaType.APPLICATION_JSON_UTF8)
-//                        .content(new ObjectMapper().writeValueAsString(requestDto))
-//                        .with(user(userDetails)))
-//                .andExpect(status().isCreated()); // 201
-//
-//        // then
-//        List<Board> boardList = boardRepository.findAll();
-//        assertThat(boardList.get(0).getName()).isEqualTo("board1"); // 보드 이름 확인
-//    }
-//
-//
-//    @Test
-//    @DisplayName("보드에 사용자 초대 성공")
-//    void inviteBoardSuccess() throws Exception {
-//        // given
-//        User user = userRepository.findByEmail("email1@email.com").orElse(null);
-//        UserDetailsImpl userDetails = new UserDetailsImpl(user);
-//        // 보드 생성
-//        Board board = createBoard(userDetails.getUser());
-//
-//        // when
-//        /**
-//         * 시나리오: newUser1이 만든 board1에 newUser2와 newUser3를 초대
-//         */
-//        User user2 = userRepository.findByEmail("email2@email.com").orElse(null);
-//        User user3 = userRepository.findByEmail("email3@email.com").orElse(null);
-//        boardService.inviteBoard(board.getId(), user2.getEmail(), userDetails.getUser());
-//        boardService.inviteBoard(board.getId(), user3.getEmail(), userDetails.getUser());
-//
-//        BoardUser boardUser2 = boardUserRepository.findByUserAndBoard(user2, board).orElse(null);
-//        BoardUser boardUser3 = boardUserRepository.findByUserAndBoard(user3, board).orElse(null);
-//
-//        // then
-//        assertNotNull(boardUser2);
-//        assertNotNull(boardUser3);
-//    }
-//
-//    @Test
-//    @DisplayName("보드에 사용자 초대 실패")
-//    void inviteBoardFail() throws IllegalArgumentException {
-//        // given
-//        User user1 = userRepository.findByEmail("email1@email.com").orElse(null);
-//        UserDetailsImpl userDetails = new UserDetailsImpl(user1);
-//        User user2 = userRepository.findByEmail("email2@email.com").orElse(null);
-//        Board board1 = createBoard(user1);
-//
-//        // when
-//        /**
-//         * 시나리오?: newUser1이 만든 board1에 사용자를 초대
-//         *      1. 없는 이메일(사용자), 2. newUser2를 초대 후 -> 한 번 더 초대(이러면 실패함)
-//         */
-//        IllegalArgumentException exception2 = assertThrows(     // 없는 email로 초대를 요청한 경우
-//                IllegalArgumentException.class, () -> {
-//                    boardService.inviteBoard(board1.getId(), "new3@email.com", userDetails.getUser()); // 없는 이메일
-//                }
-//        );
-//        boardService.inviteBoard(board1.getId(), user2.getEmail(), userDetails.getUser());
-//        IllegalArgumentException exception3 = assertThrows(     // 초대 후 재 초대 시도
-//                IllegalArgumentException.class, () -> {
-//                    boardService.inviteBoard(board1.getId(), user2.getEmail(), userDetails.getUser());
-//                }
-//        );
-//
-//        // then
-//        assertThat(exception2.getMessage()).isEqualTo("입력한 이메일로 가입한 사용자가 존재하지 않습니다.");
-//        assertThat(exception3.getMessage()).isEqualTo("해당 유저는 이미 보드의 멤버입니다.");
-//    }
+
+    @Test
+    @DisplayName("보드 생성")
+    @WithMockUser(roles = "USER")
+    void createBoard() throws Exception {
+        // given
+        String url = "http://localhost:" + port + "/boards";
+        // Set the necessary userDetails object in UserDetailsImpl
+        User user = userRepository.findByEmail("email1@email.com").orElse(null);
+        UserDetailsImpl userDetails = new UserDetailsImpl(user);
+
+        // when
+        BoardRequestDto requestDto = new BoardRequestDto("board1", "desc1", 255, 255, 255);
+        mvc.perform(post(url)
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(new ObjectMapper().writeValueAsString(requestDto))
+                        .with(user(userDetails)))
+                .andExpect(status().isCreated()); // 201
+
+        // then
+        List<Board> boardList = boardRepository.findAll();
+        assertThat(boardList.get(0).getName()).isEqualTo("board1"); // 보드 이름 확인
+    }
+
+
+    @Test
+    @DisplayName("보드에 사용자 초대 성공")
+    void inviteBoardSuccess() throws Exception {
+        // given
+        User user = userRepository.findByEmail("email1@email.com").orElse(null);
+        UserDetailsImpl userDetails = new UserDetailsImpl(user);
+        // 보드 생성
+        Board board = createBoard(userDetails.getUser());
+
+        // when
+        /**
+         * 시나리오: newUser1이 만든 board1에 newUser2와 newUser3를 초대
+         */
+        User user2 = userRepository.findByEmail("email2@email.com").orElse(null);
+        User user3 = userRepository.findByEmail("email3@email.com").orElse(null);
+        boardService.inviteBoard(board.getId(), user2.getEmail(), userDetails.getUser());
+        boardService.inviteBoard(board.getId(), user3.getEmail(), userDetails.getUser());
+
+        BoardUser boardUser2 = boardUserRepository.findByUserAndBoard(user2, board).orElse(null);
+        BoardUser boardUser3 = boardUserRepository.findByUserAndBoard(user3, board).orElse(null);
+
+        // then
+        assertNotNull(boardUser2);
+        assertNotNull(boardUser3);
+    }
+
+    @Test
+    @DisplayName("보드에 사용자 초대 실패")
+    void inviteBoardFail() throws IllegalArgumentException {
+        // given
+        User user1 = userRepository.findByEmail("email1@email.com").orElse(null);
+        UserDetailsImpl userDetails = new UserDetailsImpl(user1);
+        User user2 = userRepository.findByEmail("email2@email.com").orElse(null);
+        Board board1 = createBoard(user1);
+
+        // when
+        /**
+         * 시나리오?: newUser1이 만든 board1에 사용자를 초대
+         *      1. 없는 이메일(사용자), 2. newUser2를 초대 후 -> 한 번 더 초대(이러면 실패함)
+         */
+        IllegalArgumentException exception2 = assertThrows(     // 없는 email로 초대를 요청한 경우
+                IllegalArgumentException.class, () -> {
+                    boardService.inviteBoard(board1.getId(), "new3@email.com", userDetails.getUser()); // 없는 이메일
+                }
+        );
+        boardService.inviteBoard(board1.getId(), user2.getEmail(), userDetails.getUser());
+        IllegalArgumentException exception3 = assertThrows(     // 초대 후 재 초대 시도
+                IllegalArgumentException.class, () -> {
+                    boardService.inviteBoard(board1.getId(), user2.getEmail(), userDetails.getUser());
+                }
+        );
+
+        // then
+        assertThat(exception2.getMessage()).isEqualTo("입력한 이메일로 가입한 사용자가 존재하지 않습니다.");
+        assertThat(exception3.getMessage()).isEqualTo("해당 유저는 이미 보드의 멤버입니다.");
+    }
 
 
 //   @Test
