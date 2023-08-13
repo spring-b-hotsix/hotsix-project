@@ -17,6 +17,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/boards")
@@ -79,8 +81,10 @@ public class ChecklistController {
     @Operation(summary = "체크리스트 아이템 체크", description = "해당 체크리스트 아이템의 체크 상태를 변경합니다.")
     public ResponseEntity<ApiResponseDto> updateItemChecked(
             @PathVariable Long boardId, @PathVariable Long sideId, @PathVariable Long cardId, @PathVariable Long checklistId,
-            @PathVariable Long itemId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        ChecklistItemResponseDto responseDto = checklistService.updateItemChecked(boardId, sideId, cardId, checklistId, itemId, userDetails.getUser());
+            @PathVariable Long itemId, @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @RequestBody Map<String, Boolean> request) {
+        boolean isChecked = request.get("checked");
+        ChecklistItemResponseDto responseDto = checklistService.updateItemChecked(boardId, sideId, cardId, checklistId, itemId, userDetails.getUser(), isChecked);
         return ResponseEntity.ok().body(responseDto);
     }
 

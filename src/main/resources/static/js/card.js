@@ -165,55 +165,55 @@ function updateAndtoggleAttachmentName(state, boardId, sideId, cardId, fileId) {
 
 // 첨부파일 삭제
 function deleteAttachment(boardId, sideId, cardId, fileId) {
-        fetch(`/boards/${boardId}/sides/${sideId}/cards/${cardId}/files/${fileId}`, {
-            method: "DELETE",
-            headers: {
-                "Content-Type": "application/json"
-            },
+    fetch(`/boards/${boardId}/sides/${sideId}/cards/${cardId}/files/${fileId}`, {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json"
+        },
+    })
+        .then(function (response) {
+            return response.json();
         })
-            .then(function (response) {
-                return response.json();
-            })
 
-            .then(function (responseDto) {
-                alert("첨부 파일 삭제 완료!");
+        .then(function (responseDto) {
+            alert("첨부 파일 삭제 완료!");
 
-                // 모달 내용을 업데이트한 후 창을 새로고침
-                location.reload();
-                // toggleName('input')
+            // 모달 내용을 업데이트한 후 창을 새로고침
+            location.reload();
+            // toggleName('input')
 
-                // // 모달 내용을 다시 불러와서 업데이트
-                // refreshModalContent();
-            });
+            // // 모달 내용을 다시 불러와서 업데이트
+            // refreshModalContent();
+        });
 
 }
 
 // 체크리스트 생성
 function addChecklist(boardId, sideId, cardId) {
-        let name = $('#card-checklist-input').val();
-        let requestDto = {"name": name};
+    let name = $('#card-checklist-input').val();
+    let requestDto = {"name": name};
 
-        fetch(`/boards/${boardId}/sides/${sideId}/cards/${cardId}/checklists`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(requestDto)
+    fetch(`/boards/${boardId}/sides/${sideId}/cards/${cardId}/checklists`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(requestDto)
+    })
+        .then(function (response) {
+            return response.json();
         })
-            .then(function (response) {
-                return response.json();
-            })
 
-            .then(function (responseDto) {
-                alert(responseDto.msg);
+        .then(function (responseDto) {
+            alert(responseDto.msg);
 
-                // 모달 내용을 업데이트한 후 창을 새로고침
-                location.reload();
-                // toggleDescription('input')
+            // 모달 내용을 업데이트한 후 창을 새로고침
+            location.reload();
+            // toggleDescription('input')
 
-                // // 모달 내용을 다시 불러와서 업데이트
-                // refreshModalContent();
-            });
+            // // 모달 내용을 다시 불러와서 업데이트
+            // refreshModalContent();
+        });
 }
 
 // 체크리스트 이름 수정 토글
@@ -258,13 +258,13 @@ function updateAndToggleChecklistName(state, boardId, sideId, cardId, checklistI
     }
 }
 
-// 첨부파일 삭제
+// 체크리스트 삭제
 function deleteChecklist(boardId, sideId, cardId, checklistId) {
     fetch(`/boards/${boardId}/sides/${sideId}/cards/${cardId}/checklists/${checklistId}`, {
         method: "DELETE",
         headers: {
             "Content-Type": "application/json"
-        },
+        }
     })
         .then(function (response) {
             return response.json();
@@ -309,4 +309,92 @@ function addItem(boardId, sideId, cardId, checklistId) {
             // // 모달 내용을 다시 불러와서 업데이트
             // refreshModalContent();
         });
+}
+
+// 체크리스트 이름 수정하기
+function updateCheckboxState(boardId, sideId, cardId, checklistId, itemId, isChecked) {
+    fetch(`/boards/${boardId}/sides/${sideId}/cards/${cardId}/checklists/${checklistId}/item/${itemId}/check`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ checked: isChecked })
+    })
+        .then(function (response) {
+            return response.json();
+        })
+
+        .then(function (responseDto) {
+            // 모달 내용을 업데이트한 후 창을 새로고침
+            location.reload();
+            // toggleName('input')
+
+            // // 모달 내용을 다시 불러와서 업데이트
+            // refreshModalContent();
+        });
+}
+
+// 체크리스트 내용 수정 토글
+function toggleItemContent(state) {
+    if (state === 'input') {
+        document.getElementById('item-content-default').style.display = 'none';
+        document.getElementById('item-content-update').style.display = 'flex';
+    }
+}
+
+// 체크리스트 내용 수정하기
+function updateAndtoggleItemContent(state, boardId, sideId, cardId, checklistId, itemId, content) {
+    if (state === 'default') {
+        let content = $('#item-content-input').val();
+        let requestDto = {"content": content};
+
+        fetch(`/boards/${boardId}/sides/${sideId}/cards/${cardId}/checklists/${checklistId}/item/${itemId}/content`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(requestDto)
+        })
+            .then(function (response) {
+                return response.json();
+            })
+
+            .then(function (responseDto) {
+                // 모달 내용을 업데이트한 후 창을 새로고침
+                location.reload();
+                // toggleName('input')
+
+                // Update description text and toggle back to default state
+                $('#item-content-default .card-text').text(name);
+                document.getElementById('item-content-default').style.display = 'block';
+                document.getElementById('item-content-update').style.display = 'none';
+                // // 모달 내용을 다시 불러와서 업데이트
+                // refreshModalContent();
+            });
+    }
+}
+
+// 아이템 삭제
+function deleteItem(boardId, sideId, cardId, checklistId, itemId) {
+    fetch(`/boards/${boardId}/sides/${sideId}/cards/${cardId}/checklists/${checklistId}/item/${itemId}`, {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json"
+        },
+    })
+        .then(function (response) {
+            return response.json();
+        })
+
+        .then(function (responseDto) {
+            alert(responseDto.msg);
+
+            // 모달 내용을 업데이트한 후 창을 새로고침
+            location.reload();
+            // toggleName('input')
+
+            // // 모달 내용을 다시 불러와서 업데이트
+            // refreshModalContent();
+        });
+
 }
