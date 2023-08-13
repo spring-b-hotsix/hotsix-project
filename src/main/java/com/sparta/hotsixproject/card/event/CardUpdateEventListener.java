@@ -7,6 +7,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.event.TransactionalEventListener;
 
 import static com.sparta.hotsixproject.notification.NotificationTitle.*;
 
@@ -17,6 +20,7 @@ public class CardUpdateEventListener implements ApplicationListener<CardUpdateEv
     private final NotificationService notificationService;
 
     @Override
+    @TransactionalEventListener
     public void onApplicationEvent(CardUpdateEvent event) {
         Card card = event.getCard();
         if (event.getOldName() != event.getNewName()) {
