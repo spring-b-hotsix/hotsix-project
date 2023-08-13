@@ -106,9 +106,9 @@ class CardServiceTest {
 
         // when
         /* 1. 이름 수정 */
-        cardService.updateName(boardId, sideId, cardId, "card name edit");
+        cardService.updateName(boardId, sideId, cardId, "card name edit", user);
         /* 2. 설명 추가(수정) */
-        cardService.updateDesc(boardId, sideId, cardId, "card desc edit");
+        cardService.updateDesc(boardId, sideId, cardId, "card desc edit", user);
         /* 3-1. 라벨 생성 */
         LabelRequestDto labelDto = new LabelRequestDto("label1", "yellow");
         labelService.createLabel(boardId, labelDto, user);
@@ -116,7 +116,7 @@ class CardServiceTest {
         Label label1 = labelRepository.findByTitle("label1").orElse(null);
         labelService.createCardLabel(boardId, sideId, cardId, label1.getId(), user);
         /* 4. (카드)색상 수정 */
-        cardService.updateColor(boardId, sideId, cardId, "blue");
+        cardService.updateColor(boardId, sideId, cardId, "blue", user);
 
         // then
         /* 1. 이름 수정 */
