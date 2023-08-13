@@ -31,7 +31,8 @@ public class SideCustomServiceImpl implements SideCustomService {
         checkBoardMember(user, board);
 
         // position => 1024씩 증가
-        int position = (board.getSideList().size() != 0) ? (board.getSideList().size() + 1) * 1024 : 1024;
+        List<Side> sortedSideList = sideRepository.findAllByBoardIdOrderBySidePositionAsc(board.getId());
+        int position = (sortedSideList.size() != 0) ? sortedSideList.get((sortedSideList.size() - 1)).getPosition() + 1024 : 1024;
         Side side = new Side(requestDto.getName(), position, board);
         sideRepository.save(side);
         return new SideResponseDto(side);

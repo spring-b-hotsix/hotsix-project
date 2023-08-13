@@ -3,7 +3,8 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org" data-bs-theme="auto">
 <head>
     <!--    <script src="../assets/js/color-modes.js"></script>-->
-    <meta charset="UTF-8">
+
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
@@ -198,6 +199,7 @@
             margin-bottom: 5px; /* 다음 줄로 내려갈 때 간격 설정 */
             font-size: 14px;
         }
+
         #search-results {
             position: absolute;
             z-index: 999; /* 큰 값을 사용하여 다른 요소 위로 덮어지도록 설정 */
@@ -205,17 +207,19 @@
             border: 1px solid #ccc; /* 테두리 설정 */
             padding: 10px; /* 여백 설정 */
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* 그림자 설정 */
-            text-align:center;
-            margin-top:3px;
-            margin-bottom:5px;
-            font-weight:bold;
+            text-align: center;
+            margin-top: 3px;
+            margin-bottom: 5px;
+            font-weight: bold;
         }
-        #search-result-item{
+
+        #search-result-item {
             background-color: white;
-            transition:color 0.3s;
-            margin-bottom:5px;
+            transition: color 0.3s;
+            margin-bottom: 5px;
         }
-        #search-result-item:hover{
+
+        #search-result-item:hover {
             background-color: #f0f0f0; /* 호버 시 백그라운드 색상 변경 */
         }
     </style>
@@ -265,8 +269,10 @@
             <div class="search-container">
                 <!-- 검색창 -->
                 <form class="d-flex" role="search">
-                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" id="search-input">
-                    <button class="btn btn-outline-light" type="button" id="search-btn" onclick="searchCards()">Search</button>
+                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search"
+                           id="search-input">
+                    <button class="btn btn-outline-light" type="button" id="search-btn" onclick="searchCards()">Search
+                    </button>
                 </form>
 
                 <!-- 검색 결과 표시 영역 -->
@@ -319,6 +325,7 @@
         </div>
     </div>
 </header>
+
 <main class="board">
     <!--네비게이션 바-->
     <nav class="navbar bg-body-tertiary" aria-label="Light offcanvas navbar">
@@ -351,7 +358,7 @@
             <div class="modal fade" id="user-info" tabindex="-1"
                  aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
-                    <div class="modal-content" id="user-info-desc">
+                    <div class="modal-content">
                         <div class="modal-header">
                             <h1 class="modal-title fs-5">User Info</h1>
                             <button type="button" class="btn-close" data-bs-dismiss="modal"
@@ -666,7 +673,7 @@
                                     </li>
                                 </ul>
 
-                                <!--사이드 이름 수정 모달창-->`
+                                <!--사이드 이름 수정 모달창-->
                                 <div class="modal fade" id="side-name" tabindex="-1" aria-labelledby="exampleModalLabel"
                                      aria-hidden="true">
                                     <div class="modal-dialog">
@@ -704,18 +711,19 @@
                                                         aria-label="Close"></button>
                                             </div>
                                             <div class="modal-body">
-<!--                                                <div>-->
-<!--                                                    <h6>Board</h6>-->
-<!--                                                    <select class="form-select" aria-label="Default select example">-->
-<!--                                                        <option selected>board title</option>-->
-<!--                                                        <option value="1">board title</option>-->
-<!--                                                        <option value="2">another board</option>-->
-<!--                                                    </select>-->
-<!--                                                </div>-->
+                                                <!--                                                <div>-->
+                                                <!--                                                    <h6>Board</h6>-->
+                                                <!--                                                    <select class="form-select" aria-label="Default select example">-->
+                                                <!--                                                        <option selected>board title</option>-->
+                                                <!--                                                        <option value="1">board title</option>-->
+                                                <!--                                                        <option value="2">another board</option>-->
+                                                <!--                                                    </select>-->
+                                                <!--                                                </div>-->
 
                                                 <div style="margin-top: 10px">
                                                     <h6>Position</h6>
-                                                    <select class="form-select" aria-label="Default select example" id="select-position">
+                                                    <select class="form-select" aria-label="Default select example"
+                                                            id="select-position">
                                                         <option value="1024">1</option>
                                                         <option value="2">2(Current)</option>
                                                         <option value="3">3</option>
@@ -726,7 +734,9 @@
                                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                                                     Close
                                                 </button>
-                                                <button type="button" class="btn btn-primary" onclick="moveList()">Move</button>
+                                                <button type="button" class="btn btn-primary" onclick="moveList()">
+                                                    Move
+                                                </button>
                                             </div>
                                         </div>
                                     </div>
@@ -763,9 +773,9 @@
 
                     <!--리스트(사이드) 내 카드-->
                     <div class="list-group-size" th:each="card : ${side.cardList}">
-                        <a href="#" class="list-group-item list-group-item-action d-flex gap-2 py-2"
-                           data-bs-toggle="modal"
-                           data-bs-target="#cardDetails" aria-current="true">
+                        <a th:href="@{/boards/{boardId}/sides/{sideId}/cards/{cardId}(boardId=${boardId}, sideId=${side.sideId}, cardId=${card.cardId})}"
+                           class="list-group-item list-group-item-action d-flex  gap-2 py-2"
+                           aria-current="true">
                             <div class="d-flex flex-column">
                                 <div id="side-label-list">
                                     <h6 th:each="label : ${card.labelList}" class="mb-0 label-text"
@@ -781,8 +791,7 @@
                     <!--카드 추가하기-->
                     <a href="#"
                        class="list-group-item list-group-item-secondary list-group-item-action d-flex gap-2 py-2"
-                       aria-current="true" data-bs-toggle="modal"
-                       data-bs-target="#card-create" th:value="${side.sideId}"
+                       aria-current="true" th:value="${side.sideId}"
                        onclick="setCardAddButtonValue(this.getAttribute('value'))">
                         + Add a card
                     </a>
@@ -852,19 +861,25 @@
         </div>
     </div>
 </main>
-<!-- 카드 상세 페이지 모달창 가져오기 -->
-<div id="modalContainer"></div>
-<script>
-    const modalContainer = document.getElementById('modalContainer');
-    const modalRequest = new XMLHttpRequest();
-    modalRequest.open('GET', 'card.html', true);
-    modalRequest.onload = function () {
-        if (modalRequest.status >= 200 && modalRequest.status < 400) {
-            modalContainer.innerHTML = modalRequest.responseText;
-        }
-    };
-    modalRequest.send();
+
+<script th:inline="javascript">
+    var boardId = /*[[ ${boardId} ]]*/ 0;
+    var sideId = /*[[ ${sideId} ]]*/ 0;
 </script>
+
+<!-- 카드 상세 페이지 모달창 가져오기 -->
+<!--<div id="modalContainer"></div>-->
+<!--<script>-->
+<!--    const modalContainer = document.getElementById('modalContainer');-->
+<!--    const modalRequest = new XMLHttpRequest();-->
+<!--    modalRequest.open('GET', `/boards/1/sides/1/cards/1`, true);-->
+<!--    modalRequest.onload = function () {-->
+<!--        if (modalRequest.status >= 200 && modalRequest.status < 400) {-->
+<!--            modalContainer.innerHTML = modalRequest.responseText;-->
+<!--        }-->
+<!--    };-->
+<!--    modalRequest.send();-->
+<!--</script>-->
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
@@ -1043,16 +1058,16 @@
 
     });
 
-    function getListPositions(){
+    function getListPositions() {
         let boardId = $('#this-board').val();
         fetch(`/boards/${boardId}/sides`)
-            .then(function(response){
+            .then(function (response) {
                 return response.json();
             })
-            .then(function (responseDto){
+            .then(function (responseDto) {
                 $('#select-position').empty();
-                let positionNumber=1;
-                let positionIdx =  0;
+                let positionNumber = 1;
+                let positionIdx = 0;
                 responseDto.forEach(function (list) {
                     let temp_html = `<option value="${positionIdx}">${positionNumber}</option>`;
                     $('#select-position').append(temp_html);
@@ -1214,18 +1229,18 @@
             });
     }
 
-    function moveList(){
+    function moveList() {
         let sideId = document.getElementById('change-list-position').value;
         let boardId = $('#this-board').val();
         let position = $('#select-position').val();
-        console.log("boardId : "+boardId+", sideId :"+sideId)
-        let requestDto =  {
-            "selectBoardId" :boardId,
-            "selectIndex":position
+        console.log("boardId : " + boardId + ", sideId :" + sideId)
+        let requestDto = {
+            "selectBoardId": boardId,
+            "selectIndex": position
         }
         fetch(`/boards/${boardId}/sides/${sideId}/order`, {
             method: "PUT",
-            headers : {
+            headers: {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify(requestDto)
@@ -1239,12 +1254,13 @@
                 console.error("위치 변경 실패", error);
             });
     }
+
     function editList() {
         let name = $('#edit-list-name').val();
         let boardId = $('#this-board').val();
         let sideId = document.getElementById('change-list-name').value;
 
-        if(name==""){
+        if (name == "") {
             alert("변경할 이름을 입력해주세요.");
             return;
         }

@@ -2,6 +2,7 @@ package com.sparta.hotsixproject.card.dto;
 
 import com.sparta.hotsixproject.attachment.dto.AttachmentResponseDto;
 import com.sparta.hotsixproject.card.entity.Card;
+import com.sparta.hotsixproject.checklist.dto.ChecklistResponseDto;
 import com.sparta.hotsixproject.comment.dto.CommentResponseDto;
 import com.sparta.hotsixproject.label.dto.LabelResponseDto;
 import com.sparta.hotsixproject.user.dto.UserInfoResponseDto;
@@ -18,11 +19,13 @@ public class CardResponseDto {
     private String color;
     private int position;
     private LocalDateTime due;
-    private boolean overdue;
+    private Boolean overdue;
     private List<UserInfoResponseDto> userList;
     private List<LabelResponseDto> labelList;
     private List<AttachmentResponseDto> attachmentList;
     private List<CommentResponseDto> commentList;
+    private List<ChecklistResponseDto> checklistList;
+    private String sideName;
 
     public CardResponseDto(Card card) {
         this.cardId = card.getId();
@@ -36,5 +39,7 @@ public class CardResponseDto {
         this.labelList = card.getCardLabelList().stream().map((cardLabel) -> new LabelResponseDto(cardLabel.getLabel())).toList();
         this.attachmentList = card.getAttachmentList().stream().map(AttachmentResponseDto::new).toList();
         this.commentList = card.getCommentList().stream().map(CommentResponseDto::new).toList();
+        this.checklistList = card.getChecklistList().stream().map(ChecklistResponseDto::new).toList();
+        this.sideName = card.getSide().getName();
     }
 }
