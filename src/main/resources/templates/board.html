@@ -615,7 +615,7 @@
                                     </li>
                                 </ul>
 
-                                <!--사이드 이름 수정 모달창-->
+                                <!--사이드 이름 수정 모달창-->`
                                 <div class="modal fade" id="side-name" tabindex="-1" aria-labelledby="exampleModalLabel"
                                      aria-hidden="true">
                                     <div class="modal-dialog">
@@ -653,20 +653,19 @@
                                                         aria-label="Close"></button>
                                             </div>
                                             <div class="modal-body">
-                                                <div>
-                                                    <h6>Board</h6>
-                                                    <select class="form-select" aria-label="Default select example">
-                                                        <option selected>board title</option>
-                                                        <option value="1">board title</option>
-                                                        <option value="2">another board</option>
-                                                    </select>
-                                                </div>
+<!--                                                <div>-->
+<!--                                                    <h6>Board</h6>-->
+<!--                                                    <select class="form-select" aria-label="Default select example">-->
+<!--                                                        <option selected>board title</option>-->
+<!--                                                        <option value="1">board title</option>-->
+<!--                                                        <option value="2">another board</option>-->
+<!--                                                    </select>-->
+<!--                                                </div>-->
 
                                                 <div style="margin-top: 10px">
                                                     <h6>Position</h6>
-                                                    <select class="form-select" aria-label="Default select example">
-                                                        <option selected>2</option>
-                                                        <option value="1">1</option>
+                                                    <select class="form-select" aria-label="Default select example" id="select-position">
+                                                        <option value="1024">1</option>
                                                         <option value="2">2(Current)</option>
                                                         <option value="3">3</option>
                                                     </select>
@@ -676,7 +675,7 @@
                                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                                                     Close
                                                 </button>
-                                                <button type="button" class="btn btn-primary">Move</button>
+                                                <button type="button" class="btn btn-primary" onclick="moveList()">Move</button>
                                             </div>
                                         </div>
                                     </div>
@@ -830,7 +829,8 @@
         getBoards();
         //보드 멤버들 불러오기
         getBoardMembers();
-
+        //컬럼 위치정보 불러오기
+        getListPositions();
         // 라벨 배경색에 따라 글씨 색상을 선택하는 함수 추가
         applyTextColorToLabels();
         const auth = getToken();
@@ -991,12 +991,27 @@
         },
 
     });
-    // 보드 조회 이벤트 리스너 추가
-    // document.addEventListener("DOMContentLoaded", function () {
-    //     // "Boards" 링크 클릭 시
-    //     const boardsLink = document.getElementById("board-user-content");
-    //     boardsLink.addEventListener("click", getUserInfo);
-    // });
+
+    function getListPositions(){
+        let boardId = $('#this-board').val();
+        fetch(`/boards/${boardId}/sides`)
+            .then(function(response){
+                return response.json();
+            })
+            .then(function (responseDto){
+                $('#select-position').empty();
+                let positionNumber=1;
+                let positionIdx =  0;
+                responseDto.forEach(function (list) {
+                    let temp_html = `<option value="${positionIdx}">${positionNumber}</option>`;
+                    $('#select-position').append(temp_html);
+                    positionNumber++;
+                    positionIdx++;
+
+                });
+            });
+    }
+
     function getUserInfo(clicked) {
         let userId = clicked.getAttribute("data-user-id");
         console.log(userId);
@@ -1148,6 +1163,31 @@
             });
     }
 
+    function moveList(){
+        let sideId = document.getElementById('change-list-position').value;
+        let boardId = $('#this-board').val();
+        let position = $('#select-position').val();
+        console.log("boardId : "+boardId+", sideId :"+sideId)
+        let requestDto =  {
+            "selectBoardId" :boardId,
+            "selectIndex":position
+        }
+        fetch(`/boards/${boardId}/sides/${sideId}/order`, {
+            method: "PUT",
+            headers : {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(requestDto)
+        })
+            .then(function (response) {
+                if (response.ok) {
+                    window.location.href = "/boards/" + boardId;
+                }
+            })
+            .catch(function (error) {
+                console.error("위치 변경 실패", error);
+            });
+    }
     function editList() {
         let name = $('#edit-list-name').val();
         let boardId = $('#this-board').val();
