@@ -66,7 +66,6 @@ public class BoardController {
         return "board";
     }
     @ResponseBody
-
     @GetMapping("/boards/{boardId}/word")
     @Operation(summary = "보드에서 카드리스트 검색", description = "입력한 키워드로 카드 리스트를 조회합니다.")
     public List<CardResponseDto> searchCards(
@@ -76,6 +75,7 @@ public class BoardController {
         return boardService.searchCards(boardId, keyword, userDetails.getUser());
     }
 
+    @ResponseBody
     @PostMapping("/boards")
     @Operation(summary = "보드 생성", description = "보드를 생성하고, 유저 정보에 생성된 보드를 추가합니다.")
     public ResponseEntity<ApiResponseDto> createBoard(
