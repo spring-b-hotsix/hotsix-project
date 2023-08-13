@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-bs-theme="auto">
+<html lang="en" data-bs-theme="auto" xmlns:th="http://www.thymeleaf.org">
 <head>
     <!--    <script src="../assets/js/color-modes.js"></script>-->
 
@@ -8,7 +8,10 @@
     <meta name="description" content="">
     <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
     <meta name="generator" content="Hugo 0.115.4">
-    <title>Hotsix-Board</title>
+    <title>Hotsix::Board</title>
+
+    <!--  jquery  -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <link rel="canonical" href="https://getbootstrap.com/docs/5.3/examples/navbar-fixed/">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
@@ -195,7 +198,8 @@
     <nav class="navbar bg-body-tertiary" aria-label="Light offcanvas navbar">
         <div class="container-fluid">
             <!--보드 이름-->
-            <h3 class="navbar-brand" href="#" style="margin-right: auto; margin-left: 10px"><b>Board Title</b></h3>
+            <h3 class="navbar-brand" href="#" style="margin-right: auto; margin-left: 10px"><b th:text="${board.name}">Board
+                Title</b></h3>
 
             <!--보드 참여자-->
             <div class="justify-content-end account-padding d-flex">
@@ -605,32 +609,11 @@
 
                     <!--리스트(사이드) 내 카드-->
                     <div class="list-group-size">
-                        <a href="#" class="list-group-item list-group-item-action d-flex gap-2 py-2"
-                           data-bs-toggle="modal"
-                           data-bs-target="#cardDetails" aria-current="true">
-                            <div class="d-flex flex-column">
-                                <h6 class="mb-0">Label</h6>
-                                <p class="mb-0 opacity-75">title</p>
-                                <small class="opacity-50 text-nowrap">details</small>
-                            </div>
-                        </a>
-                        <a href="#" class="list-group-item list-group-item-action d-flex gap-2 py-2"
-                           data-bs-toggle="modal"
-                           data-bs-target="#cardDetails" aria-current="true">
-                            <div class="d-flex flex-column">
-                                <h6 class="mb-0">Label</h6>
-                                <p class="mb-0 opacity-75">title</p>
-                                <small class="opacity-50 text-nowrap">details</small>
-                            </div>
-                        </a>
-                        <a href="#" class="list-group-item list-group-item-action d-flex gap-2 py-2"
-                           data-bs-toggle="modal"
-                           data-bs-target="#cardDetails" aria-current="true">
-                            <div class="d-flex flex-column">
-                                <h6 class="mb-0">Label</h6>
-                                <p class="mb-0 opacity-75">title</p>
-                                <small class="opacity-50 text-nowrap">details</small>
-                            </div>
+                        <a href="#" class="list-group-item list-group-item-action d-flex flex-column gap-2 py-2"
+                             data-bs-toggle="modal" data-bs-target="#cardDetails" aria-current="true">
+                            <h6 class="mb-0">Label</h6>
+                            <p class="mb-0 opacity-75">title</p>
+                            <small class="opacity-50 text-nowrap">details</small>
                         </a>
                     </div>
 
@@ -705,12 +688,17 @@
     </div>
 </main>
 
+<script th:inline="javascript">
+    var boardId = /*[[ ${boardId} ]]*/ 0;
+    var sideId = /*[[ ${sideId} ]]*/ 0;
+</script>
+
 <!-- 카드 상세 페이지 모달창 가져오기 -->
 <div id="modalContainer"></div>
 <script>
     const modalContainer = document.getElementById('modalContainer');
     const modalRequest = new XMLHttpRequest();
-    modalRequest.open('GET', 'card.html', true);
+    modalRequest.open('GET', `/boards/1/sides/1/cards/1`, true);
     modalRequest.onload = function () {
         if (modalRequest.status >= 200 && modalRequest.status < 400) {
             modalContainer.innerHTML = modalRequest.responseText;

@@ -14,12 +14,14 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@RestController
+@Controller
 @Tag(name = "보드 관련 API", description = "보드 관련 API 입니다.")
 public class BoardController {
 
@@ -50,11 +52,13 @@ public class BoardController {
 
     @GetMapping("/boards/{boardId}")
     @Operation(summary = "보드 1개 조회", description = "선택한 보드를 조회합니다.")
-    public ResponseEntity<BoardResponseDto> getBoard(
+    public String getBoard(
             @Parameter(name = "boardId", description = "조회할 board의 id", in = ParameterIn.PATH) @PathVariable Long boardId,
-            @AuthenticationPrincipal UserDetailsImpl userDetails
+            @AuthenticationPrincipal UserDetailsImpl userDetails, Model model
     ) {
-        return ResponseEntity.status(HttpStatus.OK).body(boardService.getBoard(boardId, userDetails.getUser()));
+        BoardResponseDto board = boardService.getBoard(boardId, userDetails.getUser());
+        model.addAttribute("board", board);
+        return "board";
     }
 
     @PostMapping("/boards")
