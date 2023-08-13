@@ -20,7 +20,7 @@ public class BoardUser {
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "boared_id",nullable = false)
+    @JoinColumn(name = "board_id",nullable = false)
     private Board board;
 
     public BoardUser(User user, Board board) {

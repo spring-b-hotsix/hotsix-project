@@ -4,17 +4,21 @@ import com.sparta.hotsixproject.board.dto.BoardRequestDto;
 import com.sparta.hotsixproject.board.dto.BoardResponseDto;
 import com.sparta.hotsixproject.board.dto.MemberResponseDto;
 import com.sparta.hotsixproject.board.entity.Board;
-import com.sparta.hotsixproject.boarduser.entity.BoardUser;
 import com.sparta.hotsixproject.board.repository.BoardRepository;
+import com.sparta.hotsixproject.boarduser.entity.BoardUser;
 import com.sparta.hotsixproject.boarduser.repository.BoardUserRepository;
+import com.sparta.hotsixproject.card.dto.CardResponseDto;
+import com.sparta.hotsixproject.card.repository.CardRepository;
 import com.sparta.hotsixproject.common.advice.ApiResponseDto;
 import com.sparta.hotsixproject.user.entity.User;
 import com.sparta.hotsixproject.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.awt.*;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 
@@ -25,6 +29,7 @@ public class BoardServiceImpl implements BoardService{
     private final BoardRepository boardRepository;
     private final UserRepository userRepository;
     private final BoardUserRepository boardUserRepository;
+    private final CardRepository cardRepository;
 
     //메인화면 - 로그인한 사용자가 생성한 보드 불러오는 메서드
     @Override
@@ -60,6 +65,15 @@ public class BoardServiceImpl implements BoardService{
         return new BoardResponseDto(findBoard(id));
     }
 
+    @Override
+    public List<CardResponseDto> searchCards(Long boardId, String keyword,User user) {
+        User loginedUser = findUser(user.getId());
+        Board targetBoard = findBoard(boardId);
+        //보드에 속한 유저인지 확인
+        checkBoardMember(loginedUser,targetBoard);
+
+        return cardRepository.findBySide_Board_IdAndNameContainingOrDescriptionContaining(boardId,keyword,keyword).stream().map(CardResponseDto::new).toList();
+    }
     //새 보드 생성 메서드
     @Override
     public ApiResponseDto createBoard(BoardRequestDto requestDto, User user) {
@@ -134,6 +148,28 @@ public class BoardServiceImpl implements BoardService{
         return boardUserRepository.findByBoard_Id(boardId).stream().map(MemberResponseDto::new).toList();
     }
 
+    @Override
+    @Transactional
+    public ApiResponseDto deleteMember(Long boardId, Long memberId, User user){
+        User loginedUser = findUser(user.getId());
+        Board targetBoard = findBoard(boardId);
+        User targetUser = findUser(memberId);
+
+        //보드를 생성하지 않은 유저가 삭제 시도할 때
+        if(!targetBoard.getUser().equals(loginedUser)) {
+            throw new IllegalArgumentException("보드 작성자만 유저를 제외시킬 수 있습니다.");
+        }
+
+        BoardUser boardUser = boardUserRepository.findByUserAndBoard(targetUser, targetBoard).orElse(null);
+        if(boardUser==null){
+            throw new IllegalArgumentException("보드에 참여한 유저가 아닙니다.");
+        }
+        if(Objects.equals(loginedUser, targetUser)){
+            throw new IllegalArgumentException("자기자신을 보드에서 제외시킬 수 없습니다.");
+        }
+        boardUserRepository.delete(boardUser);
+        return new ApiResponseDto(targetUser.getNickname()+" 유저는 보드에서 제외되었습니다.",200);
+    }
 
     // --private methods--
 

@@ -5,6 +5,8 @@ import com.sparta.hotsixproject.card.dto.CardResponseDto;
 import com.sparta.hotsixproject.card.dto.DueRequestDto;
 import com.sparta.hotsixproject.card.dto.MoveRequestDto;
 import com.sparta.hotsixproject.card.entity.Card;
+import com.sparta.hotsixproject.card.event.CardUpdateEvent;
+import com.sparta.hotsixproject.card.event.EventPublisher;
 import com.sparta.hotsixproject.card.repository.CardRepository;
 import com.sparta.hotsixproject.carduser.entity.CardUser;
 import com.sparta.hotsixproject.carduser.repository.CardUserRepository;
@@ -15,6 +17,7 @@ import com.sparta.hotsixproject.side.repository.SideRepository;
 import com.sparta.hotsixproject.user.entity.User;
 import com.sparta.hotsixproject.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -33,6 +36,7 @@ public class CardService {
     private final BoardUserRepository boardUserRepository;
     private final CardUserRepository cardUserRepository;
     private final UserRepository userRepository;
+    private final EventPublisher eventPublisher;
 
     // 카드 생성
     @Transactional
@@ -65,27 +69,48 @@ public class CardService {
 
     // 카드 이름 수정
     @Transactional
-    public ResponseEntity<CardResponseDto> updateName(Long boardId, Long sideId, Long cardId, String name) {
+    public ResponseEntity<CardResponseDto> updateName(Long boardId, Long sideId, Long cardId, String name, User editor) {
         Card card = cardRepository.findBySide_Board_IdAndSide_IdAndId(boardId, sideId, cardId);
+        String oldName = card.getName();
         card.updateName(name);
+
+        // 비동기적으로 이벤트 발생
+        eventPublisher.publishCardUpdatedEvent(editor, card, oldName, name,
+                card.getDescription(), card.getDescription(),
+                card.getColor(), card.getColor());
+
         CardResponseDto cardResponseDto = new CardResponseDto(card);
         return new ResponseEntity<>(cardResponseDto, HttpStatus.OK);
     }
 
     // 카드 설명 수정
     @Transactional
-    public ResponseEntity<CardResponseDto> updateDesc(Long boardId, Long sideId, Long cardId, String description) {
+    public ResponseEntity<CardResponseDto> updateDesc(Long boardId, Long sideId, Long cardId, String description, User editor) {
         Card card = cardRepository.findBySide_Board_IdAndSide_IdAndId(boardId, sideId, cardId);
+        String oldDescription = card.getDescription();
         card.updateDesc(description);
+
+        // 비동기적으로 이벤트 발생, dto 내려 준 이후에 listener로 메소드 시작
+        eventPublisher.publishCardUpdatedEvent(editor, card, card.getName(), card.getName(),
+                oldDescription, description,
+                card.getColor(), card.getColor());
+        
         CardResponseDto cardResponseDto = new CardResponseDto(card);
         return new ResponseEntity<>(cardResponseDto, HttpStatus.OK);
     }
 
     // 카드 색상 수정
     @Transactional
-    public ResponseEntity<CardResponseDto> updateColor(Long boardId, Long sideId, Long cardId, String color) {
+    public ResponseEntity<CardResponseDto> updateColor(Long boardId, Long sideId, Long cardId, String color, User editor) {
         Card card = cardRepository.findBySide_Board_IdAndSide_IdAndId(boardId, sideId, cardId);
+        String oldColor = card.getColor();
         card.updateColor(color);
+
+        // 비동기적으로 이벤트 발생
+        eventPublisher.publishCardUpdatedEvent(editor, card, card.getName(), card.getName(),
+                card.getDescription(), card.getDescription(),
+                card.getColor(), color);
+
         CardResponseDto cardResponseDto = new CardResponseDto(card);
         return new ResponseEntity<>(cardResponseDto, HttpStatus.OK);
     }

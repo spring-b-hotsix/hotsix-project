@@ -74,9 +74,10 @@ public class CardController {
             @Parameter(name = "boardId", description = "선택한 카드가 위치한 board의 id", in = ParameterIn.PATH) @PathVariable Long boardId,
             @Parameter(name = "sideId", description = "선택한 카드가 위치한 side의 id", in = ParameterIn.PATH) @PathVariable Long sideId,
             @Parameter(name = "cardId", description = "이름을 수정할 card의 id", in = ParameterIn.PATH) @PathVariable Long cardId,
-            @Parameter(name = "requestDto", description = "카드 이름 수정 정보") @RequestBody NameRequestDto requestDto
+            @Parameter(name = "requestDto", description = "카드 이름 수정 정보") @RequestBody NameRequestDto requestDto,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        return cardService.updateName(boardId, sideId, cardId, requestDto.getName());
+        return cardService.updateName(boardId, sideId, cardId, requestDto.getName(), userDetails.getUser());
     }
 
     @PutMapping("/{boardId}/sides/{sideId}/cards/{cardId}/desc")
@@ -85,9 +86,10 @@ public class CardController {
             @Parameter(name = "boardId", description = "선택한 카드가 위치한 board의 id", in = ParameterIn.PATH) @PathVariable Long boardId,
             @Parameter(name = "sideId", description = "선택한 카드가 위치한 side의 id", in = ParameterIn.PATH) @PathVariable Long sideId,
             @Parameter(name = "cardId", description = "설명을 수정할 card의 id", in = ParameterIn.PATH) @PathVariable Long cardId,
-            @Parameter(name = "requestDto", description = "카드 설명 수정 정보") @RequestBody DescRequestDto requestDto
+            @Parameter(name = "requestDto", description = "카드 설명 수정 정보") @RequestBody DescRequestDto requestDto,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        return cardService.updateDesc(boardId, sideId, cardId, requestDto.getDescription());
+        return cardService.updateDesc(boardId, sideId, cardId, requestDto.getDescription(), userDetails.getUser());
     }
 
     @PutMapping("/{boardId}/sides/{sideId}/cards/{cardId}/color")
@@ -96,9 +98,10 @@ public class CardController {
             @Parameter(name = "boardId", description = "선택한 카드가 위치한 board의 id", in = ParameterIn.PATH) @PathVariable Long boardId,
             @Parameter(name = "sideId", description = "선택한 카드가 위치한 side의 id", in = ParameterIn.PATH) @PathVariable Long sideId,
             @Parameter(name = "cardId", description = "색상을 수정할 card의 id", in = ParameterIn.PATH) @PathVariable Long cardId,
-            @Parameter(name = "requestDto", description = "카드 색상 수정 정보") @RequestBody ColorRequestDto requestDto
+            @Parameter(name = "requestDto", description = "카드 색상 수정 정보") @RequestBody ColorRequestDto requestDto,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        return cardService.updateColor(boardId, sideId, cardId, requestDto.getColor());
+        return cardService.updateColor(boardId, sideId, cardId, requestDto.getColor(), userDetails.getUser());
     }
 
     @PutMapping("/{boardId}/sides/{sideId}/cards/{cardId}/due")
