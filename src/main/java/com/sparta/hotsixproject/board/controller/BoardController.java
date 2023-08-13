@@ -4,13 +4,10 @@ import com.sparta.hotsixproject.board.dto.BoardRequestDto;
 import com.sparta.hotsixproject.board.dto.BoardResponseDto;
 import com.sparta.hotsixproject.board.dto.InviteBoardRequestDto;
 import com.sparta.hotsixproject.board.dto.MemberResponseDto;
-import com.sparta.hotsixproject.board.entity.Board;
 import com.sparta.hotsixproject.board.service.BoardService;
 import com.sparta.hotsixproject.card.dto.CardResponseDto;
 import com.sparta.hotsixproject.common.advice.ApiResponseDto;
 import com.sparta.hotsixproject.common.security.UserDetailsImpl;
-import com.sparta.hotsixproject.side.dto.SideResponseDto;
-import com.sparta.hotsixproject.side.service.SideCustomService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -69,6 +66,16 @@ public class BoardController {
         return "board";
     }
     @ResponseBody
+
+    @GetMapping("/boards/{boardId}/word")
+    @Operation(summary = "보드에서 카드리스트 검색", description = "입력한 키워드로 카드 리스트를 조회합니다.")
+    public List<CardResponseDto> searchCards(
+            @Parameter(name = "boardId", description = "조회할 board의 id", in = ParameterIn.PATH) @PathVariable Long boardId,
+            @Parameter(name = "keyword", description = "검색할 keyword", in = ParameterIn.QUERY) String keyword,
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return boardService.searchCards(boardId, keyword, userDetails.getUser());
+    }
+
     @PostMapping("/boards")
     @Operation(summary = "보드 생성", description = "보드를 생성하고, 유저 정보에 생성된 보드를 추가합니다.")
     public ResponseEntity<ApiResponseDto> createBoard(

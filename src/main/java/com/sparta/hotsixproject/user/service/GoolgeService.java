@@ -65,7 +65,7 @@ public class GoolgeService {
         params.put("code", code);
         params.put("client_id", GOOGLE_CLIENT_ID);
         params.put("client_secret", GOOGLE_CLIENT_SECRET);
-        params.put("redirect_uri", "http://localhost:8080/users/login/google/callback");
+        params.put("redirect_uri", "http://ec2-3-35-131-194.ap-northeast-2.compute.amazonaws.com:8080/users/login/google/callback");
         params.put("grant_type", grantType);
 
 

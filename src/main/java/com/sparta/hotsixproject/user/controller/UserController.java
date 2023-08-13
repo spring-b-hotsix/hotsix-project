@@ -5,6 +5,7 @@ import com.sparta.hotsixproject.common.advice.ApiResponseDto;
 import com.sparta.hotsixproject.common.jwt.JwtUtil;
 import com.sparta.hotsixproject.common.security.UserDetailsImpl;
 import com.sparta.hotsixproject.user.dto.*;
+import com.sparta.hotsixproject.user.entity.User;
 import com.sparta.hotsixproject.user.service.GoolgeService;
 import com.sparta.hotsixproject.user.service.KakaoService;
 import com.sparta.hotsixproject.user.service.UserService;
@@ -21,10 +22,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.List;
@@ -53,6 +57,13 @@ public class UserController {
     @GetMapping("/signup-page")
     public String signup() {
         return "signup";
+    }
+
+    @GetMapping("/profile")
+    public String UserProfile(@AuthenticationPrincipal UserDetailsImpl userDetails, Model model) {
+        User user = userDetails.getUser();
+        model.addAttribute("user", user);
+        return "profile";
     }
 
     @ResponseBody
@@ -102,6 +113,17 @@ public class UserController {
     ) {
         userService.updatePassword(userId, requestDto, userDetails.getUser());
         return ResponseEntity.ok().body(new ApiResponseDto("비밀번호 변경이 완료되었습니다.", HttpStatus.OK.value()));
+    }
+
+    @PutMapping("/{userId}/files")
+    @ResponseBody
+    @Operation(summary = "프로필 사진 업데이트", description = "선택한 사용자의 프로필 사진을 변경합니다.")
+    public ResponseEntity<ApiResponseDto> updateImage(
+            @Parameter(name = "userId", description = "사진을 변경할 user의 id", in = ParameterIn.PATH) @PathVariable Long userId,
+            @Parameter(description = "사진") @RequestParam MultipartFile file, @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) throws IOException {
+        userService.updateImage(userId, file, userDetails.getUser());
+        return new ResponseEntity<>(new ApiResponseDto("프로필 사진이 변경되었습니다.", HttpStatus.OK.value()), HttpStatus.OK);
     }
 
     @DeleteMapping("/{userId}/sign-out")
