@@ -7,8 +7,10 @@ import com.sparta.hotsixproject.board.repository.BoardRepository;
 import com.sparta.hotsixproject.boarduser.entity.BoardUser;
 import com.sparta.hotsixproject.boarduser.repository.BoardUserRepository;
 import com.sparta.hotsixproject.common.security.UserDetailsImpl;
+import com.sparta.hotsixproject.user.dto.LoginRequestDto;
 import com.sparta.hotsixproject.user.entity.User;
 import com.sparta.hotsixproject.user.repository.UserRepository;
+import com.sparta.hotsixproject.user.service.UserService;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -50,6 +53,10 @@ class BoardServiceTest {
     @LocalServerPort
     private int port;
     @Autowired
+    PasswordEncoder passwordEncoder;
+    @Autowired
+    private UserService userService;
+    @Autowired
     private BoardServiceImpl boardService;
     @Autowired
     private BoardRepository boardRepository;
@@ -74,12 +81,17 @@ class BoardServiceTest {
     @WithMockUser(roles = "USER")
     void createBoard() throws Exception {
         // given
-        String url = "http://localhost:" + port + "/boards";
-        // Set the necessary userDetails object in UserDetailsImpl
-        User user = userRepository.findByEmail("email1@email.com").orElse(null);
+        String nickname = "test1";
+        String email = "test1@email.com";
+        String encodePw = passwordEncoder.encode("Password@1234");
+        LoginRequestDto signupDto = new LoginRequestDto(nickname, encodePw, email);
+
+        userService.signup(signupDto);
+        User user = userRepository.findByEmail(email).orElse(null);
         UserDetailsImpl userDetails = new UserDetailsImpl(user);
 
         // when
+        String url = "http://localhost:" + port + "/boards";
         BoardRequestDto requestDto = new BoardRequestDto("board1", "desc1", 255, 255, 255);
         mvc.perform(post(url)
                         .contentType(MediaType.APPLICATION_JSON_UTF8)
@@ -97,7 +109,13 @@ class BoardServiceTest {
     @DisplayName("보드에 사용자 초대 성공")
     void inviteBoardSuccess() throws Exception {
         // given
-        User user = userRepository.findByEmail("email1@email.com").orElse(null);
+        String nickname = "test2";
+        String email = "test2@email.com";
+        String encodePw = passwordEncoder.encode("Password@1234");
+        LoginRequestDto signupDto = new LoginRequestDto(nickname, encodePw, email);
+
+        userService.signup(signupDto);
+        User user = userRepository.findByEmail(email).orElse(null);
         UserDetailsImpl userDetails = new UserDetailsImpl(user);
         // 보드 생성
         Board board = createBoard(userDetails.getUser());
@@ -123,9 +141,22 @@ class BoardServiceTest {
     @DisplayName("보드에 사용자 초대 실패")
     void inviteBoardFail() throws IllegalArgumentException {
         // given
-        User user1 = userRepository.findByEmail("email1@email.com").orElse(null);
+        String nickname = "test3";
+        String email = "test3@email.com";
+        String encodePw = passwordEncoder.encode("Password@1234");
+        LoginRequestDto signupDto = new LoginRequestDto(nickname, encodePw, email);
+
+        userService.signup(signupDto);
+        User user1 = userRepository.findByEmail(email).orElse(null);
         UserDetailsImpl userDetails = new UserDetailsImpl(user1);
-        User user2 = userRepository.findByEmail("email2@email.com").orElse(null);
+
+        nickname = "test4";
+        email = "test4@email.com";
+        encodePw = passwordEncoder.encode("Password@1234");
+        signupDto = new LoginRequestDto(nickname, encodePw, email);
+
+        userService.signup(signupDto);
+        User user2 = userRepository.findByEmail(email).orElse(null);
         Board board1 = createBoard(user1);
 
         // when
