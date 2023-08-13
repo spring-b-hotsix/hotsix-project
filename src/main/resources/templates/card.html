@@ -240,11 +240,11 @@
             </div>
 
             <!-- 마감기한-->
-            <div id="card-due">
+            <div id="card-due" th:if="${card.body.due}">
                 <h6>Due date</h6>
                 <div class="d-flex">
-                    <button type="button" class="btn btn-light" style="display: flex;"
-                            th:text="${card.body.due}">
+                    <button id="showDueDate" type="button" class="btn btn-light" style="display: flex;"
+                            th:text="${card.body.due}" onclick="toggleDatePicker()">
                     </button>
                     <div th:if="${card.body.overdue}" style="background-color: red; color: white; margin-left: 10px">
                         Overdue
@@ -741,10 +741,42 @@
                 </button>
                 <div id="datePickerContainer" style="display: none;">
                     <input type="datetime-local" id="dateTimePicker" class="form-control" style="margin-top: 5px">
+                    <div class="d-flex" style="margin-left: 90px; margin-top: 10px; margin-bottom: 10px;">
+                    <button id="deleteDue-btn" class="btn btn-danger mt-2" data-bs-toggle="modal"
+                            data-bs-target="#due-delete-modal"
+                            style="margin-right: 15px"
+                            >Delete
+                    </button>
                     <button id="selectDateTime" class="btn btn-primary mt-2"
-                            style="margin-left: 180px; margin-top: 10px; margin-bottom: 10px"
                             onclick="selectDateTime(boardId, sideId, cardId)">Select
                     </button>
+                    </div>
+                </div>
+                <!--마감기한 삭제 확인 모달-->
+                <div class="modal fade" id="due-delete-modal" tabindex="-1"
+                     aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5">Delete</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <b style="margin-right: 10px"></b>
+                                마감기한을 삭제하시겠습니까?
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-danger"
+                                        onclick="deleteDue(boardId, sideId, cardId)">
+                                    Delete
+                                </button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                    Close
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 

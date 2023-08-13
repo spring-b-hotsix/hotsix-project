@@ -493,3 +493,28 @@ function deleteComment(boardId, sideId, cardId, commentId) {
         });
 
 }
+
+// 마감기한 삭제
+function deleteDue(boardId, sideId, cardId) {
+    fetch(`/boards/${boardId}/sides/${sideId}/cards/${cardId}/due-removal`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json"
+        }
+    })
+        .then(function (response) {
+            return response.json();
+        })
+
+        .then(function (responseDto) {
+            alert("마감기한이 삭제되었습니다");
+
+            // 모달 내용을 업데이트한 후 창을 새로고침
+            location.reload();
+            // toggleName('input')
+
+            // // 모달 내용을 다시 불러와서 업데이트
+            // refreshModalContent();
+        });
+
+}
