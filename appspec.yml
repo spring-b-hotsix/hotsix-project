@@ -1,4 +1,4 @@
-# code Deploy 설정
+# code Deploy 환경설정
 version: 0.0
 os: linux
 
