@@ -67,10 +67,10 @@ public class UserController {
     }
 
     @ResponseBody
-    @GetMapping("/user-info/{userId}")
+    @GetMapping("/user-info")
     @Operation(summary = "사용자 정보 조회", description = "선택한 사용자의 정보를 가져옵니다.")
-    public UserInfoDto getUserInfo(@PathVariable long userId) {
-        return userService.getUserInfo(userId);
+    public UserInfoResponseDto getUserInfo(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return userService.getUserInfo(userDetails.getUser());
     }
 
     @PostMapping("/signup")
@@ -92,48 +92,44 @@ public class UserController {
     }
 
     @ResponseBody
-    @PutMapping("/{userId}/nickname")
+    @PutMapping("/nickname")
     @Operation(summary = "닉네임 수정", description = "선택한 사용자의 닉네임을 변경합니다.")
     public ResponseEntity<ApiResponseDto> updateNickname(
-            @Parameter(name = "userId", description = "닉네임을 변경할 user의 id", in = ParameterIn.PATH) @PathVariable Long userId,
             @Parameter(description = "변경할 닉네임 정보") @RequestBody UpdateNicknameRequestDto requestDto,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        userService.updateNicknmae(userId, requestDto, userDetails.getUser());
+        userService.updateNicknmae(requestDto, userDetails.getUser());
         return ResponseEntity.ok().body(new ApiResponseDto("닉네임 변경이 완료되었습니다.", HttpStatus.OK.value()));
     }
 
     @ResponseBody
-    @PutMapping("/{userId}/password")
+    @PutMapping("/password")
     @Operation(summary = "비밀번호 수정", description = "선택한 사용자의 비밀번호를 변경합니다.")
     public ResponseEntity<ApiResponseDto> updatePassword(
-            @Parameter(name = "userId", description = "비밀번호를 변경할 user의 id", in = ParameterIn.PATH) @PathVariable Long userId,
             @Parameter(description = "비밀번호 변경 시 요구되는 사용자의 정보 (password)") @RequestBody UpdatePasswordRequestDto requestDto,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        userService.updatePassword(userId, requestDto, userDetails.getUser());
+        userService.updatePassword(requestDto, userDetails.getUser());
         return ResponseEntity.ok().body(new ApiResponseDto("비밀번호 변경이 완료되었습니다.", HttpStatus.OK.value()));
     }
 
-    @PutMapping("/{userId}/files")
+    @PutMapping("/files")
     @ResponseBody
     @Operation(summary = "프로필 사진 업데이트", description = "선택한 사용자의 프로필 사진을 변경합니다.")
     public ResponseEntity<ApiResponseDto> updateImage(
-            @Parameter(name = "userId", description = "사진을 변경할 user의 id", in = ParameterIn.PATH) @PathVariable Long userId,
             @Parameter(description = "사진") @RequestParam MultipartFile file, @AuthenticationPrincipal UserDetailsImpl userDetails
     ) throws IOException {
-        userService.updateImage(userId, file, userDetails.getUser());
+        userService.updateImage(file, userDetails.getUser());
         return new ResponseEntity<>(new ApiResponseDto("프로필 사진이 변경되었습니다.", HttpStatus.OK.value()), HttpStatus.OK);
     }
 
-    @DeleteMapping("/{userId}/sign-out")
+    @DeleteMapping("/sign-out")
     @Operation(summary = "사용자 탈퇴", description = "선택한 사용자를 탈퇴시킵니다. 현재는 사용자가 스스로 탈퇴할 때 사용합니다.")
     public ResponseEntity<ApiResponseDto> deleteUser(
-            @Parameter(name = "userId", description = "탈퇴할(탈퇴시킬) user의 id", in = ParameterIn.PATH) @PathVariable Long userId,
             @Parameter(description = "삭제 시 요구되는 사용자의 정보 (password)") @RequestBody DeleteUserRequestDto requestDto,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        userService.deleteUser(userId, requestDto, userDetails.getUser());
+        userService.deleteUser(requestDto, userDetails.getUser());
         return ResponseEntity.ok().body(new ApiResponseDto("유저가 탈퇴 되었습니다.", HttpStatus.OK.value()));
 
     }

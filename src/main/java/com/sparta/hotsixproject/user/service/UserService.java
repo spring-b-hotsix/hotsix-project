@@ -63,7 +63,8 @@ public class UserService {
         User newuser = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("회원정보가 없습니다."));
         String nickname = newuser.getNickname();
         String email = newuser.getEmail();
-        return new UserInfoDto(nickname,email);
+        String imageUrl= newuser.getImageUrl();
+        return new UserInfoDto(nickname,email,imageUrl);
     }
 
     //dev
@@ -74,9 +75,9 @@ public class UserService {
     }
 
     @Transactional
-    public void updateNicknmae(Long userId, UpdateNicknameRequestDto requestDto, User user) {
+    public void updateNicknmae(UpdateNicknameRequestDto requestDto, User user) {
 
-        User newuser = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("회원이 존재하지 않습니다"));
+        User newuser = userRepository.findById(user.getId()).orElseThrow(() -> new IllegalArgumentException("회원이 존재하지 않습니다"));
 
         if (!newuser.getNickname().equals(user.getNickname())) {
             throw new IllegalArgumentException("수정 권한이 없습니다.");
@@ -102,9 +103,9 @@ public class UserService {
 
     }
     @Transactional
-    public void updatePassword(Long userId, UpdatePasswordRequestDto requestDto, User user) {
+    public void updatePassword(UpdatePasswordRequestDto requestDto, User user) {
 
-        User newuser = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("회원이 존재하지 않습니다"));
+        User newuser = userRepository.findById(user.getId()).orElseThrow(() -> new IllegalArgumentException("회원이 존재하지 않습니다"));
 
         if (!newuser.getNickname().equals(user.getNickname())) {
             throw new IllegalArgumentException("수정 권한이 없습니다.");
@@ -122,17 +123,18 @@ public class UserService {
     }
 
     @Transactional
-    public void updateImage(Long userId, MultipartFile file, User user) throws IOException {
-        User dbUser = userRepository.findById(userId).get();
+    public void updateImage( MultipartFile file, User user) throws IOException {
+        User newuser = userRepository.findById(user.getId()).orElseThrow(() -> new IllegalArgumentException("회원이 존재하지 않습니다"));
         if (file != null) {
             String imageUrl = fileUploader.upload(file, "file");
-            dbUser.updateImage(imageUrl);
+            newuser.updateImage(imageUrl);
         }
     }
 
+
     @Transactional
-    public void deleteUser(Long userId, DeleteUserRequestDto requestDto, User user) {
-        User newuser = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("회원이 존재하지 않습니다"));
+    public void deleteUser(DeleteUserRequestDto requestDto, User user) {
+        User newuser = userRepository.findById(user.getId()).orElseThrow(() -> new IllegalArgumentException("회원이 존재하지 않습니다"));
 
         if (!newuser.getNickname().equals(user.getNickname())) {
             throw new IllegalArgumentException("권한이 없습니다.");

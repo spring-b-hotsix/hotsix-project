@@ -6,8 +6,10 @@ import lombok.Getter;
 public class UserInfoDto {
     private String nickname;
     private String email;
-    public UserInfoDto(String nickname, String email) {
+    private String imageUrl;
+    public UserInfoDto(String nickname, String email,String imageUrl) {
         this.nickname = nickname;
         this.email = email;
+        this.imageUrl=imageUrl;
     }
 }
