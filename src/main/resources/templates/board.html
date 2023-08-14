@@ -199,6 +199,7 @@
             margin-bottom: 5px; /* 다음 줄로 내려갈 때 간격 설정 */
             font-size: 14px;
         }
+
         #search-results {
             position: absolute;
             z-index: 999; /* 큰 값을 사용하여 다른 요소 위로 덮어지도록 설정 */
@@ -290,7 +291,7 @@
                          alt="mdo" width="32" height="32" class="rounded-circle">
                 </a>
                 <ul class="dropdown-menu text-small dropdown-menu-end">
-                    <li><a class="dropdown-item" href="#">Manage account</a></li>
+                    <li><a class="dropdown-item" href="/users/profile">Manage account</a></li>
                     <li><a class="dropdown-item" href="#">Cards</a></li>
                     <li>
                         <hr class="dropdown-divider">
@@ -1326,8 +1327,8 @@
                                        data-bs-toggle="modal"
                                        data-bs-target="#cardDetails" aria-current="true">
                                         <div class="d-flex flex-column">
-                                            <h6 class="mb-0">${detail}</h6>
-                                            <p class="mb-0 opacity-75">${title}</p>
+                                            <h6 class="mb-0">${title}</h6>
+                                            <p class="mb-0 opacity-75">${detail}</p>
                                             <small class="opacity-50 text-nowrap">${editorName}</small>`
                     $('#notification-list').append(temp_html);
                 });
@@ -1539,7 +1540,8 @@
                 responseDto.forEach(function (searchlist) {
                     let cardId = searchlist.cardId;
                     let name = searchlist.name;
-                    let temp_html = `<li class="search-result-item" href="/boards/${boardId}/cards/${cardId}" value="${cardId}">${name}</li>`;
+                    let sideId = searchlist.sideId;
+                    let temp_html = `<li class="search-result-item" onclick="window.location.href='/boards/${boardId}/sides/${sideId}/cards/${cardId}'" value="${cardId}">${name}</li>`;
                     $('#search-results-list').append(temp_html);
                 });
             });
