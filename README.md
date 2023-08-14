@@ -3,22 +3,25 @@
 
 ****
 
-## 프로젝트 결과물
+## 🎁 프로젝트 결과물
 
 #### 배포된 주소 링크
 http://ec2-3-38-181-21.ap-northeast-2.compute.amazonaws.com:8080/
 
 #### 시연영상 링크
-https://youtu.be/XYAlvqdgweY
+[Youtube | hotsix trello](https://youtu.be/XYAlvqdgweY)
+
+#### 발표 시 사용한 자료
+[Notion | hotsix](https://po5tato28.notion.site/6-99d80ea7178a439987d0e0e02294ba1e?pvs=4)
 
 ****
 
-## 개발 기간
+## 🚩 개발 기간
 2023.08.07. ~ 2023.08.14.
 
 ****
 
-## 기술 스택
+## 📚 기술 스택
 <img src="https://img.shields.io/badge/java-007396?style=for-the-badge&logo=OpenJDK&logoColor=white"><img src="https://img.shields.io/badge/spring-6DB33F?style=for-the-badge&logo=spring&logoColor=white"><img src="https://img.shields.io/badge/springboot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white"><img src="https://img.shields.io/badge/springsecurity-6DB33F?style=for-the-badge&logo=springsecurity&logoColor=white"><img src="https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&logo=mysql&logoColor=white"><img src="https://img.shields.io/badge/gradle-02303A?style=for-the-badge&logo=gradle&logoColor=white">
 <br>
 
@@ -35,14 +38,14 @@ https://youtu.be/XYAlvqdgweY
 
 ****
 
-## 역할 분담 -> 자세한 내용 개발 프로세스 참고
-* 서예린 - 사용자 기능 / 소셜로그인, 키워드 검색, 프론트
-* 조우진 - 보드 관리 기능 / 프론트
-* 최정은 - 컬럼 관리 기능 / 테스트 코드 및 더미 데이터, Swagger 적용
-* 최혁진 - 카드 관리 및 추가 기능 / CI/CD 파이프라인 구축 및 배포, 프로필 이미지, 알림 기능
-* 조해나 - 카드 상세 및 추가 기능 / 프론트
+## 🌵 역할 분담 -> 자세한 내용 개발 프로세스 참고
+* [서예린](https://github.com/yesrin) - 사용자 기능 / 소셜로그인, 키워드 검색, 프론트
+* [조우진](https://github.com/VVooJIN3) - 보드 관리 기능 / 프론트
+* [최정은](https://github.com/jungeun5-choi) - 컬럼 관리 기능 / 테스트 코드 및 더미 데이터, Swagger 적용
+* [최혁진](https://github.com/chj970702) - 카드 관리 및 추가 기능 / CI/CD 파이프라인 구축 및 배포, 프로필 이미지, 알림 기능
+* [조해나](https://github.com/HaenaCho01) - 카드 상세 및 추가 기능 / 프론트
 
-## 개발 프로세스
+## ⚙️ 개발 프로세스
 <details>
   <summary>
     자세히 보기
@@ -125,7 +128,7 @@ https://youtu.be/XYAlvqdgweY
 </details>
 
 ****
-## 설계
+## 🧩 설계
 
 ### 최종 설계
 
