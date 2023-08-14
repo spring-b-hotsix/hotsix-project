@@ -281,30 +281,7 @@
                     </ul>
                 </div>
             </div>
-            <script>
-                function searchCards() {
-                    // 검색 버튼 클릭 시
-                    let keyword = $('#search-input').val();
-                    console.log(keyword);
-                    let boardId = $('#this-board').val();
-                    fetch(`/boards/${boardId}/word?keyword=${keyword}`)
-                        .then(function (response) {
-                            return response.json();
-                        })
-                        .then(function (responseDto) {
-                            $('#search-results-list').empty();
-                            responseDto.forEach(function (searchlist) {
-                                let cardId = searchlist.cardId;
-                                let name = searchlist.name;
-                                let temp_html = `<li class="search-result-item" href="/boards/${boardId}/cards/${cardId}" value="${cardId}">${name}</li>`;
-                                $('#search-results-list').append(temp_html);
-                            });
-                        });
-                    // 검색 결과 표시 영역을 보이게 설정
-                    document.getElementById("search-results").style.display = "block";
-                }
 
-            </script>
             <!--            계정-->
             <div class="dropdown text-end account-padding">
                 <a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle"
@@ -336,28 +313,14 @@
 
             <!--보드 참여자-->
             <div class="justify-content-end account-padding d-flex" id="board-user-list">
-                <!--                <a href="#" class="d-block link-body-emphasis text-decoration-none" data-bs-toggle="modal"-->
-                <!--                   data-bs-target="#user-info" aria-expanded="false">-->
-                <!--                    <img src="https://vignette.wikia.nocookie.net/the-sun-vanished/images/5/5d/Twitter-avi-gender-balanced-figure.png/revision/latest?cb=20180713020754"-->
-                <!--                         alt="mdo" width="32" height="32" class="rounded-circle">-->
-                <!--                </a>-->
-                <!--                <a href="#" class="d-block link-body-emphasis text-decoration-none" data-bs-toggle="modal"-->
-                <!--                   data-bs-target="#user-info" aria-expanded="false">-->
-                <!--                    <img src="https://vignette.wikia.nocookie.net/the-sun-vanished/images/5/5d/Twitter-avi-gender-balanced-figure.png/revision/latest?cb=20180713020754"-->
-                <!--                         alt="mdo" width="32" height="32" class="rounded-circle">-->
-                <!--                </a>-->
-                <!--                <a href="#" class="d-block link-body-emphasis text-decoration-none" data-bs-toggle="modal"-->
-                <!--                   data-bs-target="#user-info" aria-expanded="false">-->
-                <!--                    <img src="https://vignette.wikia.nocookie.net/the-sun-vanished/images/5/5d/Twitter-avi-gender-balanced-figure.png/revision/latest?cb=20180713020754"-->
-                <!--                         alt="mdo" width="32" height="32" class="rounded-circle">-->
-                <!--                </a>-->
             </div>
 
             <!--유저 정보 모달-->
             <div class="modal fade" id="user-info" tabindex="-1"
                  aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
-                    <div class="modal-content">
+                    <div class="modal-content" id="user-info-desc">
+                        <!--<div class="modal-content">-->
                         <div class="modal-header">
                             <h1 class="modal-title fs-5">User Info</h1>
                             <button type="button" class="btn-close" data-bs-dismiss="modal"
@@ -415,6 +378,42 @@
                                 Close
                             </button>
                             <button type="button" class="btn btn-primary" onclick="inviteUser()">Invite</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- 알림확인버튼-->
+            <a href="#" class="justify-content-end d-block link-body-emphasis text-decoration-none account-padding"
+               aria-expanded="false" data-bs-toggle="modal"
+               data-bs-target="#notification">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-bell"
+                     viewBox="0 0 16 16">
+                    <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2zM8 1.918l-.797.161A4.002 4.002 0 0 0 4 6c0 .628-.134 2.197-.459 3.742-.16.767-.376 1.566-.663 2.258h10.244c-.287-.692-.502-1.49-.663-2.258C12.134 8.197 12 6.628 12 6a4.002 4.002 0 0 0-3.203-3.92L8 1.917zM14.22 12c.223.447.481.801.78 1H1c.299-.199.557-.553.78-1C2.68 10.2 3 6.88 3 6c0-2.42 1.72-4.44 4.005-4.901a1 1 0 1 1 1.99 0A5.002 5.002 0 0 1 13 6c0 .88.32 4.2 1.22 6z"/>
+                </svg>
+            </a>
+            <!-- 알림 확인 모달창 -->
+            <div class="modal fade" id="notification" style="left:70%; top:10%; width: 30%;"
+                 tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-full-height modal-right modal-xl">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5">Notifications</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body" id="notification-list">
+                            <!-- 알림 내용을 보여주는 리스트 등의 요소를 추가 -->
+                            <a href="#" class="list-group-item list-group-item-action d-flex gap-2 py-2"
+                               data-bs-toggle="modal"
+                               data-bs-target="#cardDetails" aria-current="true">
+                                <div class="d-flex flex-column">
+                                    <h6 class="mb-0">Label</h6>
+                                    <p class="mb-0 opacity-75">title</p>
+                                    <small class="opacity-50 text-nowrap">details</small>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                         </div>
                     </div>
                 </div>
@@ -710,14 +709,6 @@
                                                         aria-label="Close"></button>
                                             </div>
                                             <div class="modal-body">
-                                                <!--                                                <div>-->
-                                                <!--                                                    <h6>Board</h6>-->
-                                                <!--                                                    <select class="form-select" aria-label="Default select example">-->
-                                                <!--                                                        <option selected>board title</option>-->
-                                                <!--                                                        <option value="1">board title</option>-->
-                                                <!--                                                        <option value="2">another board</option>-->
-                                                <!--                                                    </select>-->
-                                                <!--                                                </div>-->
 
                                                 <div style="margin-top: 10px">
                                                     <h6>Position</h6>
@@ -897,10 +888,12 @@
         getBoardMembers();
         //컬럼 위치정보 불러오기
         getListPositions();
+        //알림 리스트 불러오기
+        getNotification();
         // 라벨 배경색에 따라 글씨 색상을 선택하는 함수 추가
         applyTextColorToLabels();
+
         const auth = getToken();
-        // "New board" 버튼 클릭 시 팝업 창 열기
 
     });
 
@@ -1260,6 +1253,7 @@
         let boardId = $('#this-board').val();
         let sideId = document.getElementById('change-list-name').value;
 
+        //변경할 컬럼이름이 빈경우
         if (name == "") {
             alert("변경할 이름을 입력해주세요.");
             return;
@@ -1316,6 +1310,31 @@
             });
     }
 
+    function getNotification() {
+        let boardId = $('#this-board').val();
+        fetch(`/notifications/${boardId}`)
+            .then(function (response) {
+                return response.json();
+            })
+            .then(function (responseDto) {
+                $('#notification-list').empty();
+                responseDto.forEach(function (notification) {
+                    let title = notification.title;
+                    let detail = notification.detail;
+                    let editorName = notification.editorName;
+                    let temp_html = `<a href="#" class="list-group-item list-group-item-action d-flex gap-2 py-2"
+                                       data-bs-toggle="modal"
+                                       data-bs-target="#cardDetails" aria-current="true">
+                                        <div class="d-flex flex-column">
+                                            <h6 class="mb-0">${detail}</h6>
+                                            <p class="mb-0 opacity-75">${title}</p>
+                                            <small class="opacity-50 text-nowrap">${editorName}</small>`
+                    $('#notification-list').append(temp_html);
+                });
+            }).catch(function (error) {
+            console.error("알림 불러오기 실패", error);
+        })
+    }
 
     function inviteUser() {
         let boardId = $('#this-board').val();
@@ -1505,6 +1524,29 @@
                 console.error("게스트보드 불러오기 실패", error);
             });
     }
+
+    function searchCards() {
+        // 검색 버튼 클릭 시
+        let keyword = $('#search-input').val();
+        console.log(keyword);
+        let boardId = $('#this-board').val();
+        fetch(`/boards/${boardId}/word?keyword=${keyword}`)
+            .then(function (response) {
+                return response.json();
+            })
+            .then(function (responseDto) {
+                $('#search-results-list').empty();
+                responseDto.forEach(function (searchlist) {
+                    let cardId = searchlist.cardId;
+                    let name = searchlist.name;
+                    let temp_html = `<li class="search-result-item" href="/boards/${boardId}/cards/${cardId}" value="${cardId}">${name}</li>`;
+                    $('#search-results-list').append(temp_html);
+                });
+            });
+        // 검색 결과 표시 영역을 보이게 설정
+        document.getElementById("search-results").style.display = "block";
+    }
+
 </script>
 
 
