@@ -32,7 +32,8 @@ public class AttachmentService {
         Card card = cardRepository.findBySide_Board_IdAndSide_IdAndId(boardId, sideId, cardId);
         if (file != null) {
             String source = fileUploader.upload(file, "file");
-            Attachment attachment = new Attachment(source, card);
+            String fileName = file.getOriginalFilename();
+            Attachment attachment = new Attachment(fileName, source, card);
             attachmentRepository.save(attachment);
         }
 

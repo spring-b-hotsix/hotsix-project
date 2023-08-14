@@ -23,6 +23,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.List;
 
 @Service
@@ -116,7 +119,10 @@ public class CardService {
     @Transactional
     public ResponseEntity<CardResponseDto> updateDue(Long boardId, Long sideId, Long cardId, DueRequestDto requestDto) {
         Card card = cardRepository.findBySide_Board_IdAndSide_IdAndId(boardId, sideId, cardId);
-        card.updateDue(requestDto.getDue());
+        LocalDateTime receivedDateTime = requestDto.getDue();
+        ZoneId clientZone = ZoneId.of("Asia/Seoul"); // 클라이언트의 타임존
+        LocalDateTime convertedDateTime = receivedDateTime.atZone(ZoneOffset.UTC).withZoneSameInstant(clientZone).toLocalDateTime();
+        card.updateDue(convertedDateTime);
         CardResponseDto cardResponseDto = new CardResponseDto(card);
         return new ResponseEntity<>(cardResponseDto, HttpStatus.OK);
     }

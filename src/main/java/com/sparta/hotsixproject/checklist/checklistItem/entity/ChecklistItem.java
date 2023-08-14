@@ -33,10 +33,6 @@ public class ChecklistItem {
         this.checked = false;
     }
 
-    public void updateChecked() {
-        this.checked = !checked;
-    }
-
     public void updateContent(ChecklistItemRequestDto requestDto) {
         this.content = requestDto.getContent();
     }

@@ -22,11 +22,19 @@ public class QAttachment extends EntityPathBase<Attachment> {
 
     public static final QAttachment attachment = new QAttachment("attachment");
 
+    public final com.sparta.hotsixproject.common.entity.QTimeStamped _super = new com.sparta.hotsixproject.common.entity.QTimeStamped(this);
+
     public final com.sparta.hotsixproject.card.entity.QCard card;
+
+    //inherited
+    public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
     public final StringPath fileName = createString("fileName");
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
+
+    //inherited
+    public final DateTimePath<java.time.LocalDateTime> modifiedAt = _super.modifiedAt;
 
     public final StringPath source = createString("source");
 
