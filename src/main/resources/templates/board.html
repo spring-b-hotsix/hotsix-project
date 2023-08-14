@@ -782,7 +782,8 @@
                     <!--카드 추가하기-->
                     <a href="#"
                        class="list-group-item list-group-item-secondary list-group-item-action d-flex gap-2 py-2"
-                       aria-current="true" th:value="${side.sideId}"
+                       aria-current="true" th:value="${side.sideId}" data-bs-toggle="modal"
+                       data-bs-target="#card-create"
                        onclick="setCardAddButtonValue(this.getAttribute('value'))">
                         + Add a card
                     </a>
@@ -1326,9 +1327,9 @@
                                        data-bs-toggle="modal"
                                        data-bs-target="#cardDetails" aria-current="true">
                                         <div class="d-flex flex-column">
-                                            <h6 class="mb-0">${title}</h6>
-                                            <p class="mb-0 opacity-75">${editorName}</p>
-                                            <small class="opacity-50 text-nowrap">${detail}</small>`
+                                            <h6 class="mb-0">${detail}</h6>
+                                            <p class="mb-0 opacity-75">${title}</p>
+                                            <small class="opacity-50 text-nowrap">${editorName}</small>`
                     $('#notification-list').append(temp_html);
                 });
             }).catch(function (error) {
