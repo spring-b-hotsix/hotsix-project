@@ -291,7 +291,7 @@
                          alt="mdo" width="32" height="32" class="rounded-circle">
                 </a>
                 <ul class="dropdown-menu text-small dropdown-menu-end">
-                    <li><a class="dropdown-item" href="#">Manage account</a></li>
+                    <li><a class="dropdown-item" href="/users/profile">Manage account</a></li>
                     <li><a class="dropdown-item" href="#">Cards</a></li>
                     <li>
                         <hr class="dropdown-divider">
@@ -1540,7 +1540,8 @@
                 responseDto.forEach(function (searchlist) {
                     let cardId = searchlist.cardId;
                     let name = searchlist.name;
-                    let temp_html = `<li class="search-result-item" value="${cardId}">${name}</li>`;
+                    let sideId = searchlist.sideId;
+                    let temp_html = `<li class="search-result-item" onclick="window.location.href='/boards/${boardId}/sides/${sideId}/cards/${cardId}'" value="${cardId}">${name}</li>`;
                     $('#search-results-list').append(temp_html);
                 });
             });
