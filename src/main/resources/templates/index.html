@@ -10,6 +10,11 @@
     <link rel="stylesheet" type="text/css"
           href="https://cdn.jsdelivr.net/npm/spectrum-colorpicker2/dist/spectrum.min.css">
     <script src="https://cdn.jsdelivr.net/npm/spectrum-colorpicker2/dist/spectrum.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+            crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
 
     <style>
         body {
@@ -153,17 +158,39 @@
 </head>
 
 <body>
-<div>
-    <span th:text="${nickname}"></span>님, 환영합니다.
-    <button th:onclick="|window.location.href='/users/profile'|">프로필</button>
+<header class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+    <div class="container-fluid d-flex">
+        <!--        메인 이동-->
+        <a class="navbar-brand" href="/">
+            <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" fill="currentColor"
+                 style="margin-right: 7px;" class="bi bi-6-square-fill" viewBox="0 0 16 16">
+                <path d="M8.111 7.863c-.92 0-1.564.65-1.564 1.576 0 1.032.703 1.635 1.558 1.635.868 0 1.553-.533 1.553-1.629 0-1.06-.744-1.582-1.547-1.582Z"/>
+                <path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2Zm6.21 3.855c1.612 0 2.515.99 2.573 1.899H9.494c-.1-.358-.51-.815-1.312-.815-1.078 0-1.817 1.09-1.805 3.036h.082c.229-.545.855-1.155 1.98-1.155 1.254 0 2.508.88 2.508 2.555 0 1.77-1.218 2.783-2.847 2.783-.932 0-1.84-.328-2.409-1.254-.369-.603-.597-1.459-.597-2.642 0-3.012 1.248-4.407 3.117-4.407Z"/>
+            </svg>
+            <b>Hotsix</b></a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
+                aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+        </div>
+    </div>
+</header>
+<div style="margin-top: 70px; display: flex">
+    <h5>
+    <span style="margin-left: 30px" th:text="${nickname}"></span>님, 환영합니다.</h5>
+    <button class="btn btn-primary ms-auto" style="margin-right: 30px"
+            th:onclick="|window.location.href='/users/profile'|">프로필
+    </button>
 </div>
 <div id="my-board-form" class="board-form">
-    <div>Your Workspaces</div>
+    <div><h4><b>Your Workspaces</b></h4></div>
     <div class="board-list">
         <div th:each="myboard : ${myboards}" class="board-item"
              th:onclick="|window.location.href='/boards/${myboard.boardId}'|">
             <div class="section">
-                <div class="board-content" th:id="'my-board-content-' + ${myboard.boardId}" th:value="${myboard.boardId}">
+                <div class="board-content" th:id="'my-board-content-' + ${myboard.boardId}"
+                     th:value="${myboard.boardId}">
                     <div>
                         <span th:text="${myboard.name}"></span>
                     </div>
@@ -180,7 +207,10 @@
     </div>
 
 </div>
-<button id="open-popup-btn">New board</button>
+<div class="d-flex">
+    <h6 style="margin-left: -10px">.</h6>
+    <button id="open-popup-btn" class="btn btn-primary ms-auto" style="margin-right: 30px">New board</button>
+</div>
 <div id="popup-container" class="popup">
     <div class="popup-content">
         <div>Board title</div>
@@ -199,28 +229,29 @@
 </div>
 
 <div id="guest-board-form" class="board-form">
-    <div>Guest Workspaces</div>
+    <div><h4><b>Guest Workspaces</b></h4></div>
     <div class="board-list">
         <div th:each="guestboard : ${guestboards}" class="board-item"
              th:onclick="|window.location.href='/boards/${guestboard.boardId}'|">
             <div class="section">
-                <div class="board-content" th:id="'guest-board-content-' + ${guestboard.boardId}" th:value="${guestboard.boardId}">
-                <div class="board-content">
-                    <div>
-                        <span th:text="${guestboard.name}"></span>
-                    </div>
-                    <div>
-                        <span th:text="${guestboard.description}"></span>
-                    </div>
-                    <div>
-                        <div class="color-box"
-                             th:style="'background-color: rgb(' + ${guestboard.red} + ', ' + ${guestboard.green} + ', ' + ${guestboard.blue} + ')'"></div>
+                <div class="board-content" th:id="'guest-board-content-' + ${guestboard.boardId}"
+                     th:value="${guestboard.boardId}">
+                    <div class="board-content">
+                        <div>
+                            <span th:text="${guestboard.name}"></span>
+                        </div>
+                        <div>
+                            <span th:text="${guestboard.description}"></span>
+                        </div>
+                        <div>
+                            <div class="color-box"
+                                 th:style="'background-color: rgb(' + ${guestboard.red} + ', ' + ${guestboard.green} + ', ' + ${guestboard.blue} + ')'"></div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 </div>
 <script>
 
