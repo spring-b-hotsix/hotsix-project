@@ -1310,10 +1310,9 @@
             });
     }
 
-    function getNotification()
-    {
+    function getNotification() {
         let boardId = $('#this-board').val();
-        fetch(`"/notifications/${boardId}`)
+        fetch(`/notifications/${boardId}`)
             .then(function (response) {
                 return response.json();
             })
@@ -1330,6 +1329,7 @@
                                             <h6 class="mb-0">${title}</h6>
                                             <p class="mb-0 opacity-75">${editorName}</p>
                                             <small class="opacity-50 text-nowrap">${detail}</small>`
+                    $('#notification-list').append(temp_html);
                 });
             }).catch(function (error) {
             console.error("알림 불러오기 실패", error);
