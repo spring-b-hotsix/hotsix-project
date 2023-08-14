@@ -23,7 +23,8 @@ import java.util.List;
 @Tag(name = "카드 관련 API", description = "카드 관련 API 입니다.")
 public class CardController {
     public final CardService cardService;
-
+    
+    // 임시 주석
     @PostMapping("/{boardId}/sides/{sideId}/cards")
     @Operation(summary = "카드 생성", description = "@PathVariable을 통해 boardId와 sideId를 받아와, 해당 위치에 카드를 생성합니다. Dto를 통해 name(이름) 값을 받아와 카드를 생성할 때 해당 name을 저장합니다.")
     public ResponseEntity<ApiResponseDto> createCard(
