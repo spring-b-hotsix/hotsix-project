@@ -27,43 +27,8 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarCollapse">
-            <!--           &lt;!&ndash;            계정&ndash;&gt;-->
-            <!--            <div class="dropdown text-end account-padding ms-auto">-->
-            <!--                <a href="#" class="d-block link-body-emphasis text-decoration-none" aria-expanded="false"-->
-            <!--                   data-bs-toggle="modal" data-bs-target="#user-info">-->
-            <!--                        <img id="cardImage" alt="mdo" width="32" height="32" class="rounded-circle">-->
-            <!--                    </a>-->
-            <!--                </div>-->
-            <!--            </div>-->
-
-            <!--        &lt;!&ndash;유저 정보 모달&ndash;&gt;-->
-            <!--        <div class="modal fade" id="user-info" tabindex="-1"-->
-            <!--             aria-labelledby="exampleModalLabel" aria-hidden="true">-->
-            <!--            <div class="modal-dialog">-->
-            <!--                <div class="modal-content">-->
-            <!--                    <div class="modal-header">-->
-            <!--                        <h1 class="modal-title fs-5">User Info</h1>-->
-            <!--                        <button type="button" class="btn-close" data-bs-dismiss="modal"-->
-            <!--                                aria-label="Close"></button>-->
-            <!--                    </div>-->
-            <!--                    <div class="modal-body d-flex">-->
-            <!--                        <a href="#" class="d-block link-body-emphasis text-decoration-none" data-bs-toggle="modal"-->
-            <!--                           data-bs-target="#user-info" aria-expanded="false">-->
-            <!--                            <img src="https://vignette.wikia.nocookie.net/the-sun-vanished/images/5/5d/Twitter-avi-gender-balanced-figure.png/revision/latest?cb=20180713020754" id="cardImage-info" alt="mdo" width="70" height="70" class="rounded-circle">-->
-            <!--                        </a>-->
-            <!--                        <div style="margin-left: 20px">-->
-            <!--                            <h5><b>nickname</b></h5>-->
-            <!--                            user@email.com-->
-            <!--                        </div>-->
-            <!--                    </div>-->
-            <!--                    <div class="modal-footer">-->
-            <!--                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">-->
-            <!--                            Close-->
-            <!--                        </button>-->
-            <!--                        <button type="button" class="btn btn-primary">Delete</button>-->
-            <!--                    </div>-->
-            <!--                </div>-->
-            <!--            </div>-->
+            <img src="https://vignette.wikia.nocookie.net/the-sun-vanished/images/5/5d/Twitter-avi-gender-balanced-figure.png/revision/latest?cb=20180713020754"
+                 id="cardImage-info" alt="mdo" width="70" height="70" class="rounded-circle">
         </div>
     </div>
 </header>
@@ -72,6 +37,9 @@
     <!--    <button th:onclick="|window.location.href='/'|">홈</button>-->
     <input type="hidden" id="userId" th:value="${user.id}"/>
     <h1 th:text="${user.nickname + ' 님의 프로필'}">프로필</h1>
+    <div id="profileImageContainer">
+        <img id="profileImage" src="" alt="프로필 사진" th:src="${user.imageUrl}">
+    </div>
     <div style="margin-bottom: 50px; margin-top: 50px">
         <div class="profile" style="margin-bottom: 20px">
             <label>Nickname 변경:</label>
@@ -112,13 +80,26 @@
     <div class="edit-profile" style="margin-bottom: 20px">
         <label style="margin-bottom: 20px">프로필 사진 변경:</label>
         <div class="input-group" style="width: 200px; margin-bottom: 10px">
-            <input type="file" class="form-control" id="inputGroupFile04" aria-describedby="inputGroupFileAddon04"
+            <input type="file" class="form-control"
                    aria-label="Upload">
         </div>
         <button style="margin-bottom: 10px; margin-left: 220px" class="btn btn-secondary" id="updateProfile"
-                onclick="updatePassword()">Update Profile Image
+                onclick="updateImg()">Update Image
         </button>
     </div>
+    <div class="edit-profile" style="margin-bottom: 50px">
+        <div style="margin-bottom: 10px">
+            <input style="width: 200px" id="userPassword" type="password" class="form-control" placeholder="password 입력"
+                   aria-label="Username" aria-describedby="basic-addon1">
+            <!--        <input type="password" id="password" placeholder="password 입력">-->
+        </div>
+        <button style="margin-bottom: 10px; margin-left: 220px" class="btn btn-danger" id="updatePassword"
+                onclick="deleteUser()">회원탈퇴
+        </button>
+    </div>
+    <button style="margin-bottom: 10px; margin-left: 220px" class="btn btn-warning"
+            onclick="logout()">로그아웃
+    </button>
 </div>
 <script>
     function updateNickname() {
@@ -127,7 +108,7 @@
         let userId = $('#userId').val();
         $.ajax({
             type: "PUT",
-            url: `/users/${userId}/nickname`,
+            url: `/users/nickname`,
             contentType: "application/json",
             data: JSON.stringify({nickname: nickname, password: password}),
         })
@@ -146,7 +127,7 @@
         let userId = $('#userId').val();
         $.ajax({
             type: "PUT",
-            url: `/users/${userId}/password`,
+            url: `/users/password`,
             contentType: "application/json",
             data: JSON.stringify({password: password, newPassword: newPassword}),
         })
@@ -165,27 +146,67 @@
         window.location.href = '/users/login-page';
     }
 
-    //
-    // $(document).ready(function () {
-    //
-    //     // displayCardImage 함수를 호출하여 이미지 표시 (cardId를 전달)
-    //     displayCardImage(cardId);
-    // });
-    //
-    // function displayCardImage(userId) {
-    //     fetch(`/users/${userId}/files`) // 서버 엔드포인트를 호출하여 이미지 URL 가져오기
-    //         .then(function (response) {
-    //             return response.json();
-    //         })
-    //         .then(function (data) {
-    //             const imageUrl = data.imageUrl || 'https://vignette.wikia.nocookie.net/the-sun-vanished/images/5/5d/Twitter-avi-gender-balanced-figure.png/revision/latest?cb=20180713020754';
-    //             document.getElementById('cardImage').src = imageUrl;
-    //             document.getElementById('cardImage-info').src = imageUrl;
-    //         })
-    //         .catch(function (error) {
-    //             console.error("이미지 URL 불러오기 실패", error);
-    //         });
-    // }
+    function deleteUser() {
+        let password = $('#userPassword').val();
+        $.ajax({
+            type: "DELETE",
+            url: `/users/sign-out`,
+            contentType: "application/json",
+            data: JSON.stringify({password: password}),
+        })
+            .done(function (res, status, xhr) {
+                alert("회원탈퇴 되었습니다. 로그인 페이지로 이동합니다.");
+                logout();
+            })
+            .fail(function (xhr, textStatus, errorThrown) {
+                alert("회원 탈퇴에 실패했습니다.")
+            });
+    }
+    function updateImg() {
+        // 사용자가 선택한 파일을 가져옵니다.
+        let fileInput = document.querySelector('input[type="file"]');
+        let file = fileInput.files[0];
+
+        // FormData 객체를 생성하고 파일을 추가합니다.
+        let formData = new FormData();
+        formData.append('file', file);
+
+        // 서버로 AJAX 요청을 보냅니다.
+        $.ajax({
+            type: 'PUT',
+            url: '/users/files',
+            data: formData,
+            contentType: false, // 파일 업로드시에는 content type을 false로 설정합니다.
+            processData: false, // 데이터 처리를 jQuery가 하지 않도록 설정합니다.
+        })
+            .done(function (res, status, xhr) {
+                alert('프로필 사진이 업데이트되었습니다.');
+                displayProfileImg();
+            })
+            .fail(function (xhr, textStatus, errorThrown) {
+                alert('프로필 사진 업데이트에 실패했습니다.');
+            });
+    }
+
+    function displayProfileImg() {
+        $.ajax({
+            type: "GET",
+            url: `/users/user-info`,
+            contentType: "application/json",
+        })
+            .done(function (res, status, xhr) {
+                // 이미지 URL을 res에서 추출하거나 다른 방식으로 이미지 정보를 가져옴
+                let imageUrl = res.imageUrl; // 이 부분을 적절한 방식으로 수정
+
+                // 이미지를 화면에 표시
+                $('#profileImage').attr('src', imageUrl);
+                alert("프로필 이미지가 변경되었습니다.");
+            })
+            .fail(function (xhr, textStatus, errorThrown) {
+                alert("프로필 이미지 변경에 실패했습니다.")
+            });
+    }
+
 
 </script>
 </body>
