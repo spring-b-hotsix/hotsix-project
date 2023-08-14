@@ -67,7 +67,7 @@ public class KakaoService {
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("grant_type", "authorization_code");
         body.add("client_id", "676623f0cb1ea82bda1fa48588b0109e");
-        body.add("redirect_uri", "http://ec2-3-35-131-194.ap-northeast-2.compute.amazonaws.com:8080/users/login/kakao/callback");
+        body.add("redirect_uri", "http://ec2-3-38-181-21.ap-northeast-2.compute.amazonaws.com:8080/users/login/kakao/callback");
         body.add("code", code);
 
         log.info("마디" + body);
